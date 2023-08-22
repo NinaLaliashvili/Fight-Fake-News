@@ -26,7 +26,6 @@ const ResultComponent = () => {
     <div className="result-container">
       <header>
         <h1>Results (or some header here )</h1>
-        <nav>{/* Other navigation links if you want*/}</nav>
       </header>
       <main>
         <h2>

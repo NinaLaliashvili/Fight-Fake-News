@@ -12,13 +12,10 @@ const SubmitFactComponent = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
-  const [type, setType] = useState("fact"); // default to 'fact'
+  const [type, setType] = useState("fact");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Here, you'd typically send this data to your server
-    // For now, just setting submitted to true to show the thank you message
 
     setSubmitted(true);
   };
@@ -43,7 +40,6 @@ const SubmitFactComponent = () => {
 
         <nav>
           <button onClick={() => navigate("/")}>Home</button>
-          {/* Add other navigation links if required */}
         </nav>
       </header>
       <main>

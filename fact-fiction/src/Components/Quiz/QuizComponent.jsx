@@ -50,7 +50,6 @@ const QuizComponent = () => {
         </div>
         <button onClick={handleNext}>Next</button>
         <div className="lifelines">
-          {/* possible clickable icons or buttons */}
           <span>50/50</span>
           <span>Poll Audience</span>
         </div>
