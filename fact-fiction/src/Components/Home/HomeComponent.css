@@ -1,0 +1,36 @@
+.home-container {
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  background-color: #282c34;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav button {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.nav button:hover {
+  background-color: white;
+  color: #282c34;
+}
+
+.brand-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}

@@ -1,0 +1,30 @@
+.quiz-container {
+  font-family: Arial, sans-serif;
+}
+
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #282c34;
+  color: white;
+  padding: 1rem 2rem;
+}
+
+.quiz-content {
+  padding: 2rem;
+}
+
+.options {
+  margin: 1rem 0;
+}
+
+.options label {
+  margin-right: 2rem;
+}
+
+.lifelines {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}

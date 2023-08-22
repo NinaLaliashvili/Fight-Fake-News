@@ -1,0 +1,34 @@
+.result-container {
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background-color: #282c34;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+main {
+  padding: 2rem;
+}
+
+.correct {
+  color: green;
+}
+
+.wrong {
+  color: red;
+}
+
+.info-icon {
+  margin-left: 1rem;
+  text-decoration: none;
+  color: blue;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
+}
