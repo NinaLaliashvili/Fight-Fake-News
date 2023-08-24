@@ -17,6 +17,8 @@ export const AuthProvider = ({ children }) => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(getIsLoggedInFromStorage());
 
+  const [userInfo, setUserInfo] = useState({});
+
   const userJwtToken = getUserFromStorage();
   const userId = deCode(userJwtToken);
 
@@ -41,6 +43,8 @@ export const AuthProvider = ({ children }) => {
     userId,
     isLoggedIn,
     setIsLoggedIn,
+    userInfo,
+    setUserInfo,
   };
   return <Provider value={value}>{children}</Provider>;
 };

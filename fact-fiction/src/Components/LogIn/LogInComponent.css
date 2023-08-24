@@ -5,6 +5,9 @@
   margin-right: auto;
   margin-left: auto;
   border: 1px solid black;
+  font-family: Arial, sans-serif;
+  background-color: #f7f9fc;
+  padding: 1em;
 }
 
 .login {
@@ -18,8 +21,57 @@
 }
 .login h1 {
   font-size: 2rem;
-  margin-bottom: 5px;
-  color: black;
+  /* margin-bottom: 5px; */
+  background: linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
+  color: white;
   font-weight: bold;
-  padding: 15px 0;
+  border-radius: 6px;
+  padding-top: 22px ;
+}
+
+.input {
+  background-color: transparent;
+  color: black;
+  border: 1px solid #cb81d0;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 25px;
+  margin-top: 8px;
+}
+
+.input :hover {
+  background-color: white;
+  color: #cb81d0;
+  transform: scale(1.05);
+}
+
+a {
+  font-family:  Arial, sans-serif;
+  margin: 10px;
+  color: rgb(85, 84, 84);
+  text-decoration: none;
+ 
+
+}
+a:hover {
+  color: #cb81d0;
+  text-decoration: none;
+}
+
+button {
+  background-color: #cb81d0;
+  color: white;
+  border: 1px solid #cb81d0;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 25px;
+  margin-top: 8px;
+}
+
+button:hover {
+  background-color: white;
+  color: #cb81d0;
+  transform: scale(1.05);
 }
