@@ -1,0 +1,17 @@
+:root {
+    --font-family: Arial, sans-serif;
+    --background-color: f7f9fc;
+    --background-header:  linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
+    --background-animation: gradientBackground 15s ease infinite;
+   --button-background: transparent;
+   --button-border: 1px solid white;
+   --button-padding: 0.5rem 1rem;
+   --button-transiation: all 0.3s;
+   --button-border-radius: 25px;
+   --button-hover-background-color: white;
+   --button-hover-text-color: #cb81d0;
+   
+
+
+}
+
