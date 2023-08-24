@@ -1,0 +1,52 @@
+.leaderboard-container {
+    padding: 1em;
+}
+
+header {
+    background: linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
+  background-size: 600% 600%;
+  animation: gradientBackground 15s ease infinite;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+nav button {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 25px;
+}
+
+nav button:hover {
+    background-color: white;
+    color: #cb81d0;
+    transform: scale(1.05);
+  }
+  
+  table {
+    width: 100%;
+    margin-top: 1rem;
+    border-collapse: collapse;
+  }
+  
+  table, th, td {
+    border: 1px solid #cb81d0;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #cb81d0;
+    color: white;
+  }
+  
+  tbody tr:hover {
+    background-color: #fecfef;
+  }
