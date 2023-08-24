@@ -56,7 +56,7 @@ const LogInComponent = () => {
 
       <div className="loginContainer">
         <div className="login">
-          <h1 className="login">Login</h1>
+          <h1>Login</h1>
 
           <input
             type="email"

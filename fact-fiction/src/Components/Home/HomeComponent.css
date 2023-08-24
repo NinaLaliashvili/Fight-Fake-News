@@ -11,8 +11,7 @@
 }
 
 .home-container {
-  font-family: Arial, sans-serif;
-  padding: 1em;
+   padding: 1em;
 }
 
 .header {
@@ -25,6 +24,7 @@
   align-items: center;
   padding: 1rem 2rem;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  height: 3em;
 }
 
 .nav {
@@ -45,7 +45,7 @@
 .nav button:hover {
   background-color: white;
   color: #cb81d0;
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .brand-logo {

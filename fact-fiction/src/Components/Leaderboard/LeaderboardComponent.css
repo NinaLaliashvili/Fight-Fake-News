@@ -12,6 +12,7 @@ header {
   align-items: center;
   padding: 1rem 2rem;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  height: 3em;
 }
 
 nav button {
@@ -27,7 +28,7 @@ nav button {
 nav button:hover {
   background-color: white;
   color: #cb81d0;
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 table {
@@ -39,7 +40,7 @@ table {
 table,
 th,
 td {
-  border: 1px solid #cb81d0;
+  border: 2px solid #cb81d0;
   padding: 8px;
   text-align: left;
 }
