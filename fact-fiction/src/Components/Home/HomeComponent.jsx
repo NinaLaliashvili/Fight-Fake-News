@@ -9,6 +9,10 @@ const HomeComponent = ({ user }) => {
   const funFacts = [
     "Bananas are berries, but strawberries are not!",
     "Honey never spoils. Sealed honey jars found in the tombs of pharaohs over 3,000 years old are still safe to eat!",
+    "Did you know that you don't actually swallow an average of eight spiders a year in your sleep? 🕷️",
+    "Flamingos are naturally white. Their diet of shrimp and algae turns them pink!",
+    "Lightning never strikes the same place twice. Myth busted! It can and does, especially tall, pointed, and isolated structures.",
+    "Goldfish have a three-second memory, right? Wrong! They can remember things for months.",
   ];
 
   const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
@@ -16,7 +20,11 @@ const HomeComponent = ({ user }) => {
   return (
     <div className="home-container">
       <header className="header">
-        <div className="brand-logo">some logo here </div>
+        <img
+          className="brand-logo"
+          src="https://cdn.factcheck.org/UploadedFiles/rwjf-icon-conspiracy-01-.png"
+          height="50"
+        />
         <nav className="nav">
           {user ? (
             <span>Welcome, {user.name}!</span>
@@ -39,16 +47,16 @@ const HomeComponent = ({ user }) => {
           some welcoming letter for user, we can think about smth more
           creative/fun text, with images/animations)
         </h2>
-        <button onClick={() => navigate("/quiz")}>Start Game</button>
+        <button className="start-btn" onClick={() => navigate("/quiz")}>Start Game</button>
 
         <div className="fun-fact">
-          <h2>Did you know?</h2>
+          <h3>Did you know?</h3>
           <p>
-            {randomFact} - now it is hardcoded, but after server side and mongo,
-            we will make it better of course, we just need an api route, some
-            randome facts on mongo, and api function and thats it. on top of
-            that, we can make home page more fun, for example with funny images,
-            logos, or animations.
+            {randomFact} -  Welcome to our
+            corner, where interesting stories meet the real facts. We've all
+            come across surprising claims, some more believable than others.
+            Curious about how well you can separate fact from fiction? Try our
+            quizzes and see for yourself. Intrigued? Dive in!"
           </p>
         </div>
       </main>

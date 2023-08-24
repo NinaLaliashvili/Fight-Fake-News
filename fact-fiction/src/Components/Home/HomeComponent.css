@@ -1,14 +1,31 @@
+@keyframes gradientBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .home-container {
   font-family: Arial, sans-serif;
+  background-color: #f7f9fc;
+  padding: 1em;
 }
 
 .header {
-  background-color: #282c34;
+  background: linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
+  background-size: 600% 600%;
+  animation: gradientBackground 15s ease infinite;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .nav {
@@ -22,15 +39,52 @@
   border: 1px solid white;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
+  border-radius: 25px;
 }
 
 .nav button:hover {
   background-color: white;
-  color: #282c34;
+  color: #cb81d0;
+  transform: scale(1.05);
 }
 
 .brand-logo {
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.start-btn {
+  background-color: #cb81d0;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1.1rem;
+  font-weight: bold;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.start-btn:hover {
+  background-color: #ee8fb5;
+}
+
+.fun-fact {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+}
+
+.fun-fact h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.fun-fact p {
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
 }
