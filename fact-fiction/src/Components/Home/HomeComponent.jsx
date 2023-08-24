@@ -29,8 +29,16 @@ const HomeComponent = ({ user }) => {
           {user ? (
             <span>Welcome, {user.name}!</span>
           ) : (
-            <button onClick={() => setShowLogin(true)}>Log In</button>
+            <button
+              onClick={() => {
+                setShowLogin(true);
+                navigate("/login");
+              }}
+            >
+              Log In
+            </button>
           )}
+          <button onClick={() => navigate("/register")}>Register</button>
           <button onClick={() => navigate("/leaderboard")}>Leaderboard</button>
           <button onClick={() => navigate("/quiz")}>Quiz Page</button>
           <button onClick={() => navigate("/results")}>Results</button>
@@ -47,16 +55,18 @@ const HomeComponent = ({ user }) => {
           some welcoming letter for user, we can think about smth more
           creative/fun text, with images/animations)
         </h2>
-        <button className="start-btn" onClick={() => navigate("/quiz")}>Start Game</button>
+        <button className="start-btn" onClick={() => navigate("/quiz")}>
+          Start Game
+        </button>
 
         <div className="fun-fact">
           <h3>Did you know?</h3>
           <p>
-            {randomFact} -  Welcome to our
-            corner, where interesting stories meet the real facts. We've all
-            come across surprising claims, some more believable than others.
-            Curious about how well you can separate fact from fiction? Try our
-            quizzes and see for yourself. Intrigued? Dive in!"
+            {randomFact} - Welcome to our corner, where interesting stories meet
+            the real facts. We've all come across surprising claims, some more
+            believable than others. Curious about how well you can separate fact
+            from fiction? Try our quizzes and see for yourself. Intrigued? Dive
+            in!"
           </p>
         </div>
       </main>

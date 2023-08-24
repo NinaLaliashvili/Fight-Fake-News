@@ -11,6 +11,8 @@ import QuizComponent from "./Components/Quiz/QuizComponent";
 import ResultComponent from "./Components/Results/ResultsComponent";
 import LeaderboardComponent from "./Components/Leaderboard/LeaderboardComponent";
 import SubmitFactComponent from "./Components/SubmitFact/SubmitFactComponent";
+import LogInComponent from "./Components/LogIn/LogInComponent";
+import RegisterComponent from "./Components/Register/RegisterComponent";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
       <NavLink to="results"></NavLink>
       <NavLink to="leaderboard"></NavLink>
       <NavLink to="submit-fact"></NavLink>
+      <NavLink to="login"></NavLink>
+      <NavLink to="register"></NavLink>
       <div className="routes">
         <Routes>
           <Route path="/" element={<HomeComponent />}></Route>
@@ -27,6 +31,8 @@ function App() {
           <Route path="results" element={<ResultComponent />}></Route>
           <Route path="leaderboard" element={<LeaderboardComponent />}></Route>
           <Route path="submit-fact" element={<SubmitFactComponent />}></Route>
+          <Route path="login" element={<LogInComponent />}></Route>
+          <Route path="register" element={<RegisterComponent />}></Route>
         </Routes>
       </div>
     </div>
