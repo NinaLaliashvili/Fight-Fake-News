@@ -10,6 +10,11 @@
   background-color: #f7f9fc;
   padding: 1em;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .login {
@@ -20,43 +25,45 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
+
 .login h1 {
   font-size: 1.5rem;
-  /* margin-bottom: 5px; */
   background: linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
   color: white;
   font-weight: bold;
   border-radius: 6px;
-  padding: 22px ;
+  padding: 22px;
+  margin-bottom: 10px;
 }
 
 .input {
   background-color: transparent;
   color: black;
   border: 1px solid #cb81d0;
-  padding: 0.5rem 1rem;
+  padding: 1rem 1rem;
   cursor: pointer;
   transition: all 0.3s;
   border: 2px solid #cb81d0;
   border-radius: 25px;
   margin-top: 8px;
+  width: 80%;
 }
 
-.input :hover {
+.input:hover {
   background-color: white;
   color: #cb81d0;
   transform: scale(1.05);
 }
 
 a {
-  font-family:  Arial, sans-serif;
+  font-family: Arial, sans-serif;
   margin: 10px;
   color: rgb(85, 84, 84);
   text-decoration: none;
- 
-
 }
+
 a:hover {
   color: #cb81d0;
   text-decoration: none;

@@ -1,18 +1,17 @@
 import { useContext, useState } from "react";
-import { authContext } from "../../Context/AuthContext";
+import { LoginContext } from "../../Context/AuthContext";
 import "./LogInComponent.css";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import axios from "axios";
 
 const LogInComponent = () => {
   const navigate = useNavigate();
-  const { logUserIn, setUserInfo } = useContext(authContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const { isLoggedIn, userId, setLoginStatus } = useContext(LoginContext);
 
   const notifyError = (message) => {
     toast.error(`${message}, sorry!`, {
@@ -20,35 +19,37 @@ const LogInComponent = () => {
     });
   };
 
-  const handleLogIn = () => {
-    if (email && password) {
-      axios
-        .post(process.env.REACT_APP_API_PORT + "login", {
-          email,
-          password,
-        })
-        .then((resp) => {
-          console.log("made it to response");
-          const userObject = resp.data.user;
-          const { token, user } = userObject;
-          setUserInfo(user);
-          //getting user and token from server
+  const handleLogin = async (event) => {
+    event.preventDefault();
 
-          logUserIn(token);
-        })
-        .catch((err) => {
-          console.log(err);
-          setError(true);
-          setErrorMessage(err);
-          notifyError(errorMessage);
-        });
-    } else {
-      setError(true);
-      notifyError(
-        "must enter values for email and password; c'mon, you know the drill!"
-      );
+    try {
+      const response = await axios.post("http://localhost:3071/login", {
+        email,
+        password,
+      });
+      console.log(response.data);
+      if (response.data) {
+        const { user, token } = response.data;
+        const userId = user._id;
+
+        //update context and local storage
+        setLoginStatus(true, userId, token);
+        localStorage.setItem("firstName", user.firstName);
+        localStorage.setItem("lastName", user.lastName);
+
+        navigate("/");
+      } else {
+        setLoginStatus(false, null, null);
+        notifyError("Invalid email or password!");
+      }
+    } catch (error) {
+      console.error("Error details:", error.response);
+      console.error("Failed to fetch users", error);
+      setLoginStatus(false, null, null);
+      notifyError("Invalid email or password!");
     }
   };
+
   return (
     <div>
       <ToastContainer theme="light" />
@@ -56,26 +57,29 @@ const LogInComponent = () => {
 
       <div className="loginContainer">
         <div className="login">
-          <h1>Login</h1>
+          <form onSubmit={handleLogin}>
+            <h1>Login</h1>
 
-          <input
-            type="email"
-            value={email}
-            onChange={setEmail}
-            placeholder="Enter your email"
-            className="input"
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={setPassword}
-            placeholder="Enter your password"
-            className="input"
-          />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="input"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              className="input"
+            />
 
-          <button onClick={handleLogIn}>Login</button>
-          <Link to="/register">Not a user? Register Here!</Link>
-
+            <button className="btn-login" onClick={handleLogin}>
+              Login
+            </button>
+            <Link to="/register">Not a user? Register Here!</Link>
+          </form>
           {/* <div>{error && <div error={error} isError={true}></div>}</div> */}
         </div>
       </div>

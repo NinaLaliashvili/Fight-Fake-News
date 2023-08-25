@@ -14,8 +14,11 @@ import SubmitFactComponent from "./Components/SubmitFact/SubmitFactComponent";
 import LogInComponent from "./Components/LogIn/LogInComponent";
 import RegisterComponent from "./Components/Register/RegisterComponent";
 import { AdminView } from "./Components/Admin";
+import { useContext } from "react";
+import { LoginContext } from "./Context/AuthContext";
 
 function App() {
+  const { isLoggedIn, logout } = useContext(LoginContext);
   return (
     <div className="App">
       <NavLink to="/"></NavLink>

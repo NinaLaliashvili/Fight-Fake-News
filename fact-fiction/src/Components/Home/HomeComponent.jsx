@@ -1,10 +1,30 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../../Context/AuthContext";
 import "./HomeComponent.css";
 
-const HomeComponent = ({ user }) => {
+const HomeComponent = () => {
   const navigate = useNavigate();
-  const [showLogin, setShowLogin] = useState(false);
+  const { isLoggedIn, setLoginStatus } = useContext(LoginContext);
+
+  // Logout function to clear user state and redirect to homepage
+  const handleLogout = () => {
+    // Clear local storage
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("token");
+    localStorage.removeItem("firstName");
+    localStorage.removeItem("lastName");
+
+    // Update context
+    setLoginStatus(false, null, null);
+
+    // Redirect to home
+    navigate("/");
+  };
+
+  const firstName = localStorage.getItem("firstName");
+  const lastName = localStorage.getItem("lastName");
 
   const funFacts = [
     "Bananas are berries, but strawberries are not!",
@@ -26,20 +46,17 @@ const HomeComponent = ({ user }) => {
           height="50"
         />
         <nav className="nav">
-          {user ? (
-            <span>Welcome, {user.name}!</span>
+          {isLoggedIn ? (
+            <>
+              <button onClick={handleLogout}>Logout</button>
+            </>
           ) : (
-            <button
-              onClick={() => {
-                setShowLogin(true);
-                navigate("/login");
-              }}
-            >
-              Log In
-            </button>
+            <>
+              <button onClick={() => navigate("/login")}>Log In</button>
+              <button onClick={() => navigate("/register")}>Register</button>
+            </>
           )}
 
-          <button onClick={() => navigate("/register")}>Register</button>
           <button onClick={() => navigate("/admin")}>Admin</button>
           <button onClick={() => navigate("/leaderboard")}>Leaderboard</button>
           <button onClick={() => navigate("/quiz")}>Quiz Page</button>
@@ -51,11 +68,10 @@ const HomeComponent = ({ user }) => {
       </header>
 
       <main>
-        <h2>
-          Welcome to Fact or Fiction Fun Quiz. Test your knowledge and see if
-          you can differentiate between facts and myths. Good luck! (This is
-          some welcoming letter for user, we can think about smth more
-          creative/fun text, with images/animations)
+        <h2 className="welcome">
+          {isLoggedIn
+            ? `Hey there, ${firstName} ${lastName}! 🌟 Ready to embark on another journey of myth-busting? Grab your detective hat and let's uncover some truths together! 🕵️‍♂️`
+            : `Welcome to Fact or Fiction Fun Quiz. Dive into a world where myths unravel and truths shine. Are you ready?`}
         </h2>
         <button className="start-btn" onClick={() => navigate("/quiz")}>
           Start Game
@@ -72,8 +88,6 @@ const HomeComponent = ({ user }) => {
           </p>
         </div>
       </main>
-
-      {showLogin && <div className="login-modal"></div>}
     </div>
   );
 };

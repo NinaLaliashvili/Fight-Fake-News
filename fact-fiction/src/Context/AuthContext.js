@@ -1,50 +1,43 @@
-import { createContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  getIsLoggedInFromStorage,
-  getUserFromStorage,
-  setUserInStorage,
-  clearUserFromStorage,
-} from "../helpers/storage";
-import { deCode } from "../helpers/deCode";
+import React, { createContext, useState, useEffect } from "react";
 
-export const authContext = createContext({});
+export const LoginContext = createContext();
 
-const Provider = authContext.Provider;
+export const LoginProvider = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("isLoggedIn") === "true"
+  );
+  const [userId, setUserId] = useState(localStorage.getItem("userId") || null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
 
-export const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
-
-  const [isLoggedIn, setIsLoggedIn] = useState(getIsLoggedInFromStorage());
-
-  const [userInfo, setUserInfo] = useState({});
-
-  const userJwtToken = getUserFromStorage();
-  const userId = deCode(userJwtToken);
-
-  const logUserIn = (userId) => {
-    setIsLoggedIn(true);
-    setUserInStorage(userId);
-
-    setTimeout(() => {
-      navigate("/");
-    }, 1000);
+  const setLoginStatus = (loginStatus, userId, token) => {
+    localStorage.setItem("isLoggedIn", loginStatus.toString());
+    localStorage.setItem("userId", userId);
+    localStorage.setItem("token", token);
+    setIsLoggedIn(loginStatus);
+    setUserId(userId);
+    setToken(token);
   };
 
-  const logUserOut = () => {
+  const logout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("token");
     setIsLoggedIn(false);
-    clearUserFromStorage();
-    navigate("/");
+    setUserId(null);
+    setToken(null);
   };
-  const value = {
-    logUserIn,
-    logUserOut,
-    userJwtToken,
-    userId,
-    isLoggedIn,
-    setIsLoggedIn,
-    userInfo,
-    setUserInfo,
-  };
-  return <Provider value={value}>{children}</Provider>;
+
+  useEffect(() => {
+    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+    setUserId(localStorage.getItem("userId"));
+    setToken(localStorage.getItem("token"));
+  }, []);
+
+  return (
+    <LoginContext.Provider
+      value={{ isLoggedIn, setLoginStatus, logout, userId, token }}
+    >
+      {children}
+    </LoginContext.Provider>
+  );
 };

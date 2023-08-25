@@ -104,6 +104,7 @@ app.get("/user/:id", async (req, res) => {
 
 //Sign up users api
 app.post("/signup", async (req, res) => {
+  console.log("Received signup data:", req.body);
   const {
     email,
     password,
@@ -184,6 +185,7 @@ app.post("/signup", async (req, res) => {
 
 //Log in api
 app.post("/login", async (req, res) => {
+  console.log("Received signup data:", req.body);
   const { email, password } = req.body;
 
   //check if these fields are full
