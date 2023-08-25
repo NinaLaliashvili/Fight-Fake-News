@@ -38,7 +38,9 @@ const HomeComponent = ({ user }) => {
               Log In
             </button>
           )}
+
           <button onClick={() => navigate("/register")}>Register</button>
+          <button onClick={() => navigate("/admin")}>Admin</button>
           <button onClick={() => navigate("/leaderboard")}>Leaderboard</button>
           <button onClick={() => navigate("/quiz")}>Quiz Page</button>
           <button onClick={() => navigate("/results")}>Results</button>

@@ -13,6 +13,7 @@ import LeaderboardComponent from "./Components/Leaderboard/LeaderboardComponent"
 import SubmitFactComponent from "./Components/SubmitFact/SubmitFactComponent";
 import LogInComponent from "./Components/LogIn/LogInComponent";
 import RegisterComponent from "./Components/Register/RegisterComponent";
+import { AdminView } from "./Components/Admin";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
       <NavLink to="submit-fact"></NavLink>
       <NavLink to="login"></NavLink>
       <NavLink to="register"></NavLink>
+      <NavLink to="admin"></NavLink>
       <div className="routes">
         <Routes>
           <Route path="/" element={<HomeComponent />}></Route>
@@ -33,6 +35,7 @@ function App() {
           <Route path="submit-fact" element={<SubmitFactComponent />}></Route>
           <Route path="login" element={<LogInComponent />}></Route>
           <Route path="register" element={<RegisterComponent />}></Route>
+          <Route path="admin/*" element={<AdminView />}></Route>
         </Routes>
       </div>
     </div>
