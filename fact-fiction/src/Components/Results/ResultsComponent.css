@@ -1,13 +1,39 @@
+@keyframes gradientBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .result-container {
-  font-family: Arial, sans-serif;
+  padding: 1em;
 }
 
 header {
-  background-color: #282c34;
+  background: linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
+  background-size: 600% 600%;
+  animation: gradientBackground 15s ease infinite;
   color: white;
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.results-content{
+  padding: 2rem;
+  width: 80%;
+  max-width: 800px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 10px 10px;
+  background-color: #fff;
+  margin-top: 3rem;
 }
 
 main {
@@ -15,20 +41,34 @@ main {
 }
 
 .correct {
-  color: green;
+  color: #4CAF50;
 }
 
 .wrong {
-  color: red;
+  color: #FF5252;
 }
 
 .info-icon {
   margin-left: 1rem;
   text-decoration: none;
-  color: blue;
+  color: #cb81d0;
   cursor: pointer;
 }
 
 a:hover {
   text-decoration: underline;
+}
+
+button {
+  background-color: #cb81d0;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.8rem;
+  font-weight: bold;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  margin-right: 0.5rem; 
 }

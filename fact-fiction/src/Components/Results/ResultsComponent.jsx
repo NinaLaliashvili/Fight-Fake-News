@@ -27,7 +27,7 @@ const ResultComponent = () => {
       <header>
         <h1>Results (or some header here )</h1>
       </header>
-      <main>
+      <main className="results-content">
         <h2>
           Your Score: 1/2 - just forthe example, after mongo and server it will
           be done, now it is hardcoded , take a look into{" "}
