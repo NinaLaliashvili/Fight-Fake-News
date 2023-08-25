@@ -14,7 +14,7 @@ const LeaderboardComponent = () => {
   return (
     <div className="leaderboard-container">
       <header>
-        <h1>QuizMaster</h1>
+        <h1>Leaderboard</h1>
         <nav>
           <button onClick={() => navigate("/")}>Home</button>
         </nav>

@@ -57,8 +57,9 @@ const LogInComponent = () => {
 
       <div className="loginContainer">
         <div className="login">
+        <h1>Login</h1>
           <form onSubmit={handleLogin}>
-            <h1>Login</h1>
+           
 
             <input
               type="email"

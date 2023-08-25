@@ -12,6 +12,7 @@
 
 .result-container {
   padding: 1em;
+  align-items: center;
 }
 
 header {
@@ -33,7 +34,7 @@ header {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   border-radius: 0 0 10px 10px;
   background-color: #fff;
-  margin-top: 3rem;
+  margin: 3rem auto;
 }
 
 main {

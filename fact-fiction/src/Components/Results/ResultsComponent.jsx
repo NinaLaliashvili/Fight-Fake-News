@@ -25,7 +25,7 @@ const ResultComponent = () => {
   return (
     <div className="result-container">
       <header>
-        <h1>Results (or some header here )</h1>
+        <h1>Results</h1>
       </header>
       <main className="results-content">
         <h2>

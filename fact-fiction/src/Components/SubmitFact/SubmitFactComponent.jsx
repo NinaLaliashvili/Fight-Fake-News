@@ -37,7 +37,7 @@ const SubmitFactComponent = () => {
   return (
     <div className="submission-container">
       <header>
-        <h1>QuizMaster</h1>
+        <h1>Fact Submission</h1>
 
         <nav>
           <button onClick={() => navigate("/")}>Home</button>

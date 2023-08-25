@@ -1,12 +1,24 @@
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
 .registerContainer {
   width: 40%;
-  height: 440px;
-  margin-top: 10%;
+  /* margin-top: 10%; */
   margin-right: auto;
   margin-left: auto;
-  border: 2px solid #cb81d0;
+  background-color: #f7f9fc;
+  padding: 0.3em;
   border-radius: 15px;
-  font-family: Arial, sans-serif;
   background-color: #f7f9fc;
   padding: 1em;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
@@ -24,19 +36,21 @@
 
 .register h1 {
   font-size: 1.5rem;
-  /* margin-bottom: 5px; */
   background: linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
+  background-size: 200% 200%;
+  animation: gradientAnimation 3s infinite;
   color: white;
   font-weight: bold;
   border-radius: 6px;
   padding: 22px;
+  margin-bottom: 10px;
 }
 
 .input {
   background-color: transparent;
   color: black;
   border: 2px solid #cb81d0;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   cursor: pointer;
   transition: all 0.3s;
   border-radius: 25px;
@@ -50,7 +64,6 @@
 }
 
 a {
-  font-family: Arial, sans-serif;
   margin: 10px;
   color: rgb(85, 84, 84);
   text-decoration: none;
@@ -76,6 +89,7 @@ button:hover {
   color: #cb81d0;
   transform: scale(1.05);
 }
+
 .input {
   display: block;
   margin-bottom: 10px;
