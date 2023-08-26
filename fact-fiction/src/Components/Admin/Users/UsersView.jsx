@@ -43,22 +43,25 @@ export const UsersView = () => {
 
   return (
     <div>
-      <h1>Search User</h1>
-      <div>
+      <h1 className="column">Search User</h1>
+      <div className="column">
         <input
           placeholder="search by first name"
           value={searchByFirstName}
           onChange={(e) => setSearchByFirstName(e.target.value)}
+          className="item"
         />
         <input
           placeholder="search by last name"
           value={searchByLastName}
           onChange={(e) => setSearchByLastName(e.target.value)}
+          className="item"
         />
         <input
           placeholder="search by email"
           value={searchByEmail}
           onChange={(e) => setSearchByEmail(e.target.value)}
+          className="item"
         />
 
         <button onClick={handleSearch}>Search</button>
