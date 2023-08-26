@@ -12,6 +12,12 @@ export const FactFictionView = () => {
   const [genre, setGenre] = useState("");
   const [factsArray, setFactsArray] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [values, setValues] = useState({
+    title: "",
+    description: "",
+    sourceLink: "",
+  });
+  const [itemId, setItemId] = useState(null);
 
   const loadFacts = () => {
     axios
@@ -91,6 +97,46 @@ export const FactFictionView = () => {
     }
   };
 
+  const handleEdit = (factId) => {
+    setItemId(factId);
+
+    axios
+      .get(`http://localhost:3082/approved-facts`)
+      .then((res) => {
+        const factToEdit = res.data.find((fact) => fact._id === factId);
+
+        if (factToEdit) {
+          setValues({
+            ...values,
+            title: factToEdit.title,
+            description: factToEdit.description,
+            sourceLink: factToEdit.sourceLink,
+          });
+        } else {
+          console.error("Fact not found.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching approved facts:", error);
+      });
+  };
+
+  const handleSave = () => {
+    axios
+      .put(`http://localhost:3082/facts/${itemId}`, {
+        title: values.title,
+        description: values.description,
+        sourceLink: values.sourceLink,
+      })
+      .then((resp) => {
+        notifyUserSuccess("Fact updated successfully!");
+        loadFacts();
+      })
+      .catch((err) => {
+        notifyUserError("Error updating the fact.");
+      });
+  };
+
   const handleSearch = () => {
     console.log("hi");
     try {
@@ -104,6 +150,15 @@ export const FactFictionView = () => {
       console.log("issue filtering");
       notifyUserError("issue filtering by this genre..");
     }
+  };
+
+  const clearInputs = () => {
+    setValues({
+      title: "",
+      description: "",
+      sourceLink: "",
+    });
+    setItemId(null);
   };
 
   return (
@@ -140,6 +195,31 @@ export const FactFictionView = () => {
       </div>
       <div>
         <h2>Approved Facts</h2>
+        <div>
+          <input
+            type="text"
+            value={values.title}
+            onChange={(e) => setValues({ ...values, title: e.target.value })}
+          />
+
+          <input
+            type="text"
+            value={values.description}
+            onChange={(e) =>
+              setValues({ ...values, description: e.target.value })
+            }
+          />
+
+          <input
+            type="text"
+            value={values.sourceLink}
+            onChange={(e) =>
+              setValues({ ...values, sourceLink: e.target.value })
+            }
+          />
+          <button onClick={handleSave}>Save</button>
+          {itemId && <h3 onClick={clearInputs}>Cancel</h3>}
+        </div>
         {approvedFacts.map((fact) => (
           <div key={fact._id} className="fact-item">
             <h2>{fact.title}</h2>
@@ -147,6 +227,7 @@ export const FactFictionView = () => {
             <a href={fact.sourceLink} target="_blank" rel="noopener noreferrer">
               Source
             </a>
+            <button onClick={() => handleEdit(fact._id)}>Edit</button>
           </div>
         ))}
       </div>
