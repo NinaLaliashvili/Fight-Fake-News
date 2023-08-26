@@ -11,7 +11,7 @@ const LogInComponent = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { isLoggedIn, userId, setLoginStatus } = useContext(LoginContext);
+  const { setLoginStatus } = useContext(LoginContext);
 
   const notifyError = (message) => {
     toast.error(`${message}, sorry!`, {
@@ -32,7 +32,6 @@ const LogInComponent = () => {
         const { user, token } = response.data;
         const userId = user._id;
 
-        //update context and local storage
         setLoginStatus(true, userId, token);
         localStorage.setItem("firstName", user.firstName);
         localStorage.setItem("lastName", user.lastName);

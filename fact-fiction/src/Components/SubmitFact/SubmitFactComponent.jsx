@@ -6,7 +6,6 @@ const SubmitFactComponent = () => {
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
 
-  // form states
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [sourceLink, setSourceLink] = useState("");

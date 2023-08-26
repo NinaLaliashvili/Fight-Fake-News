@@ -67,14 +67,16 @@ export const UsersView = () => {
         <button onClick={handleSearch}>Search</button>
       </div>
 
-      <div>
-        {listUsers.map((user) => (
-          <div className="box" key={user._id}>
-            <h3>{user.firstName}</h3>
-            <h3>{user.lastName}</h3>
-            <h4>{user.email}</h4>
-          </div>
-        ))}
+      <div className="users-list-contrainer ">
+        {listUsers.map((user) =>
+          user._id && user.firstName && user.lastName && user.email ? (
+            <div className="box" key={user._id}>
+              <h3>{user.firstName}</h3>
+              <h3>{user.lastName}</h3>
+              <h4>{user.email}</h4>
+            </div>
+          ) : null
+        )}
       </div>
     </div>
   );

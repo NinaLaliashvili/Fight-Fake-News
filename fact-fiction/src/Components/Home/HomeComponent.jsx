@@ -5,23 +5,20 @@ import "./HomeComponent.css";
 
 const HomeComponent = () => {
   const navigate = useNavigate();
-  const { isLoggedIn, setLoginStatus } = useContext(LoginContext);
+  const { isLoggedIn } = useContext(LoginContext);
 
-  // Logout function to clear user state and redirect to homepage
-  const handleLogout = () => {
-    // Clear local storage
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("token");
-    localStorage.removeItem("firstName");
-    localStorage.removeItem("lastName");
 
-    // Update context
-    setLoginStatus(false, null, null);
+  // const handleLogout = () => {
+  //   localStorage.removeItem("isLoggedIn");
+  //   localStorage.removeItem("userId");
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("firstName");
+  //   localStorage.removeItem("lastName");
 
-    // Redirect to home
-    navigate("/");
-  };
+  //   setLoginStatus(false, null, null);
+
+  //   navigate("/");
+  // };
 
   const firstName = localStorage.getItem("firstName");
   const lastName = localStorage.getItem("lastName");

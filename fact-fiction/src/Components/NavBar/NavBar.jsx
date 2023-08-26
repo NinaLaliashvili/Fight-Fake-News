@@ -1,5 +1,3 @@
-// Navbar.jsx
-
 import React, { useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LoginContext } from "../../Context/AuthContext";
@@ -36,6 +34,7 @@ const Navbar = () => {
         className="brand-logo"
         src="https://cdn.factcheck.org/UploadedFiles/rwjf-icon-conspiracy-01-.png"
         height="50"
+        alt="logo"
       />
       <div className="page-name">{currentPageName}</div>
       <nav className="nav">
