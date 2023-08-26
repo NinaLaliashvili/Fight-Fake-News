@@ -17,7 +17,31 @@ const SubmitFactComponent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setSubmitted(true);
+    const factData = {
+      title,
+      description,
+      sourceLink,
+      fullName,
+      email,
+      mobileNumber,
+      type,
+    };
+
+    fetch("http://localhost:3082/submit-fact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(factData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Fact submission successful:", data);
+        setSubmitted(true);
+      })
+      .catch((error) => {
+        console.error("Error submitting fact:", error);
+      });
   };
 
   if (submitted) {
@@ -45,15 +69,14 @@ const SubmitFactComponent = () => {
       {!submitted ? (
         <main>
           <h3>
-            
-              Got a cool fact or conspiracy theory to share? We're all ears!
-              Dive in and let us know your interesting truths or theories. But
-              before you do, remember:
+            Got a cool fact or conspiracy theory to share? We're all ears! Dive
+            in and let us know your interesting truths or theories. But before
+            you do, remember:
             <br />
-            
-            <span style={{ textDecoration: 'underline' }}>Accuracy matters!</span> Ensure your submissions are
-              truthful and backed by genuine sources.
-           
+            <span style={{ textDecoration: "underline" }}>
+              Accuracy matters!
+            </span>{" "}
+            Ensure your submissions are truthful and backed by genuine sources.
           </h3>
           <form onSubmit={handleSubmit}>
             <input

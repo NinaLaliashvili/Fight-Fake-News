@@ -23,7 +23,7 @@ const LogInComponent = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:3071/login", {
+      const response = await axios.post("http://localhost:3082/login", {
         email,
         password,
       });
@@ -56,10 +56,8 @@ const LogInComponent = () => {
 
       <div className="loginContainer">
         <div className="login">
-        <h1>Login</h1>
+          <h1>Login</h1>
           <form onSubmit={handleLogin}>
-           
-
             <input
               type="email"
               value={email}

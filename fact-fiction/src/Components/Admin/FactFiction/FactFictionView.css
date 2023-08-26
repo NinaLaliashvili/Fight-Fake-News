@@ -1,7 +1,43 @@
 ul {
-    list-style-type: none;
+  list-style-type: none;
 }
 
 li {
-    text-decoration: none;
+  text-decoration: none;
+}
+
+.fact-item {
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 5px;
+  background-color: #f7f7f7;
+}
+
+.fact-item h2 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.fact-item p {
+  margin-bottom: 20px;
+}
+
+.fact-item a {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.fact-item button {
+  margin-right: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.fact-item button:last-child {
+  background-color: #dc3545;
 }

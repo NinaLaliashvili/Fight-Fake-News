@@ -4,9 +4,9 @@ import { LoginContext } from "../../Context/AuthContext";
 import "./HomeComponent.css";
 
 const HomeComponent = () => {
-  const navigate = useNavigate();
-  const { isLoggedIn } = useContext(LoginContext);
+  const { isLoggedIn, setLoginStatus } = useContext(LoginContext);
 
+  const navigate = useNavigate();
 
   // const handleLogout = () => {
   //   localStorage.removeItem("isLoggedIn");

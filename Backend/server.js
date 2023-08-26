@@ -21,6 +21,7 @@ const client = new MongoClient(uri, {
 
 //my collection
 let usersCollection;
+let factsCollection;
 
 async function run() {
   try {
@@ -28,6 +29,7 @@ async function run() {
     await client.db("admin").command({ ping: 1 });
     console.log("You successfully connected to MongoDB!");
     usersCollection = client.db("factsorfictions").collection("users");
+    factsCollection = client.db("factsorfictions").collection("facts");
   } catch (error) {
     console.error(error);
     process.exit(1);
@@ -226,7 +228,103 @@ app.post("/login", async (req, res) => {
   }
 });
 
-const port = 3071;
+// add submited fact to db api, (post req)
+app.post("/submit-fact", async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      sourceLink,
+      fullName,
+      email,
+      mobileNumber,
+      type,
+    } = req.body;
+
+    // Validate that the required fields are present. Adjust validation as needed.
+    if (!title || !description || !fullName || !email) {
+      return res.status(400).send("Please fill in all the required fields.");
+    }
+
+    const newFact = {
+      title,
+      description,
+      sourceLink,
+      fullName,
+      email,
+      mobileNumber,
+      type,
+      isApproved: false,
+    };
+
+    const result = await factsCollection.insertOne(newFact);
+
+    res.status(201).json({ factId: result.insertedId });
+  } catch (error) {
+    console.error("Error submitting fact:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+// get unapproved facts
+app.get("/unapproved-facts", async (req, res) => {
+  try {
+    const unapprovedFacts = await factsCollection
+      .find({ isApproved: false })
+      .toArray();
+    res.json(unapprovedFacts);
+  } catch (error) {
+    console.error("Error fetching unapproved facts:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+// get only approved facts
+app.get("/approved-facts", async (req, res) => {
+  try {
+    const approvedFacts = await factsCollection
+      .find({ isApproved: true })
+      .toArray();
+    res.json(approvedFacts);
+  } catch (error) {
+    console.error("Error fetching approved facts:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+// update approval status api
+app.put("/facts/:factId", async (req, res) => {
+  try {
+    const factId = req.params.factId;
+    const { isApproved } = req.body;
+
+    await factsCollection.updateOne(
+      { _id: new ObjectId(factId) },
+      { $set: { isApproved: isApproved } }
+    );
+
+    res.json({ message: "Fact approval status updated." });
+  } catch (error) {
+    console.error("Error updating fact approval status:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+// delete a fact by its ID
+app.delete("/facts/:factId", async (req, res) => {
+  try {
+    const factId = req.params.factId;
+
+    await factsCollection.deleteOne({ _id: new ObjectId(factId) });
+
+    res.json({ message: "Fact successfully deleted." });
+  } catch (error) {
+    console.error("Error deleting fact:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+const port = 3082;
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });

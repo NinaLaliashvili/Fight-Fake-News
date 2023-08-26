@@ -79,7 +79,7 @@ const RegisterComponent = () => {
     }
 
     try {
-      const users = await axios.get("http://localhost:3071/users");
+      const users = await axios.get("http://localhost:3082/users");
 
       const isEmailExists = users.data.some((user) => user.email === email);
       const isPhoneExists = users.data.some((user) => user.phone === phone);
@@ -97,7 +97,7 @@ const RegisterComponent = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:3071/signup",
+        "http://localhost:3082/signup",
         formState
       );
 

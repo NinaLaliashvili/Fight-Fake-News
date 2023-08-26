@@ -15,7 +15,7 @@ export const UsersView = () => {
 
   const loadUsers = async () => {
     try {
-      const userResponse = await axios.get(`http://localhost:3071/users`);
+      const userResponse = await axios.get(`http://localhost:3082/users`);
       setListUsers(userResponse.data);
       setListOrigin(userResponse.data);
     } catch (error) {
