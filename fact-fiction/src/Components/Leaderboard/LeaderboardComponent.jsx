@@ -13,12 +13,12 @@ const LeaderboardComponent = () => {
 
   return (
     <div className="leaderboard-container">
-      <header>
+      {/* <header>
         <h1>Leaderboard</h1>
         <nav>
           <button onClick={() => navigate("/")}>Home</button>
         </nav>
-      </header>
+      </header> */}
       <main>
         <h2>Leaderboard</h2>
         <table>

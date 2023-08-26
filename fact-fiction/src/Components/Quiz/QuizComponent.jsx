@@ -21,12 +21,13 @@ const QuizComponent = () => {
 
   return (
     <div className="quiz-container">
-      <header className="quiz-header">
+      {/* <header className="quiz-header">
         <button onClick={() => navigate("/")}>Home</button>
         <h1>Fact or Fiction Quiz</h1>
         <span>Score: {score}</span>
-      </header>
+      </header> */}
       <main className="quiz-content">
+      <span>Score: {score}</span>
         <p>{question}</p>
         <div className="options">
           <label>

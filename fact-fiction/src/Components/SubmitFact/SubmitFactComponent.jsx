@@ -36,13 +36,13 @@ const SubmitFactComponent = () => {
 
   return (
     <div className="submission-container">
-      <header>
+      {/* <header>
         <h1>Fact Submission</h1>
 
         <nav>
           <button onClick={() => navigate("/")}>Home</button>
         </nav>
-      </header>
+      </header> */}
       {!submitted ? (
         <main>
           <h3>

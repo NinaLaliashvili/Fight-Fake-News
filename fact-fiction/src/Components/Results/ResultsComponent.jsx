@@ -24,9 +24,9 @@ const ResultComponent = () => {
 
   return (
     <div className="result-container">
-      <header>
+      {/* <header>
         <h1>Results</h1>
-      </header>
+      </header> */}
       <main className="results-content">
         <h2>
           Your Score: 1/2 - just forthe example, after mongo and server it will

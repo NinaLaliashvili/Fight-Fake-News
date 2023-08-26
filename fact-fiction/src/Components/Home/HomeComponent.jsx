@@ -39,7 +39,7 @@ const HomeComponent = () => {
 
   return (
     <div className="home-container">
-      <header className="header">
+      {/* <header className="header">
         <img
           className="brand-logo"
           src="https://cdn.factcheck.org/UploadedFiles/rwjf-icon-conspiracy-01-.png"
@@ -65,7 +65,7 @@ const HomeComponent = () => {
             Fact Submission
           </button>
         </nav>
-      </header>
+      </header> */}
 
       <main>
         <h2 className="welcome">

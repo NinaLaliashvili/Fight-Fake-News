@@ -16,11 +16,13 @@ import RegisterComponent from "./Components/Register/RegisterComponent";
 import { AdminView } from "./Components/Admin";
 import { useContext } from "react";
 import { LoginContext } from "./Context/AuthContext";
+import Navbar from "./Components/NavBar/NavBar";
 
 function App() {
   const { isLoggedIn, logout } = useContext(LoginContext);
   return (
     <div className="App">
+      <Navbar />
       <NavLink to="/"></NavLink>
       <NavLink to="quiz"></NavLink>
       <NavLink to="results"></NavLink>
