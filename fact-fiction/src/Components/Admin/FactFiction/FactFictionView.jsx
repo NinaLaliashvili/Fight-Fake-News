@@ -9,9 +9,10 @@ import { ToastContainer, toast } from "react-toastify";
 export const FactFictionView = () => {
   const [approvedFacts, setApprovedFacts] = useState([]);
   const [unapprovedFacts, setUnapprovedFacts] = useState([]);
-  const [genre, setGenre] = useState("");
+  const [type, setType] = useState("");
   const [factsArray, setFactsArray] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [values, setValues] = useState({
     title: "",
     description: "",
@@ -79,23 +80,10 @@ export const FactFictionView = () => {
     });
   };
 
-  const genres = [
-    { value: "News", label: "News" },
-    { value: "History", label: "History" },
-    { value: "Science", label: "Science" },
-    { value: "Random", label: "Random" },
+  const types = [
+    { value: "fact", label: "fact" },
+    { value: "fiction", label: "fiction" },
   ];
-
-  const renderAdminSearch = (list) => {
-    if (list) {
-      return list.map((i) => {
-        return (
-          <li key={i._id}>{i.fact}</li>
-          //this will depend on how we name the resource/make a component card to render facts
-        );
-      });
-    }
-  };
 
   const handleEdit = (factId) => {
     setItemId(factId);
@@ -139,10 +127,16 @@ export const FactFictionView = () => {
 
   const handleSearch = () => {
     console.log("hi");
+    console.log(type.label);
     try {
-      const filteredFacts = factsArray.filter((fact) => fact.genre == genre);
+      const filteredFacts = approvedFacts.filter(
+        (fact) => fact.type == type.label
+      );
+      console.log(filteredFacts);
       if (filteredFacts) {
         setSearchResults(filteredFacts);
+        console.log(searchResults);
+        setIsSearching(true);
       } else {
         return;
       }
@@ -150,6 +144,11 @@ export const FactFictionView = () => {
       console.log("issue filtering");
       notifyUserError("issue filtering by this genre..");
     }
+  };
+
+  const clearSearch = () => {
+    setSearchResults([]);
+    setIsSearching(false);
   };
 
   const clearInputs = () => {
@@ -167,15 +166,28 @@ export const FactFictionView = () => {
       <h1>Search By Fact or Fiction...</h1>
       <div className="column">
         <Select
-          value={genre}
-          options={genres}
-          placeholder="Select Genre..."
-          onChange={(option) => setGenre(option.value)} // Fix the onChange
+          value={type}
+          options={types}
+          placeholder="Select fact or fiction..."
+          // onChange={(option) => setType(option.value)} // Fix the onChange
+          //react select just needs to use state to set value :)
+          onChange={setType}
           isClearable={true}
         />
 
         <button onClick={handleSearch}>Search</button>
-        <ul>{renderAdminSearch(searchResults)}</ul>
+
+        {searchResults.map((fact) => (
+          <div key={fact._id} className="fact-item">
+            <h2>{fact.title}</h2>
+            <p>{fact.description}</p>
+            <a href={fact.sourceLink} target="_blank" rel="noopener noreferrer">
+              Source
+            </a>
+            <button onClick={() => handleEdit(fact._id)}>Edit</button>
+          </div>
+        ))}
+        {isSearching && <button onClick={clearSearch}>Clear Search...</button>}
       </div>
       <div>
         <h2>Unapproved Facts</h2>
@@ -200,6 +212,7 @@ export const FactFictionView = () => {
             type="text"
             value={values.title}
             onChange={(e) => setValues({ ...values, title: e.target.value })}
+            placeholder="title.."
           />
 
           <input
@@ -208,6 +221,7 @@ export const FactFictionView = () => {
             onChange={(e) =>
               setValues({ ...values, description: e.target.value })
             }
+            placeholder="description..."
           />
 
           <input
@@ -216,6 +230,7 @@ export const FactFictionView = () => {
             onChange={(e) =>
               setValues({ ...values, sourceLink: e.target.value })
             }
+            placeholder="source..."
           />
           <button onClick={handleSave}>Save</button>
           {itemId && <h3 onClick={clearInputs}>Cancel</h3>}
