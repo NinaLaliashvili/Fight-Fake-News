@@ -292,6 +292,30 @@ app.get("/approved-facts", async (req, res) => {
   }
 });
 
+app.put("/approved-facts/:factId", async (req, res) => {
+  try {
+    const factId = req.params.factId;
+    const { title, description, sourceLink } = req.body;
+
+    // Validate that the required fields are present. Adjust validation as needed.
+    if (!title || !description || !sourceLink) {
+      return res
+        .status(400)
+        .send("Please provide title, description, and sourceLink.");
+    }
+
+    await factsCollection.updateOne(
+      { _id: new ObjectId(factId), isApproved: true }, // Only update approved facts
+      { $set: { title, description, sourceLink } }
+    );
+
+    res.json({ message: "Approved fact updated successfully." });
+  } catch (error) {
+    console.error("Error updating approved fact:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
 // update approval status api
 app.put("/facts/:factId", async (req, res) => {
   try {
