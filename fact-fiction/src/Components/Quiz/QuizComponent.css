@@ -38,6 +38,12 @@
   border-radius: 0 0 10px 10px;
   background-color: #fff;
   margin-top: 3rem;
+ 
+}
+
+.quiz-content label, span {
+  font-weight: bold;
+  
 }
 
 button {

@@ -1,10 +1,18 @@
 import React from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ResultsComponent.css";
-
+import { userScoreContext } from "../../Context/UserScoreContext";
 const ResultComponent = () => {
+  const { userResults } = useContext(userScoreContext);
+  const [highScoring, setHighScoring] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (userResults > 70) {
+      setHighScoring(true);
+    }
+  }, []);
   //soeme data
   const sampleResults = [
     {
@@ -28,6 +36,15 @@ const ResultComponent = () => {
         <h1>Results</h1>
       </header> */}
       <main className="results-content">
+        <h3>{`Your Score: ${userResults}%`}</h3>
+        {highScoring ? (
+          <p>
+            Great work! You are well on your way to identifying conspiracy
+            theories you encounter in everyday life.
+          </p>
+        ) : (
+          <p>You need work! Get off TikTok! Read!</p>
+        )}
         <h2>
           Your Score: 1/2 - just forthe example, after mongo and server it will
           be done, now it is hardcoded , take a look into{" "}

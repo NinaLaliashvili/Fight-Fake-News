@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./QuizComponent.css";
+import { userScoreContext } from "../../Context/UserScoreContext";
 
 const QuizComponent = () => {
   const navigate = useNavigate();
-
+  const { userResults, setUserResults } = useContext(userScoreContext);
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -29,14 +30,36 @@ const QuizComponent = () => {
   };
 
   const handleNext = () => {
+    const { type } = questions[currentIndex];
+    if (type == selectedOption) {
+      console.log(type, selectedOption);
+      const newScore = score + 1;
+      setScore(newScore);
+    } else {
+      const sameScore = score + 0;
+      setScore(sameScore);
+    }
+    //this is clunky but EF worked thru adding score
     // Move to the next question
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       // Navigate to results if there are no more questions
-      navigate("/results");
+      handleSubmit();
+      // navigate("/results");
+      //perform the results work :)
     }
     setSelectedOption(null); //reset the selected option for the next question
+  };
+
+  const handleSubmit = () => {
+    const totalQuestionsNum = questions.length;
+    const percentageCorrect = (score * 100) / totalQuestionsNum;
+    const rounded = percentageCorrect.toFixed(1);
+    setUserResults(rounded);
+    console.log(userResults);
+    navigate("/results");
+    //this sets the score in context; we will need to also mark correct vs incorrect in future versions for each index
   };
   const currentFact = questions[currentIndex];
   const currentQuestion = questions[currentIndex]?.title || "Loading..."; // Default to "Loading..." if questions aren't fetched yet
@@ -74,9 +97,7 @@ const QuizComponent = () => {
           <span>50/50</span>
           <span>Poll Audience</span>
         </div>
-        <button onClick={() => navigate("/results")}>
-          End Game and See Results
-        </button>
+        <button onClick={handleSubmit}>End Game and See Results</button>
       </main>
     </div>
   );

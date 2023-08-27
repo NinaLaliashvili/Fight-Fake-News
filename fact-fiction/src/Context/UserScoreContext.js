@@ -10,6 +10,7 @@ export const UserScoreProvider = ({ children }) => {
   const [runningAverageScore, setRunningAverageScore] = useState(0);
   /*runningAverageScore will equal numOfCorrect / numOfTotal as a percentage (yay math!) whenever we call it
    */
+  const [userResults, setUserResults] = useState(0);
 
   const value = {
     numOfCorrectAnswers,
@@ -18,6 +19,8 @@ export const UserScoreProvider = ({ children }) => {
     setNumOfWrongAnswers,
     runningAverageScore,
     setRunningAverageScore,
+    userResults,
+    setUserResults,
   };
 
   return <Provider value={value}>{children}</Provider>;
