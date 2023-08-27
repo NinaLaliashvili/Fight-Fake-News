@@ -111,12 +111,13 @@ export const FactFictionView = () => {
 
   const handleSave = () => {
     axios
-      .put(`http://localhost:3082/facts/${itemId}`, {
+      .put(`http://localhost:3082/approved-facts/${itemId}`, {
         title: values.title,
         description: values.description,
         sourceLink: values.sourceLink,
       })
       .then((resp) => {
+        clearInputs();
         notifyUserSuccess("Fact updated successfully!");
         loadFacts();
       })
@@ -207,34 +208,36 @@ export const FactFictionView = () => {
       </div>
       <div>
         <h2>Approved Facts</h2>
-        <div>
-          <input
-            type="text"
-            value={values.title}
-            onChange={(e) => setValues({ ...values, title: e.target.value })}
-            placeholder="title.."
-          />
+        {approvedFacts.length > 0 && (
+          <div>
+            <input
+              type="text"
+              value={values.title}
+              onChange={(e) => setValues({ ...values, title: e.target.value })}
+              placeholder="title.."
+            />
 
-          <input
-            type="text"
-            value={values.description}
-            onChange={(e) =>
-              setValues({ ...values, description: e.target.value })
-            }
-            placeholder="description..."
-          />
+            <input
+              type="text"
+              value={values.description}
+              onChange={(e) =>
+                setValues({ ...values, description: e.target.value })
+              }
+              placeholder="description..."
+            />
 
-          <input
-            type="text"
-            value={values.sourceLink}
-            onChange={(e) =>
-              setValues({ ...values, sourceLink: e.target.value })
-            }
-            placeholder="source..."
-          />
-          <button onClick={handleSave}>Save</button>
-          {itemId && <h3 onClick={clearInputs}>Cancel</h3>}
-        </div>
+            <input
+              type="text"
+              value={values.sourceLink}
+              onChange={(e) =>
+                setValues({ ...values, sourceLink: e.target.value })
+              }
+              placeholder="source..."
+            />
+            <button onClick={handleSave}>Save</button>
+            {itemId && <h3 onClick={clearInputs}>Cancel</h3>}
+          </div>
+        )}
         {approvedFacts.map((fact) => (
           <div key={fact._id} className="fact-item">
             <h2>{fact.title}</h2>
