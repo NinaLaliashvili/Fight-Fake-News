@@ -31,10 +31,12 @@ const LogInComponent = () => {
       if (response.data) {
         const { user, token } = response.data;
         const userId = user._id;
+        const fullName = `${user.firstName} ${user.lastName}`;
 
-        setLoginStatus(true, userId, token);
+        setLoginStatus(true, userId, fullName, token);
         localStorage.setItem("firstName", user.firstName);
         localStorage.setItem("lastName", user.lastName);
+        localStorage.setItem("fullName", fullName);
 
         navigate("/");
       } else {
@@ -78,7 +80,6 @@ const LogInComponent = () => {
             </button>
             <Link to="/register">Not a user? Register Here!</Link>
           </form>
-          {/* <div>{error && <div error={error} isError={true}></div>}</div> */}
         </div>
       </div>
     </div>

@@ -48,6 +48,7 @@ function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
+  console.log("Token:", token);
   if (token == null) {
     console.log("Token is null");
     return res.sendStatus(401);
@@ -344,6 +345,46 @@ app.delete("/facts/:factId", async (req, res) => {
     res.json({ message: "Fact successfully deleted." });
   } catch (error) {
     console.error("Error deleting fact:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+// post api to save user's score
+app.post("/save-score", authenticateToken, async (req, res) => {
+  try {
+    const { userId, score } = req.body;
+
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { score } }
+    );
+    console.log("UserId:", userId);
+    console.log("Score:", score);
+    console.log("Update Result:", result);
+
+    if (result.matchedCount > 0) {
+      res.status(200).send("Score updated successfully");
+    } else {
+      throw new Error("Failed to find user");
+    }
+  } catch (error) {
+    console.error("Error saving score:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+// get 5 users with the highest scores:
+app.get("/top-scores", async (req, res) => {
+  try {
+    const topUsers = await usersCollection
+      .find({})
+      .sort({ score: -1 }) // Sorting in descending order
+      .limit(5) // Getting only first 5 users
+      .toArray(); // Converting to an array
+
+    res.json(topUsers);
+  } catch (error) {
+    console.error("Error fetching top 5 scores:", error);
     res.status(500).send("Something went wrong. Please try again later.");
   }
 });

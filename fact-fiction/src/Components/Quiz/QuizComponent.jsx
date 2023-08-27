@@ -3,17 +3,27 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./QuizComponent.css";
 import { userScoreContext } from "../../Context/UserScoreContext";
+import { LoginContext } from "../../Context/AuthContext";
 
 const QuizComponent = () => {
+  const { userId, token } = useContext(LoginContext);
   const navigate = useNavigate();
-  const { userResults, setUserResults } = useContext(userScoreContext);
-  const [score, setScore] = useState(0);
+  const {
+    numOfCorrectAnswers,
+    setNumOfCorrectAnswers,
+    numOfWrongAnswers,
+    setNumOfWrongAnswers,
+    runningAverageScore,
+    setRunningAverageScore,
+    userResults,
+    setUserResults,
+  } = useContext(userScoreContext);
+
   const [selectedOption, setSelectedOption] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    // Fetch approved facts
     axios
       .get("http://localhost:3082/approved-facts")
       .then((response) => {
@@ -26,51 +36,75 @@ const QuizComponent = () => {
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
-    // Logic to check answer and update score if needed
   };
 
   const handleNext = () => {
+    let newNumOfCorrectAnswers = numOfCorrectAnswers;
+    let newNumOfWrongAnswers = numOfWrongAnswers;
+
     const { type } = questions[currentIndex];
-    if (type == selectedOption) {
-      console.log(type, selectedOption);
-      const newScore = score + 1;
-      setScore(newScore);
+
+    if (type === selectedOption) {
+      newNumOfCorrectAnswers += 1;
     } else {
-      const sameScore = score + 0;
-      setScore(sameScore);
+      newNumOfWrongAnswers += 1;
     }
-    //this is clunky but EF worked thru adding score
-    // Move to the next question
+
+    const totalQuestionsAnswered =
+      newNumOfCorrectAnswers + newNumOfWrongAnswers;
+    const averageScore =
+      (newNumOfCorrectAnswers / totalQuestionsAnswered) * 100;
+
+    setNumOfCorrectAnswers(newNumOfCorrectAnswers);
+    setNumOfWrongAnswers(newNumOfWrongAnswers);
+    setRunningAverageScore(averageScore);
+
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
+      setSelectedOption(null);
     } else {
-      // Navigate to results if there are no more questions
       handleSubmit();
-      // navigate("/results");
-      //perform the results work :)
-      //send result and username to server from here?
     }
-    setSelectedOption(null); //reset the selected option for the next question
   };
 
   const handleSubmit = () => {
-    const totalQuestionsNum = questions.length;
-    const percentageCorrect = (score * 100) / totalQuestionsNum;
-    const rounded = percentageCorrect.toFixed(1);
-    setUserResults(rounded);
-    console.log(userResults);
+    setUserResults(runningAverageScore);
     navigate("/results");
-    //this sets the score in context; we will need to also mark correct vs incorrect in future versions for each index
+
+    if (token) {
+      axios
+        .post(
+          "http://localhost:3082/save-score",
+          {
+            userId: userId,
+            score: runningAverageScore,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error("Error saving score:", error);
+        });
+    } else {
+      console.error("No token available.");
+    }
   };
+
   const currentFact = questions[currentIndex];
-  const currentQuestion = questions[currentIndex]?.title || "Loading..."; // Default to "Loading..." if questions aren't fetched yet
+  const currentQuestion = currentFact?.title || "Loading...";
   const currentQuestionDescription =
     currentFact?.description || "Fetching description...";
 
   return (
     <div className="quiz-container">
       <main className="quiz-content">
-        <span>Score: {score}</span>
+        <span>Score: {runningAverageScore.toFixed(1)}%</span>
         <p>{currentQuestion}</p>
         <p>{currentQuestionDescription}</p>
         <div className="options">

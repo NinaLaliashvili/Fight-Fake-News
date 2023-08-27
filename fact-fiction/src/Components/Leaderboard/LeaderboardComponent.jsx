@@ -1,24 +1,30 @@
 import React from "react";
 import "./LeaderboardComponent.css";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import { LoginContext } from "../../Context/AuthContext";
+import axios from "axios";
 
 const LeaderboardComponent = () => {
+  const { username } = useContext(LoginContext);
+  console.log(username);
+  const [leaderboardData, setLeaderboardData] = useState([]);
   const navigate = useNavigate();
-  // Sample data
-  const sampleLeaderboard = [
-    { name: "John Doe", score: 10 },
-    { name: "Jane Smith", score: 9 },
-    { name: "Alice", score: 8 },
-  ];
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3082/top-scores")
+      .then((response) => {
+        console.log(response.data);
+        setLeaderboardData(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching top scores:", error);
+      });
+  }, []);
 
   return (
     <div className="leaderboard-container">
-      {/* <header>
-        <h1>Leaderboard</h1>
-        <nav>
-          <button onClick={() => navigate("/")}>Home</button>
-        </nav>
-      </header> */}
       <main>
         <h2>Leaderboard</h2>
         <table>
@@ -29,9 +35,17 @@ const LeaderboardComponent = () => {
             </tr>
           </thead>
           <tbody>
-            {sampleLeaderboard.map((entry, index) => (
-              <tr key={index}>
-                <td>{entry.name}</td>
+            {leaderboardData.map((entry, index) => (
+              <tr
+                key={index}
+                className={
+                  `${entry.firstName} ${entry.lastName}`.trim() ===
+                  (username ? username.trim() : "")
+                    ? "current-user"
+                    : ""
+                }
+              >
+                <td>{`${entry.firstName} ${entry.lastName}`}</td>
                 <td>{entry.score}</td>
               </tr>
             ))}
