@@ -10,43 +10,33 @@
   }
 }
 
-.home-container {
-  padding: 1em;
+
+.hero {
+  display: flex;       
+  align-items: center;  
+  justify-content: space-between; 
+  width: 100vw;
+  padding: 2% 5%;
+  position: relative; 
 }
 
-.header {
-  background: linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
-  background-size: 600% 600%;
-  animation: gradientBackground 15s ease infinite;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-  height: 3em;
+.hero-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  z-index: 1;
 }
 
-.nav {
-  display: flex;
-  gap: 0.7rem;
+.hero-text {
+  width: 50%;
+  color: black;
+  text-align: left;
+  position: relative;
+  margin-right: -100%;
+  margin-top: -3%;
+  z-index: 2;
 }
 
-.nav button {
-  background-color: transparent;
-  color: white;
-  border: 2px solid white;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  border-radius: 25px;
-}
-
-.nav button:hover {
-  background-color: white;
-  color: #cb81d0;
-  transform: scale(1.1);
-}
 
 .brand-logo {
   font-size: 1.5rem;
@@ -64,6 +54,9 @@
   font-size: 1.1rem;
   font-weight: bold;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  position: absolute;
+  z-index: 3;
+  bottom: 100px;
 }
 
 .start-btn:hover {
@@ -75,7 +68,7 @@
   padding: 1rem;
   border-radius: 15px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
-  margin-top: 1rem;
+  margin: 1rem;
 }
 
 .fun-fact h3 {
@@ -88,9 +81,4 @@
   font-size: 1.1rem;
   line-height: 1.5;
 }
-.welcome {
-  font-family: "Poppins", sans-serif;
-  border: 2px solid #fcd4ef;
-  border-radius: 10px;
-  padding: 10px;
-}
+

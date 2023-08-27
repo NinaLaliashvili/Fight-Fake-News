@@ -2,23 +2,12 @@ import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../Context/AuthContext";
 import "./HomeComponent.css";
+import { SlideShow } from "../SlideShow/SlideShow";
 
 const HomeComponent = () => {
-  const { isLoggedIn, setLoginStatus } = useContext(LoginContext);
+  const { isLoggedIn } = useContext(LoginContext);
 
   const navigate = useNavigate();
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem("isLoggedIn");
-  //   localStorage.removeItem("userId");
-  //   localStorage.removeItem("token");
-  //   localStorage.removeItem("firstName");
-  //   localStorage.removeItem("lastName");
-
-  //   setLoginStatus(false, null, null);
-
-  //   navigate("/");
-  // };
 
   const firstName = localStorage.getItem("firstName");
   const lastName = localStorage.getItem("lastName");
@@ -36,43 +25,24 @@ const HomeComponent = () => {
 
   return (
     <div className="home-container">
-      {/* <header className="header">
-        <img
-          className="brand-logo"
-          src="https://cdn.factcheck.org/UploadedFiles/rwjf-icon-conspiracy-01-.png"
-          height="50"
-        />
-        <nav className="nav">
-          {isLoggedIn ? (
-            <>
-              <button onClick={handleLogout}>Logout</button>
-            </>
-          ) : (
-            <>
-              <button onClick={() => navigate("/login")}>Log In</button>
-              <button onClick={() => navigate("/register")}>Register</button>
-            </>
-          )}
-
-          <button onClick={() => navigate("/admin")}>Admin</button>
-          <button onClick={() => navigate("/leaderboard")}>Leaderboard</button>
-          <button onClick={() => navigate("/quiz")}>Quiz Page</button>
-          <button onClick={() => navigate("/results")}>Results</button>
-          <button onClick={() => navigate("/submit-fact")}>
-            Fact Submission
-          </button>
-        </nav>
-      </header> */}
-
       <main>
-        <h2 className="welcome">
-          {isLoggedIn
-            ? `Hey there, ${firstName} ${lastName}! 🌟 Ready to embark on another journey of myth-busting? Grab your detective hat and let's uncover some truths together! 🕵️‍♂️`
-            : `Welcome to Fact or Fiction Fun Quiz. Dive into a world where myths unravel and truths shine. Are you ready?`}
-        </h2>
-        <button className="start-btn" onClick={() => navigate("/quiz")}>
-          Start Game
-        </button>
+        <section className="hero">
+          <h2 className="hero-text">
+            {isLoggedIn
+              ? `Hey there, ${firstName} ${lastName}! 🌟
+             Ready to embark on another journey of myth-busting? Grab your detective hat and let's uncover some truths together! 🕵️‍♂️`
+              : `Welcome to Fact or Fiction Fun Quiz. Dive into a world where myths unravel and truths shine. Are you ready?`}
+          </h2>
+          <button className="start-btn" onClick={() => navigate("/quiz")}>
+            Start Game
+          </button>
+
+          <img
+            src="https://celiacfacts-onlinecourses.eu/pluginfile.php/955/mod_lesson/page_contents/259/F9U4_MythRealityHeaderENG.png"
+            alt="Fact vs Myth"
+            className="hero-image"
+          />
+        </section>
 
         <div className="fun-fact">
           <h3>Did you know?</h3>
@@ -84,6 +54,8 @@ const HomeComponent = () => {
             in!"
           </p>
         </div>
+
+        <SlideShow />
       </main>
     </div>
   );

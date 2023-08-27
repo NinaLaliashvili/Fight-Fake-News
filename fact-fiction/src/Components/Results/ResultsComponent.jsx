@@ -34,7 +34,7 @@ const ResultComponent = () => {
           <p>You need work! Get off TikTok! Read!</p>
         )}
         <button onClick={handlePlayAgain}>Play Again</button>
-        <button onClick={() => navigate("/")}>Return Home</button>
+        <button onClick={() => navigate("/leaderboard")}>See the Leaderboard</button>
         <a href="/submit-fact" className="userFact">
           Submit your own fact or fiction here!
         </a>
