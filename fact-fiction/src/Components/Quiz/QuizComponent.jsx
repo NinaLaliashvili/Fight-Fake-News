@@ -48,6 +48,7 @@ const QuizComponent = () => {
       handleSubmit();
       // navigate("/results");
       //perform the results work :)
+      //send result and username to server from here?
     }
     setSelectedOption(null); //reset the selected option for the next question
   };

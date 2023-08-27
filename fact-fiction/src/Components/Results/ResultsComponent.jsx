@@ -46,8 +46,7 @@ const ResultComponent = () => {
           <p>You need work! Get off TikTok! Read!</p>
         )}
         <h2>
-          Your Score: 1/2 - just forthe example, after mongo and server it will
-          be done, now it is hardcoded , take a look into{" "}
+          instructions for admins smileyy
           <a
             href="https://docs.google.com/document/d/1AFEvLqQ2tzKPoL60fnX5GIA75TtSsylmayK4SD6XWSI/edit"
             target="blank"
@@ -78,7 +77,9 @@ const ResultComponent = () => {
         </ul>
         <button onClick={() => navigate("/quiz")}>Play Again</button>
         <button onClick={() => navigate("/")}>Return Home</button>
-        <a href="/submit-fact">Submit your own fact or fiction</a>
+        <a href="/submit-fact" className="userFact">
+          Submit your own fact or fiction here!
+        </a>
       </main>
     </div>
   );
