@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../Context/AuthContext";
 import "./HomeComponent.css";
 import { SlideShow } from "../SlideShow/SlideShow";
-import { useSpring, animated } from "@react-spring/web";
+import { useSpring, animated, easings } from "@react-spring/web";
 
 import { ToastContainer, toast } from "react-toastify";
 
 const chart = require("./graph.png");
-
-const cow = "https://clipart-library.com/images/gTeEkLXxc.png";
+const cuteCow = require("./cow.png");
 const fox = "https://clipart-library.com/img/2100422.jpg";
 
 const HomeComponent = () => {
@@ -31,42 +30,52 @@ const HomeComponent = () => {
 
   const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
 
-  const springs = useSpring({
-    from: { y: -3, x: 0 },
-    to: async (next, cancel) => {
-      await next({ y: 5 });
-      await next({ y: 0 });
-      await next({ y: 8 });
-      await next({ y: -3 });
-    },
-    loop: true,
-  });
-
-  const springs2 = useSpring({
+  const springsSideToSide = useSpring({
     from: { y: 0, x: 0 },
     to: async (next, cancel) => {
-      await next({ x: 5 });
-      await next({ x: 0 });
-      await next({ x: -3 });
-      await next({ x: 0 });
+      await next({ x: 2 });
     },
     loop: true,
   });
 
-  const springs3 = useSpring({
+  const springsUpDown = useSpring({
+    from: { y: 0, x: 0 },
+    to: async (next, cancel) => {
+      await next({ y: 5 });
+      await next({ y: -2 });
+    },
+    loop: true,
+    config: {
+      tension: 170,
+      mass: 1,
+      friction: 30,
+      velocity: 0.1,
+      precision: 0.01,
+    },
+  });
+
+  const springsChase = useSpring({
     from: { y: 60, x: 0 },
     to: async (next, cancel) => {
       await next({ x: 20 });
       await next({ y: 0 });
-      await next({ x: 0 });
       await next({ y: 20 });
       await next({ x: 40 });
-      await next({ x: 0 });
+      await next({ y: 30, x: 20 });
     },
     loop: true,
+    config: {
+      tension: 130,
+      mass: 1,
+      friction: 20,
+      velocity: 0.85,
+      precision: 0.01,
+      frequency: 1,
+      round: 4,
+    },
   });
 
-  const springs4 = useSpring({
+  const springsSmallSquare = useSpring({
     from: { y: 0, x: 0 },
     to: async (next, cancel) => {
       await next({ x: 40 });
@@ -75,7 +84,15 @@ const HomeComponent = () => {
       await next({ y: 0 });
     },
     loop: true,
+    // config: {
+    //   tension: 80,
+    //   mass: 1.2,
+    //   friction: 20,
+    //   velocity: 0.3,
+    //   precision: 0.01,
+    // },
   });
+
   const notifyUserPlay = (message) => {
     toast.success(`${message}`, {
       position: toast.POSITION.TOP_RIGHT,
@@ -100,7 +117,7 @@ const HomeComponent = () => {
                   width: 22,
                   height: 23,
                   borderRadius: 4,
-                  ...springs2,
+                  ...springsSideToSide,
                 }}
               />
             </span>
@@ -131,13 +148,13 @@ const HomeComponent = () => {
             How much does all the bs{" "}
             <span>
               <animated.img
-                src={cow}
+                src={cuteCow}
                 alt="cow"
                 style={{
                   width: 60,
                   height: 60,
                   borderRadius: 4,
-                  ...springs,
+                  ...springsUpDown,
                 }}
                 onClick={() =>
                   notifyUserPlay(
@@ -175,7 +192,7 @@ const HomeComponent = () => {
                   width: 40,
                   height: 40,
                   borderRadius: 4,
-                  ...springs2,
+                  ...springsSideToSide,
                 }}
                 onClick={() =>
                   notifyUserPlay(
@@ -218,7 +235,15 @@ const HomeComponent = () => {
         <SlideShow />
         <div className="fun-fact">
           <h3>
-            Be foxy online! Here are the fake news culprits.. chase the truth!
+            Be foxy online! Here are the fake news culprits.. chase the truth!{" "}
+            <span>
+              <a
+                target="blank"
+                href="https://www.ipsos.com/en-us/news-polls/cigi-fake-news-global-epidemic"
+              >
+                Aaaand source..
+              </a>
+            </span>
           </h3>
           <div className="in-line">
             <animated.img
@@ -228,7 +253,7 @@ const HomeComponent = () => {
                 width: 400,
                 height: 300,
                 borderRadius: 8,
-                ...springs4,
+                ...springsSmallSquare,
               }}
               onClick={() =>
                 notifyUserPlay("you caught on! Now play our game!")
@@ -241,7 +266,7 @@ const HomeComponent = () => {
                 width: 100,
                 height: 100,
                 borderRadius: 4,
-                ...springs3,
+                ...springsChase,
               }}
               onClick={() =>
                 notifyUserPlay("okay foxy person! Now play our game!")

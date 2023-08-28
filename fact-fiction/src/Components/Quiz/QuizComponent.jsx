@@ -4,6 +4,9 @@ import axios from "axios";
 import "./QuizComponent.css";
 import { userScoreContext } from "../../Context/UserScoreContext";
 import { LoginContext } from "../../Context/AuthContext";
+import { useSpring, animated, easings } from "@react-spring/web";
+import { ToastContainer, toast } from "react-toastify";
+const cow = require("../Home/cow.png");
 
 const QuizComponent = () => {
   const { userId, token } = useContext(LoginContext);
@@ -34,11 +37,21 @@ const QuizComponent = () => {
       });
   }, []);
 
+  const notifyUserSelect = (message) => {
+    toast.error(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
   const handleOptionChange = (option) => {
     setSelectedOption(option);
   };
 
   const handleNext = () => {
+    if (!selectedOption) {
+      notifyUserSelect("must select an answer to continue the quest!");
+      return;
+    }
     let newNumOfCorrectAnswers = numOfCorrectAnswers;
     let newNumOfWrongAnswers = numOfWrongAnswers;
 
@@ -101,8 +114,31 @@ const QuizComponent = () => {
   const currentQuestionDescription =
     currentFact?.description || "Fetching description...";
 
+  const springsUpDown = useSpring({
+    from: { y: 0, x: 0 },
+    to: async (next, cancel) => {
+      await next({ y: 5 });
+      await next({ x: 5 });
+      await next({ y: 0 });
+      await next({ x: 10 });
+      await next({ y: 5 });
+      await next({ x: 15 });
+      await next({ x: 0 });
+    },
+    loop: true,
+    config: {
+      tension: 170,
+      mass: 1,
+      friction: 30,
+      velocity: 0.1,
+      precision: 0.01,
+    },
+  });
+
   return (
     <div className="quiz-container">
+      <ToastContainer theme="light" />
+
       <main className="quiz-content">
         <span>Score: {runningAverageScore.toFixed(1)}%</span>
         <p>{currentQuestion}</p>
@@ -126,6 +162,21 @@ const QuizComponent = () => {
             />
             Fiction
           </label>
+          <span>
+            <animated.img
+              src={cow}
+              alt="cow"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 4,
+                ...springsUpDown,
+              }}
+              onClick={() =>
+                notifyUserSelect("no bullshit plz u can't touch this")
+              }
+            />
+          </span>
         </div>
         <button onClick={handleNext}>Next</button>
         <div className="lifelines">
