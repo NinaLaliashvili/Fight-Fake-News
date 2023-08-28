@@ -3,6 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../Context/AuthContext";
 import "./HomeComponent.css";
 import { SlideShow } from "../SlideShow/SlideShow";
+import { useSpring, animated } from "@react-spring/web";
+
+import { ToastContainer, toast } from "react-toastify";
+
+const chart = require("./graph.png");
+
+const cow = "https://clipart-library.com/images/gTeEkLXxc.png";
+const fox = "https://clipart-library.com/img/2100422.jpg";
 
 const HomeComponent = () => {
   const { isLoggedIn } = useContext(LoginContext);
@@ -23,15 +31,79 @@ const HomeComponent = () => {
 
   const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
 
+  const springs = useSpring({
+    from: { y: -3, x: 0 },
+    to: async (next, cancel) => {
+      await next({ y: 5 });
+      await next({ y: 0 });
+      await next({ y: 8 });
+      await next({ y: -3 });
+    },
+    loop: true,
+  });
+
+  const springs2 = useSpring({
+    from: { y: 0, x: 0 },
+    to: async (next, cancel) => {
+      await next({ x: 5 });
+      await next({ x: 0 });
+      await next({ x: -3 });
+      await next({ x: 0 });
+    },
+    loop: true,
+  });
+
+  const springs3 = useSpring({
+    from: { y: 60, x: 0 },
+    to: async (next, cancel) => {
+      await next({ x: 20 });
+      await next({ y: 0 });
+      await next({ x: 0 });
+      await next({ y: 20 });
+      await next({ x: 40 });
+      await next({ x: 0 });
+    },
+    loop: true,
+  });
+
+  const springs4 = useSpring({
+    from: { y: 0, x: 0 },
+    to: async (next, cancel) => {
+      await next({ x: 40 });
+      await next({ y: -2 });
+      await next({ x: 0 });
+      await next({ y: 0 });
+    },
+    loop: true,
+  });
+  const notifyUserPlay = (message) => {
+    toast.success(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
   return (
     <div className="home-container">
+      <ToastContainer theme="light" />
       <main>
         <section className="hero">
           <h2 className="hero-text">
             {isLoggedIn
               ? `Hey there, ${firstName} ${lastName}! 🌟
-             Ready to embark on another journey of myth-busting? Grab your detective hat and let's uncover some truths together! 🕵️‍♂️`
-              : `Welcome to Fact or Fiction Fun Quiz. Dive into a world where myths unravel and truths shine. Are you ready?`}
+             Ready to embark on an information journey? Quest time! Grab your detective hat and let's uncover some truths together! 🕵️‍♂️`
+              : `Welcome to Fact or Fiction Fun Quiz. Dive into a world where myths unravel and truths shine. Are you ready?`}{" "}
+            <span>
+              <animated.img
+                src={fox}
+                alt="cow"
+                style={{
+                  width: 22,
+                  height: 23,
+                  borderRadius: 4,
+                  ...springs2,
+                }}
+              />
+            </span>
           </h2>
           <button className="start-btn" onClick={() => navigate("/quiz")}>
             Start Game
@@ -47,15 +119,136 @@ const HomeComponent = () => {
         <div className="fun-fact">
           <h3>Did you know?</h3>
           <p>
-            {randomFact} - Welcome to our corner, where interesting stories meet
-            the real facts. We've all come across surprising claims, some more
+            {randomFact} - Welcome to our corner, where false claims meet the
+            real facts. We've all come across surprising claims, some more
             believable than others. Curious about how well you can separate fact
-            from fiction? Try our quizzes and see for yourself. Intrigued? Dive
-            in!"
+            from fiction? See for yourself- dive in!
           </p>
         </div>
 
+        <div className="fun-fact">
+          <h3>
+            How much does all the bs{" "}
+            <span>
+              <animated.img
+                src={cow}
+                alt="cow"
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 4,
+                  ...springs,
+                }}
+                onClick={() =>
+                  notifyUserPlay(
+                    "heyyy yes that's bullsh*t! fake news sucks! play the game"
+                  )
+                }
+              />
+            </span>{" "}
+            fake news freaking suck?!{" "}
+          </h3>
+
+          <p>
+            Did you know that the very design of social media platforms is part
+            of the problem? The reward structure of social media itself is a big
+            contributor to the spread of fake news- helping fictitious claims
+            rise to the top! It's up to us to sharpen our skills since the
+            social media giants won't do anything to mitigate the issue.
+          </p>
+          <a
+            target="blank"
+            href="https://news.usc.edu/204782/usc-study-reveals-the-key-reason-why-fake-news-spreads-on-social-media/"
+          >
+            Source..
+          </a>
+        </div>
+
+        <div className="fun-fact">
+          <h3>
+            Fake news is everywhere...{" "}
+            <span>
+              <animated.img
+                src={fox}
+                alt="fox"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 4,
+                  ...springs2,
+                }}
+                onClick={() =>
+                  notifyUserPlay(
+                    "it's shocking isn't it? wanna be foxy like me? triangulate your sources!"
+                  )
+                }
+              />
+            </span>{" "}
+            Learn to be a foxy internet user!
+          </h3>
+          <p>
+            86% of global internet users have been exposed to fake news. Among
+            those users- nearly 90% have thought fake news was real at first- at
+            least once. That's a lot going around! And the barrage of fake news
+            is only expected to increase as new technologies become mainstream,
+            like generative AI. Even worse- people overestimate their ability to
+            identify fake news. The worse they are at spotting it, the more
+            likely they are to share it!
+          </p>
+          <a
+            target="blank"
+            href="https://www.statista.com/topics/3251/fake-news/#topicOverview"
+          >
+            Source..
+          </a>
+          <a
+            target="blank"
+            href="https://www.cnn.com/2021/05/31/health/fake-news-study/index.html"
+          >
+            And another source for good measure..
+          </a>
+          <a
+            target="blank"
+            href="https://www.ipsos.com/en-us/news-polls/cigi-fake-news-global-epidemic"
+          >
+            A third source: triangulate sources!
+          </a>
+        </div>
+
         <SlideShow />
+        <div className="fun-fact">
+          <h3>
+            Be foxy online! Here are the fake news culprits.. chase the truth!
+          </h3>
+          <div className="in-line">
+            <animated.img
+              src={chart}
+              alt="chart showing fake news disseminators"
+              style={{
+                width: 400,
+                height: 300,
+                borderRadius: 8,
+                ...springs4,
+              }}
+              onClick={() =>
+                notifyUserPlay("you caught on! Now play our game!")
+              }
+            />
+            <animated.img
+              src={fox}
+              alt="cow"
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 4,
+                ...springs3,
+              }}
+              onClick={() =>
+                notifyUserPlay("okay foxy person! Now play our game!")
+              }
+            />
+          </div>
+        </div>
       </main>
     </div>
   );
