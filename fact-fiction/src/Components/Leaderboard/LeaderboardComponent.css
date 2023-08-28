@@ -1,5 +1,19 @@
 .leaderboard-container {
   padding: 1em;
+  background: linear-gradient(120deg, #f093fb 0%, #f1d9dc 100%);
+  animation: Gradient 15s ease infinite;
+}
+
+@keyframes Gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 header {
@@ -40,7 +54,7 @@ table {
 table,
 th,
 td {
-  border: 2px solid #cb81d0;
+  border: 2px solid #000000;
   padding: 8px;
   text-align: left;
 }
@@ -52,4 +66,17 @@ th {
 
 tbody tr:hover {
   background-color: #fecfef;
+}
+button {
+  background-color: #219ebc;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #8ecae6;
 }

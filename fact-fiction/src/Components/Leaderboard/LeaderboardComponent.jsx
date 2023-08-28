@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./LeaderboardComponent.css";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
 import { LoginContext } from "../../Context/AuthContext";
-import { useSpring, animated, easings } from "@react-spring/web";
+import { useSpring, animated } from "@react-spring/web";
+import Confetti from "react-confetti";
 
 import axios from "axios";
 const cuteCow = require("../Home/cow.png");
@@ -11,10 +11,58 @@ const bat = require("../Home/bat.png");
 
 const LeaderboardComponent = () => {
   const { username } = useContext(LoginContext);
-  console.log(username);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [showCow, setShowCow] = useState(false);
+  const [showEasterEgg, setShowEasterEgg] = useState(false);
+  const [rotation, setRotation] = useSpring(() => ({
+    transform: "rotate(0deg)",
+  }));
+  const [runConfetti, setRunConfetti] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const togglePlayback = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  useEffect(() => {
+    const rotateBoard = () => {
+      setRotation({
+        transform: `rotate(${Math.random() * 6 - 3}deg)`, // Random rotation between -3 and 3 degrees
+        config: {
+          tension: 150,
+          friction: 12,
+        },
+      });
+
+      // Reset the rotation after 3 seconds
+      setTimeout(() => {
+        setRotation({
+          transform: "rotate(0deg)",
+          immediate: true,
+        });
+      }, 3000);
+    };
+
+    // Set an interval to rotate the board occasionally (e.g., every 10 seconds)
+    const rotationInterval = setInterval(rotateBoard, 1000);
+
+    return () => {
+      clearInterval(rotationInterval);
+    };
+  }, []);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if username is in leaderboard data
+    const isUserOnLeaderboard = leaderboardData.some(
+      (entry) =>
+        `${entry.firstName} ${entry.lastName}`.trim() ===
+        (username ? username.trim() : "")
+    );
+
+    setRunConfetti(isUserOnLeaderboard);
+  }, [leaderboardData, username]);
 
   const springsFly = useSpring({
     from: { y: 4, x: 0 },
@@ -37,7 +85,6 @@ const LeaderboardComponent = () => {
     axios
       .get("http://localhost:3082/top-scores")
       .then((response) => {
-        console.log(response.data);
         setLeaderboardData(response.data);
       })
       .catch((error) => {
@@ -47,11 +94,11 @@ const LeaderboardComponent = () => {
 
   return (
     <div className="leaderboard-container">
-      <main>
+      {runConfetti && <Confetti />}
+      <animated.main style={rotation}>
         <h2>
-          Leaderboard{" "}
+          Leaderboard
           <span>
-            {" "}
             <animated.img
               src={bat}
               alt="bat"
@@ -103,7 +150,39 @@ const LeaderboardComponent = () => {
             ))}
           </tbody>
         </table>
-      </main>
+      </animated.main>
+
+      <img
+        src={cuteCow}
+        alt="Hidden Cow"
+        style={{
+          width: "30px",
+          height: "30px",
+          opacity: 0.5,
+          position: "absolute",
+          top: "5%",
+          left: "30%",
+        }}
+        onClick={() => setShowEasterEgg(true)}
+      />
+
+      {showEasterEgg && (
+        <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+          }}
+        >
+          <p>Why did the cow go to space? To see the moooon!</p>
+          <button onClick={() => setShowEasterEgg(false)}>Close</button>
+        </div>
+      )}
     </div>
   );
 };
