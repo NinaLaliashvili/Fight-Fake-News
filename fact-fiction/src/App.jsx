@@ -16,6 +16,7 @@ import RegisterComponent from "./Components/Register/RegisterComponent";
 import { AdminView } from "./Components/Admin";
 import { useContext } from "react";
 import { LoginContext } from "./Context/AuthContext";
+import { SecretComponent } from "./Components/Secret/SecretComponent";
 import Navbar from "./Components/NavBar/NavBar";
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
           <Route path="login" element={<LogInComponent />}></Route>
           <Route path="register" element={<RegisterComponent />}></Route>
           <Route path="admin/*" element={<AdminView />}></Route>
+          <Route path="knowledge" element={<SecretComponent />}></Route>
         </Routes>
       </div>
     </div>
