@@ -389,6 +389,34 @@ app.get("/top-scores", async (req, res) => {
   }
 });
 
+//delete user from leaderboard api
+app.delete("/remove-user/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    await usersCollection.deleteOne({ _id: new ObjectId(userId) });
+    res.json({ message: "User successfully deleted." });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+//add user to leaderboard api
+app.post("/add-user", async (req, res) => {
+  const { firstName, lastName, score } = req.body;
+  try {
+    const result = await usersCollection.insertOne({
+      firstName,
+      lastName,
+      score,
+    });
+    res.json({ message: "User added successfully.", id: result.insertedId });
+  } catch (error) {
+    console.error("Error adding user:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
 const port = 3082;
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);

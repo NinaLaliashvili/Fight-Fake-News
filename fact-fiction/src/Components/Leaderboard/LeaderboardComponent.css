@@ -80,3 +80,41 @@ button {
 button:hover {
   background-color: #8ecae6;
 }
+
+.motivational-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #fedbff;
+  border-radius: 10px;
+}
+
+.motivational-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+blockquote {
+  margin: 0 1rem 0 0;
+  padding: 1rem 1rem;
+  border-left: 3px solid #cb81d0;
+  background-color: #ffc4f2;
+  font-style: italic;
+  font-size: 1.1rem;
+  flex: 1;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+.motivational-image {
+  width: 300px;
+  height: auto;
+  border-radius: 10px;
+}
+.motivational-image0 {
+  margin-right: 35%;
+}
+.bla {
+  font-weight: 600;
+}

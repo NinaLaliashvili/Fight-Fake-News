@@ -18,11 +18,6 @@ const LeaderboardComponent = () => {
     transform: "rotate(0deg)",
   }));
   const [runConfetti, setRunConfetti] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(true);
-
-  const togglePlayback = () => {
-    setIsPlaying(!isPlaying);
-  };
 
   useEffect(() => {
     const rotateBoard = () => {
@@ -183,6 +178,43 @@ const LeaderboardComponent = () => {
           <button onClick={() => setShowEasterEgg(false)}>Close</button>
         </div>
       )}
+      <div className="motivational-section">
+        <h3 className="bla">Thoughts that Propel: Your Daily Lift-off!</h3>
+        <div className="motivational-item">
+          <blockquote>
+            "Success is not final, failure is not fatal: It is the courage to
+            continue that counts." - Winston S. Churchill
+          </blockquote>
+          <img
+            src="https://cdn.dribbble.com/users/129972/screenshots/3964116/75_smile.gif"
+            alt="Motivational Pic 1"
+            className="motivational-image"
+          />
+        </div>
+        <div className="motivational-item">
+          <img
+            src="https://media.tenor.com/71T1E-HH6AsAAAAj/ton-ton-friends-lets-celebrate.gif"
+            alt="Motivational Pic 2"
+            className="motivational-image0"
+          />
+          <blockquote>
+            "Success is not the key to happiness. Happiness is the key to
+            success. If you love what you are doing, you will be successful."
+          </blockquote>
+        </div>
+        <div className="motivational-item">
+          <blockquote>
+            "Hardships often prepare ordinary people for an extraordinary
+            destiny." - C.S. Lewis
+          </blockquote>
+
+          <img
+            src="https://media.tenor.com/JMExTCl4NYIAAAAC/positive-positivity.gif"
+            alt="Motivational Pic 3"
+            className="motivational-image"
+          />
+        </div>
+      </div>
     </div>
   );
 };
