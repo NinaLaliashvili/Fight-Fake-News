@@ -232,7 +232,6 @@ const HomeComponent = () => {
           </a>
         </div>
 
-        <SlideShow />
         <div className="fun-fact">
           <h3>
             Be foxy online! Here are the fake news culprits.. chase the truth!{" "}
@@ -274,6 +273,8 @@ const HomeComponent = () => {
             />
           </div>
         </div>
+
+        <SlideShow />
       </main>
     </div>
   );

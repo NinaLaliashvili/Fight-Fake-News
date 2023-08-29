@@ -20,6 +20,7 @@ const QuizComponent = () => {
     setRunningAverageScore,
     userResults,
     setUserResults,
+    recordAnswer,
   } = useContext(userScoreContext);
 
   const [selectedOption, setSelectedOption] = useState(null);
@@ -59,8 +60,18 @@ const QuizComponent = () => {
 
     if (type === selectedOption) {
       newNumOfCorrectAnswers += 1;
+      recordAnswer(
+        `${currentFact.title} - ${currentFact.description}`,
+        selectedOption,
+        type
+      );
     } else {
       newNumOfWrongAnswers += 1;
+      recordAnswer(
+        `${currentFact.title} - ${currentFact.description}`,
+        selectedOption,
+        type
+      );
     }
 
     const totalQuestionsAnswered =
