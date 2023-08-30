@@ -115,6 +115,14 @@ const LeaderboardComponent = () => {
     });
   };
 
+  const guideUserToSecret = () => {
+    setShowLizard(false);
+    showUserFinalClue("hold onto your butts");
+    setTimeout(() => {
+      navigate("/knowledge");
+    }, 2000);
+  };
+
   return (
     <div className="leaderboard-container">
       {runConfetti && <Confetti />}
@@ -160,7 +168,7 @@ const LeaderboardComponent = () => {
                   borderRadius: 100,
                   ...springsCelebrate,
                 }}
-                onClick={() => setShowLizard(false)}
+                onClick={guideUserToSecret}
               />
             )}
           </span>
