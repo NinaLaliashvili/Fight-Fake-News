@@ -3,16 +3,23 @@ import "./LeaderboardComponent.css";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../Context/AuthContext";
 import { useSpring, animated } from "@react-spring/web";
+import { ToastContainer, toast } from "react-toastify";
 import Confetti from "react-confetti";
 
 import axios from "axios";
+import {
+  configFlyAnimation,
+  configBasicAnimation,
+} from "../../helpers/animations";
 const cuteCow = require("../Home/cow.png");
 const bat = require("../Home/bat.png");
+const lizard = require("../Home/lizard.png");
 
 const LeaderboardComponent = () => {
   const { username } = useContext(LoginContext);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [showCow, setShowCow] = useState(false);
+  const [showLizard, setShowLizard] = useState(false);
   const [showEasterEgg, setShowEasterEgg] = useState(false);
   const [rotation, setRotation] = useSpring(() => ({
     transform: "rotate(0deg)",
@@ -60,21 +67,36 @@ const LeaderboardComponent = () => {
   }, [leaderboardData, username]);
 
   const springsFly = useSpring({
-    from: { y: 4, x: 0 },
+    from: { y: 2, x: 0 },
     to: async (next, cancel) => {
-      await next({ y: 2 });
       await next({ y: -2, x: 2 });
-      await next({ y: 0 });
     },
     loop: true,
-    config: {
-      tension: 80,
-      mass: 1,
-      friction: 25,
-      velocity: 0.1,
-      precision: 0.01,
-    },
+    config: configFlyAnimation,
   });
+
+  const springsCelebrate = useSpring({
+    from: { x: 0, y: 0 },
+    to: async (next, cancel) => {
+      await next({ x: 50, y: 30 });
+      await next({ x: 100, y: -30 });
+      await next({ x: 150, y: 0 });
+      await next({ x: 200, y: -30 });
+      await next({ x: 250, y: -10 });
+      await next({ x: 300, y: -40 });
+      await next({ x: 150, y: 0 });
+      await next({ x: 0, y: -10 });
+    },
+    loop: true,
+    config: configBasicAnimation,
+  });
+
+  const revealLizard = () => {
+    setShowLizard(true);
+    showUserFinalClue(
+      "the seas are rising globally along with global sea temperature. It's a hot mess. But for your final clue let the truth reveal from la sea in french"
+    );
+  };
 
   useEffect(() => {
     axios
@@ -87,9 +109,16 @@ const LeaderboardComponent = () => {
       });
   }, []);
 
+  const showUserFinalClue = (message) => {
+    toast.success(`${message}`, {
+      position: toast.POSITION.TOP_CENTER,
+    });
+  };
+
   return (
     <div className="leaderboard-container">
       {runConfetti && <Confetti />}
+      <ToastContainer theme="dark" />
       <animated.main style={rotation}>
         <h2>
           Leaderboard
@@ -120,6 +149,21 @@ const LeaderboardComponent = () => {
               />
             )}
           </span>
+          <span>
+            {showLizard && (
+              <animated.img
+                src={lizard}
+                alt="lizard"
+                style={{
+                  width: 200,
+                  height: 180,
+                  borderRadius: 100,
+                  ...springsCelebrate,
+                }}
+                onClick={() => setShowLizard(false)}
+              />
+            )}
+          </span>
         </h2>
         <table>
           <thead>
@@ -138,6 +182,7 @@ const LeaderboardComponent = () => {
                     ? "current-user"
                     : ""
                 }
+                onClick={revealLizard}
               >
                 <td>{`${entry.firstName} ${entry.lastName}`}</td>
                 <td>{entry.score.toFixed(1)}</td>

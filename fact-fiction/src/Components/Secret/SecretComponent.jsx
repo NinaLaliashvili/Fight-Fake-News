@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useSpring, animated } from "@react-spring/web";
+import {
+  configBasicAnimation,
+  configDanceAnimation,
+} from "../../helpers/animations";
 
 import "./SecretComponent.css";
 const cuteCow = require("../Home/cow.png");
@@ -47,55 +51,14 @@ export const SecretComponent = () => {
     });
   };
 
-  const springsRun = useSpring({
-    from: { y: 0, x: 0 },
-    to: async (next, cancel) => {
-      await next({ x: 5 });
-      await next({ x: 7 });
-      await next({ x: -5 });
-      await next({ y: 0, x: 5 });
-      await next({ y: 5 });
-      await next({ y: 7 });
-      await next({ y: -5 });
-      await next({ y: 5 });
-    },
-    loop: true,
-    config: {
-      tension: 170,
-      mass: 1,
-      friction: 25,
-      velocity: 0.3,
-      precision: 0.01,
-    },
-  });
-  const springsWalk = useSpring({
-    from: { y: 0, x: 0 },
-    to: async (next, cancel) => {
-      await next({ x: 5 });
-      await next({ x: 7 });
-      await next({ x: 10 });
-      await next({ x: 8 });
-      await next({ y: 5 });
-      await next({ y: 0 });
-    },
-    loop: false,
-    config: {
-      tension: 170,
-      mass: 1,
-      friction: 25,
-      velocity: 0.3,
-      precision: 0.01,
-    },
-  });
-
   const handleShowAnswers = () => {
     if (showAnswers) {
       notifyUserError(
         "If you leave the cave of secrets... remember the password lol- or quest again!"
       );
+      setUserSolvedQuiz(false);
     }
     setShowAnswers(!showAnswers);
-    setUserSolvedQuiz(false);
   };
 
   const checkUserInput = () => {
@@ -109,9 +72,31 @@ export const SecretComponent = () => {
       notifyUserError(
         "incorrect password... look closely and don't forget to find the clues! Hint... things that move and look cute!"
       );
-      setUserSolvedQuiz(false);
     }
   };
+
+  const springsJump = useSpring({
+    from: { y: 0, x: 0 },
+    to: async (next, cancel) => {
+      await next({ y: 10 });
+      await next({ y: 0 });
+      await next({ y: 8 });
+      await next({ y: 0 });
+    },
+    loop: false,
+    config: configBasicAnimation,
+  });
+
+  const springsRun = useSpring({
+    from: { y: 0, x: 0 },
+    to: async (next, cancel) => {
+      await next({ y: 10 });
+      await next({ y: 0 });
+      await next({ x: 3, y: 4 });
+    },
+    loop: true,
+    config: configDanceAnimation,
+  });
   return (
     <div>
       <ToastContainer theme="colored" />
@@ -188,7 +173,7 @@ export const SecretComponent = () => {
                           height: 60,
                           borderRadius: 100,
 
-                          ...springsWalk,
+                          ...springsJump,
                         }}
                         onClick={showHideTreat}
                       />

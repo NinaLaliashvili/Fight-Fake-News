@@ -6,6 +6,7 @@ import { userScoreContext } from "../../Context/UserScoreContext";
 import { LoginContext } from "../../Context/AuthContext";
 import { useSpring, animated, easings } from "@react-spring/web";
 import { ToastContainer, toast } from "react-toastify";
+import { configBasicAnimation } from "../../helpers/animations";
 const cow = require("../Home/cow.png");
 
 const QuizComponent = () => {
@@ -137,13 +138,7 @@ const QuizComponent = () => {
       await next({ x: 0 });
     },
     loop: true,
-    config: {
-      tension: 170,
-      mass: 1,
-      friction: 30,
-      velocity: 0.1,
-      precision: 0.01,
-    },
+    config: configBasicAnimation,
   });
 
   return (
@@ -184,7 +179,9 @@ const QuizComponent = () => {
                 ...springsUpDown,
               }}
               onClick={() =>
-                notifyUserSelect("no bullshit plz u can't touch this")
+                notifyUserSelect(
+                  "no bullshit plz u can't touch this; knowledge comes in three's so where are you going 'to'? think literally"
+                )
               }
             />
           </span>

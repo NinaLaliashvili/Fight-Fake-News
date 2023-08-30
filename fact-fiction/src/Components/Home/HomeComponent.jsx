@@ -4,7 +4,11 @@ import { LoginContext } from "../../Context/AuthContext";
 import "./HomeComponent.css";
 import { SlideShow } from "../SlideShow/SlideShow";
 import { useSpring, animated, easings } from "@react-spring/web";
-
+import {
+  configBasicAnimation,
+  configDanceAnimation,
+  configFlyAnimation,
+} from "../../helpers/animations";
 import { ToastContainer, toast } from "react-toastify";
 
 const chart = require("./graph.png");
@@ -33,9 +37,11 @@ const HomeComponent = () => {
   const springsSideToSide = useSpring({
     from: { y: 0, x: 0 },
     to: async (next, cancel) => {
-      await next({ x: 2 });
+      await next({ x: 4, y: 2 });
+      await next({ x: -4, y: -2 });
     },
     loop: true,
+    config: configFlyAnimation,
   });
 
   const springsUpDown = useSpring({
@@ -45,13 +51,7 @@ const HomeComponent = () => {
       await next({ y: -2 });
     },
     loop: true,
-    config: {
-      tension: 170,
-      mass: 1,
-      friction: 30,
-      velocity: 0.1,
-      precision: 0.01,
-    },
+    config: configBasicAnimation,
   });
 
   const springsChase = useSpring({
@@ -64,15 +64,7 @@ const HomeComponent = () => {
       await next({ y: 30, x: 20 });
     },
     loop: true,
-    config: {
-      tension: 130,
-      mass: 1,
-      friction: 20,
-      velocity: 0.85,
-      precision: 0.01,
-      frequency: 1,
-      round: 4,
-    },
+    config: configDanceAnimation,
   });
 
   const springsSmallSquare = useSpring({
@@ -84,13 +76,7 @@ const HomeComponent = () => {
       await next({ y: 0 });
     },
     loop: true,
-    // config: {
-    //   tension: 80,
-    //   mass: 1.2,
-    //   friction: 20,
-    //   velocity: 0.3,
-    //   precision: 0.01,
-    // },
+    config: configBasicAnimation,
   });
 
   const notifyUserPlay = (message) => {
@@ -158,7 +144,7 @@ const HomeComponent = () => {
                 }}
                 onClick={() =>
                   notifyUserPlay(
-                    "heyyy yes that's bullsh*t! fake news sucks! play the game"
+                    "heyyy yes that's bullsh*t! fake news sucks! Curious for the truth? Take a letter! h"
                   )
                 }
               />
@@ -255,7 +241,9 @@ const HomeComponent = () => {
                 ...springsSmallSquare,
               }}
               onClick={() =>
-                notifyUserPlay("you caught on! Now play our game!")
+                notifyUserPlay(
+                  "you caught on! Now play our game! And for when you want to reveal a mystery... step two is remember, aha"
+                )
               }
             />
             <animated.img
