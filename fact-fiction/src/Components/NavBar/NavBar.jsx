@@ -18,6 +18,7 @@ const Navbar = () => {
     "/quiz": "Quiz Page",
     "/results": "Results",
     "/submit-fact": "Fact Submission",
+    "/usersetting": "User Setting",
   };
 
   const currentPageName = pageName[location.pathname] || "";
@@ -51,6 +52,9 @@ const Navbar = () => {
           {isLoggedIn ? (
             <>
               <button onClick={handleLogout}>Logout</button>
+              <button onClick={() => navigate("/usersetting")}>
+                user Setting
+              </button>
             </>
           ) : (
             <>
@@ -61,7 +65,7 @@ const Navbar = () => {
           <button onClick={() => navigate("/")}>Home</button>
           <button onClick={() => navigate("/admin")}>Admin</button>
           <button onClick={() => navigate("/quiz")}>Quiz Page</button>
-          <button onClick={() => navigate("/results")}>Results</button>          
+          <button onClick={() => navigate("/results")}>Results</button>
           <button onClick={() => navigate("/leaderboard")}>Leaderboard</button>
           <button onClick={() => navigate("/submit-fact")}>
             Fact Submission

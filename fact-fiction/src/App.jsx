@@ -18,6 +18,7 @@ import { useContext } from "react";
 import { LoginContext } from "./Context/AuthContext";
 import { SecretComponent } from "./Components/Secret/SecretComponent";
 import Navbar from "./Components/NavBar/NavBar";
+import UserSetting from "./Components/UserSetting/UserSetting";
 
 function App() {
   const { isLoggedIn, logout } = useContext(LoginContext);
@@ -31,6 +32,7 @@ function App() {
       <NavLink to="submit-fact"></NavLink>
       <NavLink to="login"></NavLink>
       <NavLink to="register"></NavLink>
+      <NavLink to="usersetting"></NavLink>
       <NavLink to="admin"></NavLink>
       <div className="routes">
         <Routes>
@@ -41,6 +43,7 @@ function App() {
           <Route path="submit-fact" element={<SubmitFactComponent />}></Route>
           <Route path="login" element={<LogInComponent />}></Route>
           <Route path="register" element={<RegisterComponent />}></Route>
+          <Route path="usersetting" element={<UserSetting />}></Route>
           <Route path="admin/*" element={<AdminView />}></Route>
           <Route path="knowledge" element={<SecretComponent />}></Route>
         </Routes>

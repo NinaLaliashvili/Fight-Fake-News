@@ -105,6 +105,29 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 
+app.put("/user/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { email, firstName, lastName, phone } = req.body;
+
+    if (!email || !firstName || !lastName || !phone) {
+      return res
+        .status(400)
+        .send("Please provide email, firstName, lastName and phone.");
+    }
+
+    await usersCollection.updateOne(
+      { _id: new ObjectId(userId) }, // Only update approved facts
+      { $set: { email, firstName, lastName, phone } }
+    );
+
+    res.json({ message: "User updated successfully." });
+  } catch (error) {
+    console.error("Error updating user info:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
 //Sign up users api
 app.post("/signup", async (req, res) => {
   console.log("Received signup data:", req.body);
