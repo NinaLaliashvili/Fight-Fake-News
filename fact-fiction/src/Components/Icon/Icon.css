@@ -1,0 +1,12 @@
+.Icon {
+    font-size: 20px;
+}
+
+.Icon[data-clickable]:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.Icon[data-clickable]:active {
+    opacity: 0.9;
+}

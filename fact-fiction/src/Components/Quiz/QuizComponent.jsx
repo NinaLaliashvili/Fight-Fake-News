@@ -4,7 +4,7 @@ import axios from "axios";
 import "./QuizComponent.css";
 import { userScoreContext } from "../../Context/UserScoreContext";
 import { LoginContext } from "../../Context/AuthContext";
-import { useSpring, animated, easings } from "@react-spring/web";
+import { useSpring, animated } from "@react-spring/web";
 import { ToastContainer, toast } from "react-toastify";
 import { configBasicAnimation } from "../../helpers/animations";
 const cow = require("../Home/cow.png");
@@ -19,7 +19,6 @@ const QuizComponent = () => {
     setNumOfWrongAnswers,
     runningAverageScore,
     setRunningAverageScore,
-    userResults,
     setUserResults,
     recordAnswer,
   } = useContext(userScoreContext);

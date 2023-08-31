@@ -5,12 +5,12 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
 import { ToastContainer, toast } from "react-toastify";
+import { Icon } from "../../Icon/Icon";
 
 export const FactFictionView = () => {
   const [approvedFacts, setApprovedFacts] = useState([]);
   const [unapprovedFacts, setUnapprovedFacts] = useState([]);
-  const [type, setType] = useState("");
-  const [factsArray, setFactsArray] = useState([]);
+  const [type, setType] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [values, setValues] = useState({
@@ -19,6 +19,11 @@ export const FactFictionView = () => {
     sourceLink: "",
   });
   const [itemId, setItemId] = useState(null);
+  const [toggle, setToggle] = useState(true);
+
+  const handleToggleClick = () => {
+    setToggle(!toggle);
+  };
 
   const loadFacts = () => {
     axios
@@ -127,11 +132,10 @@ export const FactFictionView = () => {
   };
 
   const handleSearch = () => {
-    console.log("hi");
     console.log(type.label);
     try {
       const filteredFacts = approvedFacts.filter(
-        (fact) => fact.type == type.label
+        (fact) => fact.type === type.label
       );
       console.log(filteredFacts);
       if (filteredFacts) {
@@ -162,7 +166,7 @@ export const FactFictionView = () => {
   };
 
   return (
-    <div>
+    <div className="facts-approving-container">
       <ToastContainer theme="light" />
       <h1>Search By Fact or Fiction...</h1>
       <div className="column">
@@ -170,13 +174,10 @@ export const FactFictionView = () => {
           value={type}
           options={types}
           placeholder="Select fact or fiction..."
-          // onChange={(option) => setType(option.value)} // Fix the onChange
-          //react select just needs to use state to set value :)
-          onChange={setType}
+           onChange={(option ) => setType(option || null)}
           isClearable={true}
         />
-
-        <button onClick={handleSearch}>Search</button>
+         {isSearching && <button onClick={clearSearch}>Clear Search...</button>}
 
         {searchResults.map((fact) => (
           <div key={fact._id} className="fact-item">
@@ -188,66 +189,95 @@ export const FactFictionView = () => {
             <button onClick={() => handleEdit(fact._id)}>Edit</button>
           </div>
         ))}
-        {isSearching && <button onClick={clearSearch}>Clear Search...</button>}
+       
       </div>
-      <div>
-        <h2>Unapproved Facts</h2>
-        {unapprovedFacts.map((fact) => (
-          <div key={fact._id} className="fact-item">
-            <h2>{fact.title}</h2>
-            <p>{fact.description}</p>
-            <a href={fact.sourceLink} target="_blank" rel="noopener noreferrer">
-              Source
-            </a>
-            <button onClick={() => handleApproval(fact._id, true)}>
-              Approve
-            </button>
-            <button onClick={() => handleRejection(fact._id)}>Reject</button>
-          </div>
-        ))}
-      </div>
-      <div>
+
+      <button onClick={handleSearch}>Search</button>
+
+      <div className="approved-unapproved-title">
+        <h2>Unapproved Facts</h2>{" "}
+        <Icon
+          i={toggle ? "toggle_on" : "toggle_off"}
+          onClick={handleToggleClick}
+          className="toggle-icon"
+        />
         <h2>Approved Facts</h2>
-        {approvedFacts.length > 0 && (
+      </div>
+
+      <div className="displaying-facts">
+        {toggle ? (
           <div>
-            <input
-              type="text"
-              value={values.title}
-              onChange={(e) => setValues({ ...values, title: e.target.value })}
-              placeholder="title.."
-            />
+            {approvedFacts.length > 0 && (
+              <div className="approved-inputs">
+                <input
+                  type="text"
+                  value={values.title}
+                  onChange={(e) =>
+                    setValues({ ...values, title: e.target.value })
+                  }
+                  placeholder="title.."
+                />
 
-            <input
-              type="text"
-              value={values.description}
-              onChange={(e) =>
-                setValues({ ...values, description: e.target.value })
-              }
-              placeholder="description..."
-            />
+                <input
+                  type="text"
+                  value={values.description}
+                  onChange={(e) =>
+                    setValues({ ...values, description: e.target.value })
+                  }
+                  placeholder="description..."
+                />
 
-            <input
-              type="text"
-              value={values.sourceLink}
-              onChange={(e) =>
-                setValues({ ...values, sourceLink: e.target.value })
-              }
-              placeholder="source..."
-            />
-            <button onClick={handleSave}>Save</button>
-            {itemId && <h3 onClick={clearInputs}>Cancel</h3>}
+                <input
+                  type="text"
+                  value={values.sourceLink}
+                  onChange={(e) =>
+                    setValues({ ...values, sourceLink: e.target.value })
+                  }
+                  placeholder="source..."
+                />
+                <button onClick={handleSave}>Save</button>
+                {itemId && <h3 onClick={clearInputs}>Cancel</h3>}
+              </div>
+            )}
+
+            {approvedFacts.map((fact) => (
+              <div key={fact._id} className="fact-item">
+                <h2>{fact.title}</h2>
+                <p>{fact.description}</p>
+                <a
+                  href={fact.sourceLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Source
+                </a>
+                <button onClick={() => handleEdit(fact._id)}>Edit</button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div>
+            {unapprovedFacts.map((fact) => (
+              <div key={fact._id} className="fact-item">
+                <h2>{fact.title}</h2>
+                <p>{fact.description}</p>
+                <a
+                  href={fact.sourceLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Source
+                </a>
+                <button onClick={() => handleApproval(fact._id, true)}>
+                  Approve
+                </button>
+                <button onClick={() => handleRejection(fact._id)}>
+                  Reject
+                </button>
+              </div>
+            ))}
           </div>
         )}
-        {approvedFacts.map((fact) => (
-          <div key={fact._id} className="fact-item">
-            <h2>{fact.title}</h2>
-            <p>{fact.description}</p>
-            <a href={fact.sourceLink} target="_blank" rel="noopener noreferrer">
-              Source
-            </a>
-            <button onClick={() => handleEdit(fact._id)}>Edit</button>
-          </div>
-        ))}
       </div>
     </div>
   );

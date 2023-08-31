@@ -8,7 +8,9 @@ import "./index.css";
 export const AdminView = () => {
   return (
     <div className="admin-container">
+      
       <h1>Admin View</h1>
+      <div className="admin-nav-buttons">
       <NavLink to="users" className="admin-navlink">
         Users
       </NavLink>
@@ -18,6 +20,8 @@ export const AdminView = () => {
       <NavLink to="leaderboardadmin" className="admin-navlink">
         Leaderboard
       </NavLink>
+      </div>
+    
 
       <Routes>
         <Route path="/users" element={<UsersView />} />
