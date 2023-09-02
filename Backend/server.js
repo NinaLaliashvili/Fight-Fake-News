@@ -8,6 +8,16 @@ const path = require("path");
 const jwt = require("jsonwebtoken");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const { ObjectId } = require("mongodb");
+const http = require("http");
+const socketIo = require("socket.io");
+
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 
 //connection with mongo db
 const uri = process.env.MONGODB_URI;
@@ -22,6 +32,8 @@ const client = new MongoClient(uri, {
 //my collection
 let usersCollection;
 let factsCollection;
+let gameSessionsCollection;
+let multiplayerScoresCollection;
 
 async function run() {
   try {
@@ -30,6 +42,12 @@ async function run() {
     console.log("You successfully connected to MongoDB!");
     usersCollection = client.db("factsorfictions").collection("users");
     factsCollection = client.db("factsorfictions").collection("facts");
+    gameSessionsCollection = client
+      .db("factsorfictions")
+      .collection("GameSessions");
+    multiplayerScoresCollection = client
+      .db("factsorfictions")
+      .collection("MultiplayerScores");
   } catch (error) {
     console.error(error);
     process.exit(1);
@@ -64,6 +82,158 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
+let rooms = {};
+let matchmakingQueue = [];
+
+function findOpponentInRoom(roomId, currentSocketId) {
+  const playersInRoom = rooms[roomId];
+
+  if (!playersInRoom) return null;
+
+  const socketIds = Object.keys(playersInRoom);
+
+  if (socketIds.length < 2) return null; // Not enough players for a match
+
+  // Find the first opponent that is not the current player
+  const opponentSocketId = socketIds.find((id) => id !== currentSocketId);
+
+  if (!opponentSocketId) return null;
+
+  return {
+    id: opponentSocketId,
+  };
+}
+
+io.on("connection", (socket) => {
+  console.log("New client connected");
+
+  socket.on("joinRoom", async (roomId) => {
+    socket.join(roomId);
+
+    socket.emit("status", "Looking for a match...");
+
+    socket.on("leaveRoom", (roomId) => {
+      socket.leave(roomId);
+
+      // Remove player from rooms object
+      if (rooms[roomId] && rooms[roomId][socket.id]) {
+        delete rooms[roomId][socket.id];
+      }
+
+      // Broadcast to other user in the room that this user has disconnected
+      socket.to(roomId).emit("opponentDisconnected");
+    });
+
+    if (!rooms[roomId]) rooms[roomId] = {};
+    rooms[roomId][socket.id] = 0; // initialize player score
+    const gameSession = await gameSessionsCollection.findOne({ roomId });
+    if (gameSession) {
+      socket.join(roomId);
+      rooms[roomId] = gameSession; // Load game session from MongoDB
+    } else {
+      // erroorrrrrrorro
+    }
+    const opponent = findOpponentInRoom(roomId, socket.id);
+    if (opponent) {
+      // Notify both players that a match has been found
+      socket.emit("matchFound", { opponentName: opponent.name });
+      io.to(opponent.id).emit("matchFound", { opponentName: socket.name });
+    }
+  });
+
+  socket.on("sendScore", async (data) => {
+    rooms[data.roomId][socket.id] = data.score; // update player score
+    io.to(data.roomId).emit("updateScores", rooms[data.roomId]); // broadcast new scores
+    const { roomId, playerId, score } = data;
+    if (rooms[roomId]) {
+      // Update score in MongoDB
+      await multiplayerScoresCollection.insertOne({
+        gameId: roomId,
+        playerId,
+        score,
+        createdAt: new Date(),
+      });
+
+      // Update game session in MongoDB
+      const fieldToUpdate =
+        playerId === rooms[roomId].player1 ? "player1Score" : "player2Score";
+      await gameSessionsCollection.updateOne(
+        { roomId },
+        { $set: { [fieldToUpdate]: score } }
+      );
+
+      io.to(roomId).emit("updateScores", rooms[roomId]); // Broadcast new scores
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+
+  // Enter Matchmaking Event
+  socket.on("enterMatch", async (userId) => {
+    if (!userId) {
+      return socket.emit("error", "UserId is required");
+    }
+
+    if (matchmakingQueue.some((e) => e.userId === userId)) {
+      return socket.emit("error", "You're already in the queue.");
+    }
+
+    matchmakingQueue.push({ userId, socketId: socket.id });
+
+    if (matchmakingQueue.length >= 2) {
+      let player1 = matchmakingQueue[0];
+      let player2 = matchmakingQueue[1];
+
+      if (player1.userId === player2.userId) {
+        return socket.emit("waiting", "Waiting for a match...");
+      }
+
+      matchmakingQueue = matchmakingQueue.slice(2);
+
+      const uniqueRoomId = new ObjectId().toHexString();
+      const questions = [];
+
+      await gameSessionsCollection.insertOne({
+        roomId: uniqueRoomId,
+        player1: player1.userId,
+        player2: player2.userId,
+        questions,
+        currentQuestion: 0,
+        player1Score: 0,
+        player2Score: 0,
+        status: "active",
+        createdAt: new Date(),
+        endedAt: null,
+      });
+
+      let player1Name = await usersCollection.findOne({
+        _id: new ObjectId(player1.userId),
+      });
+      let player2Name = await usersCollection.findOne({
+        _id: new ObjectId(player2.userId),
+      });
+
+      io.to(player1.socketId).emit("matchFound", {
+        message: "Match found!",
+        roomId: uniqueRoomId,
+        opponentName: player2Name.name,
+        opponentId: player2.userId,
+      });
+
+      io.to(player2.socketId).emit("matchFound", {
+        message: "Match found!",
+        roomId: uniqueRoomId,
+        opponentName: player1Name.name,
+        opponentId: player1.userId,
+      });
+    } else {
+      socket.emit("waiting", "Waiting for a match...");
+    }
+  });
+});
 
 // -------------------------- Start Server Side----------------------------
 
@@ -440,7 +610,122 @@ app.post("/add-user", async (req, res) => {
   }
 });
 
+// game=====================================================
+// Create a new game session
+app.post("/startGame", async (req, res) => {
+  const { player1, player2, questions } = req.body;
+  const uniqueRoomId = new ObjectId().toHexString();
+  try {
+    const result = await gameSessionsCollection.insertOne({
+      roomId: uniqueRoomId,
+      player1,
+      player2,
+      questions,
+      currentQuestion: 0,
+      player1Score: 0,
+      player2Score: 0,
+      status: "active",
+      createdAt: new Date(),
+      endedAt: null,
+    });
+    res.json({
+      message: "Game session created successfully.",
+      id: result.insertedId,
+      roomId: uniqueRoomId,
+    });
+  } catch (error) {
+    console.error("Error creating game session:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+// Add multiplayer score
+app.post("/updateScore", async (req, res) => {
+  const { gameId, playerId, score } = req.body;
+  try {
+    const result = await multiplayerScoresCollection.updateOne(
+      { gameId, playerId },
+      { $set: { score, updatedAt: new Date() } },
+      { upsert: true }
+    );
+    res.json({ message: "Score updated successfully.", id: result.insertedId });
+  } catch (error) {
+    console.error("Error updating score:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+// app.post("/enterMatch", async (req, res) => {
+//   const { userId } = req.body;
+
+//   if (!userId) {
+//     return res.status(400).json({ message: "UserId is required" });
+//   }
+
+//   // Check if the user is already in the queue
+//   if (matchmakingQueue.includes(userId)) {
+//     return res.status(400).json({ message: "You're already in the queue." });
+//   }
+
+//   // Add the user to the queue
+//   matchmakingQueue.push(userId);
+
+//   if (matchmakingQueue.length >= 2) {
+//     // Dequeue two users to start a new game
+//     let player1 = matchmakingQueue[0];
+//     let player2 = matchmakingQueue[1];
+
+//     if (player1 === player2) {
+//       // Same person; not a valid match
+//       return res.json({ message: "Waiting for a match..." });
+//     }
+
+//     // Remove players from queue
+//     matchmakingQueue = matchmakingQueue.slice(2);
+
+//     // Generate a unique room ID like you do in /startGame
+//     const uniqueRoomId = new ObjectId().toHexString();
+
+//     // Initialize game session etc., similar to what you do in /startGame
+//     const questions = []; // Populate this as needed
+//     await gameSessionsCollection.insertOne({
+//       roomId: uniqueRoomId,
+//       player1,
+//       player2,
+//       questions,
+//       currentQuestion: 0,
+//       player1Score: 0,
+//       player2Score: 0,
+//       status: "active",
+//       createdAt: new Date(),
+//       endedAt: null,
+//     });
+
+//     // Fetch names of the players (if you store them in your DB)
+//     let player1Name = await usersCollection.findOne({
+//       _id: new ObjectId(player1),
+//     });
+//     let player2Name = await usersCollection.findOne({
+//       _id: new ObjectId(player2),
+//     });
+
+//     console.log("Player 1:", player1Name);
+//     console.log("Player 2:", player2Name);
+
+//     // Notify the clients
+//     return res.json({
+//       message: `Match found!`,
+//       roomId: uniqueRoomId,
+//       opponentName: player1 === userId ? player2Name.name : player1Name.name,
+//       opponentId: player1 === userId ? player2 : player1,
+//     });
+//   } else {
+//     // No match found yet, leave the user in the queue
+//     return res.json({ message: "Waiting for a match..." });
+//   }
+// });
+
 const port = 3082;
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
