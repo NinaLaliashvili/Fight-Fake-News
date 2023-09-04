@@ -250,7 +250,10 @@ export const FactFictionView = () => {
             <a href={fact.sourceLink} target="_blank" rel="noopener noreferrer">
               Source
             </a>
-            <img src={fact.imgLink} />
+            <img
+              src={fact.imgLink}
+              alt={`image about this fact, ${fact.title}`}
+            />
             <button onClick={() => handleEdit(fact._id)}>Edit</button>
           </div>
         ))}
@@ -340,7 +343,10 @@ export const FactFictionView = () => {
                 >
                   Source
                 </a>
-                <img src={fact.imgLink} />
+                <img
+                  src={fact.imgLink}
+                  alt={`image about this fact, ${fact.title}`}
+                />
                 <button onClick={() => handleEdit(fact._id)}>Edit</button>
               </div>
             ))}
@@ -358,7 +364,10 @@ export const FactFictionView = () => {
                 >
                   Source
                 </a>
-                <img src={fact.imgLink} />
+                <img
+                  src={fact.imgLink}
+                  alt={`image about this fact, ${fact.title}`}
+                />
                 <button onClick={() => handleApproval(fact._id, true)}>
                   Approve
                 </button>

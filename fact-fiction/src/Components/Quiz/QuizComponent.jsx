@@ -124,6 +124,7 @@ const QuizComponent = () => {
   const currentQuestion = currentFact?.title || "Loading...";
   const currentQuestionDescription =
     currentFact?.description || "Fetching description...";
+  const currentImg = currentFact?.imgLink || "fetching image";
 
   const springsUpDown = useSpring({
     from: { y: 0, x: 0 },
@@ -182,6 +183,10 @@ const QuizComponent = () => {
                   "no bullshit plz u can't touch this; knowledge comes in three's so where are you going 'to'? think literally"
                 )
               }
+            />
+            <img
+              src={currentImg}
+              alt={`well ur img didn't load but it is of ${currentQuestion}`}
             />
           </span>
         </div>
