@@ -11,6 +11,50 @@ const { ObjectId } = require("mongodb");
 const http = require("http");
 const socketIo = require("socket.io");
 
+//img upload requirements below
+const multer = require("multer");
+const cloudinary = require("./cloudinary/cloudinary");
+const fs = require("fs");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(__dirname + "/public"));
+app.use("/uploads", express.static("uploads"));
+
+//configure multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
+
+//function to upload to cloudinary and receive link; call this in route for upload
+async function uploadImgToCloudinary(localFilePath) {
+  const mainFolder = "main";
+  const filePathOnCloud = mainFolder + "/" + localFilePath;
+
+  return cloudinary.uploader
+    .upload(localFilePath, { public_id: filePathOnCloud })
+    .then((result) => {
+      fs.unlinkSync(localFilePath);
+
+      return {
+        message: "success",
+        url: result.url,
+      };
+    })
+    .catch((error) => {
+      console.log(error);
+      fs.unlinkSync(localFilePath);
+      return { message: "whoops" };
+    });
+}
+
+//server for game
+
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
@@ -408,6 +452,22 @@ app.post("/submit-fact", async (req, res) => {
     res.status(500).send("Something went wrong. Please try again later.");
   }
 });
+//add photo upload to fact; receive link from cloudinary on client, add that link to the edit fact form. users cant add images to protect us from unwanted images. just for admins.
+
+app.post("/img", upload.single("file"), async (req, res) => {
+  try {
+    console.log("called upload");
+
+    const result = await uploadImgToCloudinary(req.file.path);
+    console.log(result);
+    res.status(201).send(JSON.stringify({ url: result.url }));
+  } catch (err) {
+    console.error("something went wrong uploading image to cloud server:", err);
+    res
+      .status(500)
+      .send("something went wrong with the cloud storage. Please try again.");
+  }
+});
 
 // get unapproved facts
 app.get("/unapproved-facts", async (req, res) => {
@@ -438,7 +498,7 @@ app.get("/approved-facts", async (req, res) => {
 app.put("/approved-facts/:factId", async (req, res) => {
   try {
     const factId = req.params.factId;
-    const { title, description, sourceLink } = req.body;
+    const { title, description, sourceLink, imgLink } = req.body;
 
     // Validate that the required fields are present. Adjust validation as needed.
     if (!title || !description || !sourceLink) {
@@ -449,7 +509,7 @@ app.put("/approved-facts/:factId", async (req, res) => {
 
     await factsCollection.updateOne(
       { _id: new ObjectId(factId), isApproved: true }, // Only update approved facts
-      { $set: { title, description, sourceLink } }
+      { $set: { title, description, sourceLink, imgLink } }
     );
 
     res.json({ message: "Approved fact updated successfully." });

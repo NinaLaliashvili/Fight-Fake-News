@@ -90,9 +90,10 @@ button {
 
 .approved-inputs {
   display: flex;
-  flex-direction: row;
+  flex-direction: row wrap;
   justify-content: center;
   align-items: center;
+  overflow-wrap: break-word;
   gap: 10px;
 }
 
@@ -101,6 +102,16 @@ button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.img-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: baseline;
+  border: 1px solid #cb81d0;
+  border-radius: 2px;
+  padding: 6px;
 }
 
 

@@ -128,7 +128,7 @@ export const FactFictionView = () => {
         description: values.description,
         sourceLink: values.sourceLink,
         imgLink: values.imgLink,
-        //add to values as well either url or file
+        //add url
       })
       .then((resp) => {
         clearInputs();
@@ -175,19 +175,57 @@ export const FactFictionView = () => {
     setItemId(null);
   };
 
-  const handleImageUpload = (e) => {
+  const handleUserUploadImg = (e) => {
     e.preventDefault();
     const pic = e.target.files[0];
     setImg(pic);
     console.log("set image");
-    const imgForm = new FormData();
+  };
 
-    imgForm.append("file", img);
+  const sendImgToServerGetLink = () => {
+    try {
+      const imgForm = new FormData();
 
-    //send img to server, through cloudinary; return url
-    //notify user that url has been sent back w toast
-    //set toggler to img url
-    // set value of imglink input to resp from cloudinary, then send
+      imgForm.append("file", img);
+
+      axios
+        .post(
+          `http://localhost:3082/img`,
+          {
+            imgForm,
+          },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((resp) => {
+          notifyUserSuccess(
+            "your img saved in our server! we sent back a link, you'll see it in the image link box- now you can submit your full edit!"
+          );
+
+          // set value of imglink input to resp from cloudinary, then send
+
+          setValues({
+            ...values,
+            imgLink: resp.data,
+          });
+          setTogglePic(!togglePic);
+          //toggle back to the url view
+        })
+        .catch((err) => {
+          console.log(err);
+          notifyUserError(err);
+        });
+
+      //send img to server, through cloudinary; return url
+      //notify user that url has been sent back w toast
+      //set toggler to img url
+    } catch (err) {
+      console.log(err);
+      notifyUserError("whoops! something went wrong with the upload process");
+    }
   };
 
   return (
@@ -270,15 +308,16 @@ export const FactFictionView = () => {
                     placeholder="image url..."
                   />
                 ) : (
-                  <input
-                    type="file"
-                    placeholder="upload image.."
-                    onChange={handleImageUpload}
-                  />
+                  <div className="img-upload">
+                    <input
+                      type="file"
+                      placeholder="upload image.."
+                      onChange={handleUserUploadImg}
+                    />
+                    <button onClick={sendImgToServerGetLink}> Set Image</button>
+                  </div>
                 )}
-                <p>
-                  {togglePic ? `edit img with file:` : "edit img with  url:"}
-                </p>
+                <p>{togglePic ? `edit img with file:` : "url:"}</p>
                 <Icon
                   i={toggle ? "toggle_on" : "toggle_off"}
                   onClick={handleImgUrlToggle}
