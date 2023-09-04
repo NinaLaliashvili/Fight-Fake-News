@@ -181,6 +181,7 @@ export const SecretComponent = () => {
                   </div>
                   <h2>{fact.title}</h2>
                   <p>{fact.description}</p>
+                  <img src={fact.imgLink} alt={`pic of ${fact.title}`} />
                   <a
                     href={fact.sourceLink}
                     target="_blank"

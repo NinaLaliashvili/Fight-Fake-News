@@ -183,11 +183,11 @@ export const FactFictionView = () => {
   };
 
   const sendImgToServerGetLink = () => {
+    const imgForm = new FormData();
+
+    imgForm.append("file", img);
+
     try {
-      const imgForm = new FormData();
-
-      imgForm.append("file", img);
-
       axios
         .post(
           `http://localhost:3082/img`,

@@ -20,13 +20,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use("/uploads", express.static("uploads"));
 
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+
 //configure multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads");
+    cb("", "./uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    cb("", file.originalname + Date.now());
   },
 });
 const upload = multer({ storage: storage });
@@ -459,8 +465,13 @@ app.post("/img", upload.single("file"), async (req, res) => {
     console.log("called upload");
 
     const result = await uploadImgToCloudinary(req.file.path);
+    console.log("got to result");
     console.log(result);
-    res.status(201).send(JSON.stringify({ url: result.url }));
+    if (result) {
+      res.status(201).send(JSON.stringify({ url: result.url }));
+    } else {
+      res.status(500).send("sorry... try uploading again?");
+    }
   } catch (err) {
     console.error("something went wrong uploading image to cloud server:", err);
     res

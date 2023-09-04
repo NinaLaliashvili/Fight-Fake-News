@@ -10,6 +10,13 @@
   }
 }
 
+img {
+  height: 60px;
+  width: 200px;
+  border-radius: 8px;
+  margin-left: 20px;
+}
+
 .quiz-container {
   padding: 1em;
   display: flex;
@@ -93,4 +100,6 @@ button:hover {
 .lifelines:hover {
   transform: scale(1.1);
 }
+
+
 
