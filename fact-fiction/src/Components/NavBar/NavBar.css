@@ -57,6 +57,7 @@
 .nav {
   display: flex;
   gap: 0.7rem;
+  position: relative;
 }
 
 .nav button {
@@ -73,4 +74,20 @@
   background-color: white;
   color: #cb81d0;
   transform: scale(1.1);
+}
+
+
+.dropdown-menu {
+  background: linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
+  background-size: 600% 600%;
+  animation: gradientBackground 15s ease infinite;
+  position: absolute;
+  top: 120%;
+  right: -33px; 
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  padding: 7px;
 }

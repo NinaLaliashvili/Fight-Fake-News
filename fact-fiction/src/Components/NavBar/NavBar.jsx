@@ -3,12 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { LoginContext } from "../../Context/AuthContext";
 import Modal from "./Modal";
 import "./NavBar.css";
+import { Icon } from "../Icon/Icon";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoggedIn, setLoginStatus } = useContext(LoginContext);
+  const { isLoggedIn, setLoginStatus, username } = useContext(LoginContext);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const pageName = {
     "/login": "Log In",
@@ -35,7 +37,7 @@ const Navbar = () => {
     localStorage.removeItem("lastName");
     setLoginStatus(false, null, null);
     navigate("/");
-    setShowLogoutModal(false); // Hide modal after logging out
+    setShowLogoutModal(false);
   };
 
   return (
@@ -49,12 +51,15 @@ const Navbar = () => {
         />
         <div className="page-name">{currentPageName}</div>
         <nav className="nav">
+          
+        <button onClick={() => navigate("/")}>Home</button>
           {isLoggedIn ? (
             <>
-              <button onClick={handleLogout}>Logout</button>
+              
               <button onClick={() => navigate("/usersetting")}>
-                user Setting
+                {username}
               </button>
+              <button onClick={handleLogout}>Logout</button>
             </>
           ) : (
             <>
@@ -62,14 +67,24 @@ const Navbar = () => {
               <button onClick={() => navigate("/register")}>Register</button>
             </>
           )}
-          <button onClick={() => navigate("/")}>Home</button>
           <button onClick={() => navigate("/admin")}>Admin</button>
           <button onClick={() => navigate("/gamemodel")}>Quiz Page</button>
-          <button onClick={() => navigate("/results")}>Results</button>
-          <button onClick={() => navigate("/leaderboard")}>Leaderboard</button>
-          <button onClick={() => navigate("/submit-fact")}>
-            Fact Submission
+
+          <button onClick={() => setShowDropdown(!showDropdown)}>
+            <Icon i="menu" />
           </button>
+          {showDropdown && (
+            <div className="dropdown-menu">
+              <button onClick={() => navigate("/results")}>Results</button>
+
+              <button onClick={() => navigate("/leaderboard")}>
+                Leaderboard
+              </button>
+              <button onClick={() => navigate("/submit-fact")}>
+                Fact Submission
+              </button>
+            </div>
+          )}
         </nav>
       </header>
       <Modal

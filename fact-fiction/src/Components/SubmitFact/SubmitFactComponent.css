@@ -70,6 +70,7 @@ input, textarea {
     cursor: pointer;
     transition: all 0.3s;
     border: 2px solid #cb81d0;
-    border-radius: 25px;
+    border-radius: 5px;
     margin-top: 8px;
+    resize: none;
 }

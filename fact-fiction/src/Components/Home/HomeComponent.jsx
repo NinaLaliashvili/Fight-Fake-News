@@ -10,6 +10,7 @@ import {
   configFlyAnimation,
 } from "../../helpers/animations";
 import { ToastContainer, toast } from "react-toastify";
+const alienImage = require("./alien.png")
 
 const chart = require("./graph.png");
 const cuteCow = require("./cow.png");
@@ -113,14 +114,14 @@ const HomeComponent = () => {
           </button>
 
           <img
-            src="https://celiacfacts-onlinecourses.eu/pluginfile.php/955/mod_lesson/page_contents/259/F9U4_MythRealityHeaderENG.png"
+            src={alienImage}
             alt="Fact vs Myth"
             className="hero-image"
           />
         </section>
 
         <div className="fun-fact">
-          <h3>Did you know?</h3>
+          <h3>Did you know? 🧐</h3>
           <p>
             {randomFact} - Welcome to our corner, where false claims meet the
             real facts. We've all come across surprising claims, some more

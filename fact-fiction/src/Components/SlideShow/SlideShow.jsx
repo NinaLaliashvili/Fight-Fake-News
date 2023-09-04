@@ -5,77 +5,72 @@ const facts = [
   {
     fact: "The shortest war in history lasted 38 minutes.",
     image:
-      "https://st2.depositphotos.com/1526816/8274/v/950/depositphotos_82746490-stock-illustration-doodle-sport-sword-fighting.jpg",
+      "https://static.vecteezy.com/system/resources/thumbnails/013/261/020/small/world-war-two-battle-tank-firing-cannon-png.png",
   },
   {
     fact: "Honey never spoils. Sealed honey jars found in tombs over 3,000 years old are still safe to eat.",
     image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlXEGC6IoD6E1msoeHh6wBT-ubTQ1AqAQxZg&usqp=CAU",
+      "https://www.freepnglogos.com/uploads/honey-png/honey-flowing-transparent-png-stickpng-39.png",
   },
   {
     fact: "The longest time between two twins being born is 87 days.",
     image:
-      "https://twinmania.co.uk/wp-content/uploads/2016/03/Identical-Babies-01.jpg",
+      "https://www.pngmart.com/files/17/Twin-Sister-Transparent-Background.png",
   },
   {
     fact: "The unicorn is the national animal of Scotland.",
-    image:
-      "https://img.freepik.com/free-vector/hand-drawn-cute-unicorn-doodle-style-beige-background-vector_53876-173397.jpg?w=2000",
+    image: "https://clipart-library.com/img/1546087.png",
   },
   {
     fact: "A day on Venus is longer than a year on Venus.",
     image:
-      "https://i.pinimg.com/736x/07/ab/ee/07abee482dafb154ef5707216008a743.jpg",
+      "https://images.vexels.com/media/users/3/239492/isolated/preview/ae36a88728be8e1f8b3596007d1123b0-planet-color-doodle.png",
   },
   {
     fact: "The Great Wall of China is not visible from the Moon with the naked eye.",
     image:
-      "https://cdn2.vectorstock.com/i/1000x1000/63/71/great-wall-china-in-cartoon-style-isolated-vector-38586371.jpg",
+      "https://www.pngarts.com/files/18/Great-Wall-Of-China-Transparent-Images.png",
   },
   {
     fact: "An octopus has three hearts.",
-    image:
-      "https://static.vecteezy.com/system/resources/previews/007/644/840/original/hand-drawn-octopus-doodle-clipart-for-nursery-prints-posters-cards-stickers-kids-apparel-decor-sublimation-etc-eps-10-vector.jpg",
+    image: "https://pngimg.com/d/octopus_PNG41.png",
   },
   {
     fact: "Polar bears have black skin underneath their thick layer of fur.",
     image:
-      "https://as1.ftcdn.net/v2/jpg/02/26/70/56/1000_F_226705615_lovcwEY5JfGUtqhzz0iAmEWYOATZ5goh.jpg",
+      "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/3169214/polar-clipart-md.png",
   },
   {
     fact: "The Eiffel Tower can grow taller by up to 6 inches during the summer because of thermal expansion.",
     image:
-      "https://www.creativefabrica.com/wp-content/uploads/2021/11/22/1637568440/Doodle-Eiffel-tower.jpg",
+      "https://i.pinimg.com/originals/dc/6b/5b/dc6b5b88da811cf81dada985051ffe79.png",
   },
   {
     fact: "Bananas are berries, but strawberries aren’t.",
     image:
-      "https://img.myloview.com/stickers/banana-strawberry-and-mint-colorful-line-sketch-collection-of-fruits-and-berries-isolated-on-white-background-doodle-hand-drawn-fruits-vector-illustration-700-252917426.jpg",
+      "https://www.oikos.ca/sites/default/files/product/2020-08/oikos_fraise-banane_0.png",
   },
   {
     fact: "Cows have best friends and can become stressed when they are separated from them.",
     image:
-      "https://img.freepik.com/premium-vector/two-cows-vector-print-doodle_629110-172.jpg?w=2000",
+      "https://www.deheuskidzz.com/siteassets/cattle/de-heus-koeien-twee-groot-formaat.png",
   },
   {
     fact: "Sharks are the only fish that can blink with both eyes.",
-    image:
-      "https://img.freepik.com/premium-vector/colored-shark-doodle-simple-vector-illustration-vector-illustration_639772-51.jpg?w=2000",
+    image: "https://www.pngmart.com/files/16/Blue-Real-Shark-PNG-Image.png",
   },
   {
     fact: "Humans and giraffes have the same number of neck vertebrae: seven.",
     image:
-      "https://static.vecteezy.com/system/resources/previews/005/533/707/original/cute-hand-drawn-doodle-giraffe-illustration-with-cartoon-style-vector.jpg",
+      "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/17645/confused-giraffe-face-clipart-md.png",
   },
   {
     fact: "The average person will spend six months of their life waiting for red lights to turn green.",
-    image:
-      "https://static.vecteezy.com/system/resources/previews/012/888/955/original/traffic-light-doodle-sketch-hand-drawn-style-icon-illustration-free-vector.jpg",
+    image: "https://freepngimg.com/thumb/categories/1906.png",
   },
   {
     fact: "Cleopatra lived closer in time to the moon landing than to the construction of the Great Pyramids of Giza.",
-    image:
-      "https://i.pinimg.com/474x/d0/8a/ae/d08aae663640225aa855f0b11a12371e.jpg",
+    image: "https://cdn-icons-png.flaticon.com/512/5498/5498690.png",
   },
 ];
 

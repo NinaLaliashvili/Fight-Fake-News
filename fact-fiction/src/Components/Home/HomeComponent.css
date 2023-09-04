@@ -12,7 +12,8 @@
 
 
 .hero {
-  display: flex;       
+  display: flex;    
+  flex-wrap: wrap;   
   align-items: center;  
   justify-content: space-between; 
   width: 100vw;
@@ -21,7 +22,7 @@
 }
 
 .hero-image {
-  width: 100%;
+  width: 95%;
   height: auto;
   object-fit: cover;
   z-index: 1;
@@ -69,6 +70,7 @@
   border-radius: 15px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
   margin: 1rem;
+  width: 70%;
 }
 
 .fun-fact h3 {
@@ -81,6 +83,16 @@
   font-size: 1.1rem;
   line-height: 1.5;
 }
+
+.fun-fact:nth-child(odd) {
+  float: left;
+  clear: both;
+}
+
+.fun-fact:nth-child(even) {
+  float: right;
+}
+
 
 .in-line {
   display: flex;
