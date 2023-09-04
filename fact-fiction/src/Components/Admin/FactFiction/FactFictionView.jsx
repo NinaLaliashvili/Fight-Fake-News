@@ -17,12 +17,18 @@ export const FactFictionView = () => {
     title: "",
     description: "",
     sourceLink: "",
+    imgLink: "",
   });
   const [itemId, setItemId] = useState(null);
   const [toggle, setToggle] = useState(true);
+  const [togglePic, setTogglePic] = useState(true);
+  const [img, setImg] = useState(null);
 
   const handleToggleClick = () => {
     setToggle(!toggle);
+  };
+  const handleImgUrlToggle = () => {
+    setTogglePic(!togglePic);
   };
 
   const loadFacts = () => {
@@ -104,6 +110,7 @@ export const FactFictionView = () => {
             title: factToEdit.title,
             description: factToEdit.description,
             sourceLink: factToEdit.sourceLink,
+            imgLink: factToEdit.imgLink,
           });
         } else {
           console.error("Fact not found.");
@@ -120,6 +127,8 @@ export const FactFictionView = () => {
         title: values.title,
         description: values.description,
         sourceLink: values.sourceLink,
+        imgLink: values.imgLink,
+        //add to values as well either url or file
       })
       .then((resp) => {
         clearInputs();
@@ -161,23 +170,40 @@ export const FactFictionView = () => {
       title: "",
       description: "",
       sourceLink: "",
+      imgLink: "",
     });
     setItemId(null);
+  };
+
+  const handleImageUpload = (e) => {
+    e.preventDefault();
+    const pic = e.target.files[0];
+    setImg(pic);
+    console.log("set image");
+    const imgForm = new FormData();
+
+    imgForm.append("file", img);
+
+    //send img to server, through cloudinary; return url
+    //notify user that url has been sent back w toast
+    //set toggler to img url
+    // set value of imglink input to resp from cloudinary, then send
   };
 
   return (
     <div className="facts-approving-container">
       <ToastContainer theme="light" />
-      <h1>Search By Fact or Fiction...</h1>
+
       <div className="column">
+        <h1>Search By Fact or Fiction...</h1>
         <Select
           value={type}
           options={types}
           placeholder="Select fact or fiction..."
-           onChange={(option ) => setType(option || null)}
+          onChange={(option) => setType(option || null)}
           isClearable={true}
         />
-         {isSearching && <button onClick={clearSearch}>Clear Search...</button>}
+        {isSearching && <button onClick={clearSearch}>Clear Search...</button>}
 
         {searchResults.map((fact) => (
           <div key={fact._id} className="fact-item">
@@ -186,13 +212,12 @@ export const FactFictionView = () => {
             <a href={fact.sourceLink} target="_blank" rel="noopener noreferrer">
               Source
             </a>
+            <img src={fact.imgLink} />
             <button onClick={() => handleEdit(fact._id)}>Edit</button>
           </div>
         ))}
-       
+        <button onClick={handleSearch}>Search</button>
       </div>
-
-      <button onClick={handleSearch}>Search</button>
 
       <div className="approved-unapproved-title">
         <h2>Unapproved Facts</h2>{" "}
@@ -206,7 +231,7 @@ export const FactFictionView = () => {
 
       <div className="displaying-facts">
         {toggle ? (
-          <div>
+          <div className="center">
             {approvedFacts.length > 0 && (
               <div className="approved-inputs">
                 <input
@@ -235,6 +260,31 @@ export const FactFictionView = () => {
                   }
                   placeholder="source..."
                 />
+                {togglePic ? (
+                  <input
+                    type="text"
+                    value={values.imgLink}
+                    onChange={(e) =>
+                      setValues({ ...values, imgLink: e.target.value })
+                    }
+                    placeholder="image url..."
+                  />
+                ) : (
+                  <input
+                    type="file"
+                    placeholder="upload image.."
+                    onChange={handleImageUpload}
+                  />
+                )}
+                <p>
+                  {togglePic ? `edit img with file:` : "edit img with  url:"}
+                </p>
+                <Icon
+                  i={toggle ? "toggle_on" : "toggle_off"}
+                  onClick={handleImgUrlToggle}
+                  className="toggle-icon"
+                />
+
                 <button onClick={handleSave}>Save</button>
                 {itemId && <h3 onClick={clearInputs}>Cancel</h3>}
               </div>
@@ -251,6 +301,7 @@ export const FactFictionView = () => {
                 >
                   Source
                 </a>
+                <img src={fact.imgLink} />
                 <button onClick={() => handleEdit(fact._id)}>Edit</button>
               </div>
             ))}
@@ -268,6 +319,7 @@ export const FactFictionView = () => {
                 >
                   Source
                 </a>
+                <img src={fact.imgLink} />
                 <button onClick={() => handleApproval(fact._id, true)}>
                   Approve
                 </button>

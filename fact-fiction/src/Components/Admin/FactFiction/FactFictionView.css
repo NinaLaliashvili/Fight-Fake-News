@@ -5,14 +5,27 @@ ul {
 li {
   text-decoration: none;
 }
+img {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+h2:hover {
+  color: #cb81d0
+}
 
 .fact-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   border: 1px solid #e0e0e0;
   padding: 20px;
   margin: 25px;
   border-radius: 5px;
   background-color: #f7f7f7;
   width: 500px;
+  
 }
 
 .fact-item h2 {
@@ -30,7 +43,7 @@ li {
 }
 
 .fact-item button {
-  margin-right: 10px;
+  margin-right: 1px;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -41,6 +54,7 @@ li {
 
 .fact-item button:last-child {
   background-color: #dc3545;
+  
 }
 
 
@@ -51,6 +65,7 @@ li {
   text-align: center;
   gap: 10px;
   font-size: larger ;
+  margin-top: 40px
 }
 
 .facts-approving-container {
@@ -75,5 +90,25 @@ button {
 
 .approved-inputs {
   display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.column {
+  border: 1px solid #cb81d0;
+  padding: 40px;
+  background-color: #f7f7f7;
+  border-radius: 2px;
+  margin-top: 20px
 }
