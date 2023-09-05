@@ -98,6 +98,7 @@ export const FactFictionView = () => {
 
   const handleEdit = (factId) => {
     setItemId(factId);
+    window.scrollTo({ top: 500, left: 0, behavior: "smooth" });
 
     axios
       .get(`http://localhost:3082/approved-facts`)
@@ -172,6 +173,7 @@ export const FactFictionView = () => {
       sourceLink: "",
       imgLink: "",
     });
+    setImg(null);
     setItemId(null);
   };
 
@@ -180,19 +182,24 @@ export const FactFictionView = () => {
     const pic = e.target.files[0];
     setImg(pic);
     console.log("set image");
+    console.log(img);
   };
 
   const sendImgToServerGetLink = () => {
-    const imgForm = new FormData();
+    const formData = new FormData();
 
-    imgForm.append("file", img);
+    formData.append("file", img);
 
+    for (const value of formData.values()) {
+      console.log(value);
+    }
+    //check that pic is appending- it is
     try {
       axios
         .post(
           `http://localhost:3082/img`,
           {
-            imgForm,
+            formData,
           },
           {
             headers: {
@@ -205,7 +212,7 @@ export const FactFictionView = () => {
             "your img saved in our server! we sent back a link, you'll see it in the image link box- now you can submit your full edit!"
           );
 
-          // set value of imglink input to resp from cloudinary, then send
+          // set value of imglink input to resp from cloudinary, then allow user to send
 
           setValues({
             ...values,
@@ -218,10 +225,6 @@ export const FactFictionView = () => {
           console.log(err);
           notifyUserError(err);
         });
-
-      //send img to server, through cloudinary; return url
-      //notify user that url has been sent back w toast
-      //set toggler to img url
     } catch (err) {
       console.log(err);
       notifyUserError("whoops! something went wrong with the upload process");
@@ -320,7 +323,7 @@ export const FactFictionView = () => {
                     <button onClick={sendImgToServerGetLink}> Set Image</button>
                   </div>
                 )}
-                <p>{togglePic ? `edit img with file:` : "url:"}</p>
+                <p>{togglePic ? `add file:` : "url:"}</p>
                 <Icon
                   i={toggle ? "toggle_on" : "toggle_off"}
                   onClick={handleImgUrlToggle}
@@ -328,7 +331,7 @@ export const FactFictionView = () => {
                 />
 
                 <button onClick={handleSave}>Save</button>
-                {itemId && <h3 onClick={clearInputs}>Cancel</h3>}
+                {itemId && <button onClick={clearInputs}>Cancel</button>}
               </div>
             )}
 

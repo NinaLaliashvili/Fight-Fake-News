@@ -44,7 +44,9 @@ export const LeaderboardAdmin = () => {
       <h2>Users</h2>
       {users.map((user) => (
         <div className="userrs" key={user._id}>
-          {user.firstName} {user.lastName} - {user.score}
+          <h4>
+            {user.firstName} {user.lastName} - {user.score.toFixed(1)}
+          </h4>
           <button className="bttn" onClick={() => removeUser(user._id)}>
             Remove
           </button>

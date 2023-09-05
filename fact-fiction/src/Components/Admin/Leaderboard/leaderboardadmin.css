@@ -16,3 +16,20 @@
 .bttn {
   margin-left: 30px;
 }
+
+.userrs {
+  border: 1px solid rgb(185, 181, 181);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+ 
+}
+
+

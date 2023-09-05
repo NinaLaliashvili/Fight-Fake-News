@@ -17,6 +17,7 @@ const cloudinary = require("./cloudinary/cloudinary");
 const fs = require("fs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+const dirname = path.resolve();
 app.use(express.static(__dirname + "/public"));
 app.use("/uploads", express.static("uploads"));
 
@@ -27,24 +28,29 @@ app.use(
 );
 
 //configure multer
+//pretty sure error is here w upload pic
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb("", "./uploads/");
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    cb("", file.originalname + Date.now());
+    cb(null, file.originalname + Date.now());
   },
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 //function to upload to cloudinary and receive link; call this in route for upload
 async function uploadImgToCloudinary(localFilePath) {
+  console.log("in cloudinary function");
   const mainFolder = "main";
+  console.log("in main folder");
   const filePathOnCloud = mainFolder + "/" + localFilePath;
+  console.log("in specific path on cloudinary");
 
   return cloudinary.uploader
     .upload(localFilePath, { public_id: filePathOnCloud })
     .then((result) => {
+      "made it to cloudinary uploader";
       fs.unlinkSync(localFilePath);
 
       return {
