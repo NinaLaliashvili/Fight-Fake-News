@@ -438,10 +438,11 @@ app.post("/submit-fact", async (req, res) => {
       email,
       mobileNumber,
       type,
+      category
     } = req.body;
 
     // Validate that the required fields are present. Adjust validation as needed.
-    if (!title || !description || !fullName || !email) {
+    if (!title || !description || !fullName || !email || !category) {
       return res.status(400).send("Please fill in all the required fields.");
     }
 
@@ -453,6 +454,7 @@ app.post("/submit-fact", async (req, res) => {
       email,
       mobileNumber,
       type,
+      category,
       isApproved: false,
     };
 
@@ -502,8 +504,14 @@ app.get("/unapproved-facts", async (req, res) => {
 // get only approved facts
 app.get("/approved-facts", async (req, res) => {
   try {
+    const category = req.query.category;
+    let query = { isApproved: true };
+   if (category) {
+      query.category = category; 
+    }
+
     const approvedFacts = await factsCollection
-      .find({ isApproved: true })
+      .find(query)
       .toArray();
     res.json(approvedFacts);
   } catch (error) {
@@ -515,7 +523,7 @@ app.get("/approved-facts", async (req, res) => {
 app.put("/approved-facts/:factId", async (req, res) => {
   try {
     const factId = req.params.factId;
-    const { title, description, sourceLink, imgLink } = req.body;
+    const { title, description, sourceLink, imgLink, category } = req.body;
 
     // Validate that the required fields are present. Adjust validation as needed.
     if (!title || !description || !sourceLink) {
@@ -526,7 +534,7 @@ app.put("/approved-facts/:factId", async (req, res) => {
 
     await factsCollection.updateOne(
       { _id: new ObjectId(factId), isApproved: true }, // Only update approved facts
-      { $set: { title, description, sourceLink, imgLink } }
+      { $set: { title, description, sourceLink, imgLink, category } }
     );
 
     res.json({ message: "Approved fact updated successfully." });
