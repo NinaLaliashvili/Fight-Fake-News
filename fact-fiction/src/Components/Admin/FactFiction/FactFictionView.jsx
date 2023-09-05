@@ -23,6 +23,19 @@ export const FactFictionView = () => {
   const [toggle, setToggle] = useState(true);
   const [togglePic, setTogglePic] = useState(true);
   const [img, setImg] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  const categories = [
+    "Random",
+    "Science",
+    "History",
+    "Entertainment",
+    "Georgaphy",
+    "Politics",
+    "Conspiracy",
+    "Culture",
+    "Religion",
+  ];
 
   const handleToggleClick = () => {
     setToggle(!toggle);
@@ -130,6 +143,7 @@ export const FactFictionView = () => {
         sourceLink: values.sourceLink,
         imgLink: values.imgLink,
         //add url
+        category: selectedCategory,
       })
       .then((resp) => {
         clearInputs();
@@ -304,6 +318,20 @@ export const FactFictionView = () => {
                   }
                   placeholder="source..."
                 />
+
+                <select
+                  id="categorySelect"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  <option value="">-- Select a Category --</option>
+                  {categories.map((category, index) => (
+                    <option key={index} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+
                 {togglePic ? (
                   <input
                     type="text"

@@ -23,20 +23,58 @@ const QuizComponent = () => {
     recordAnswer,
   } = useContext(userScoreContext);
 
+  const categories = [
+    "Random",
+    "Science",
+    "History",
+    "Entertainment",
+    "Georgaphy",
+    "Politics",
+    "Conspiracy",
+    "Culture",
+    "Religion",
+  ];
+
   const [selectedOption, setSelectedOption] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("Random");
 
   useEffect(() => {
     axios
       .get("http://localhost:3082/approved-facts")
       .then((response) => {
-        setQuestions(response.data);
+        const allQuestions = response.data;
+        const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+        setQuestions(shuffled.slice(0, 10));
       })
       .catch((error) => {
         console.error("Error fetching approved facts:", error);
       });
   }, []);
+
+  const fetchQuestionsByCategory = (category) => {
+    let apiUrl = "http://localhost:3082/approved-facts";
+
+    if (category !== "Random") {
+      apiUrl += `?category=${category}`;
+    }
+
+    axios
+      .get(apiUrl)
+      .then((response) => {
+        const allQuestions = response.data;
+        const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+        setQuestions(shuffled.slice(0, 10));
+      })
+      .catch((error) => {
+        console.error("Error fetching approved facts:", error);
+      });
+  };
+
+  useEffect(() => {
+    fetchQuestionsByCategory(selectedCategory);
+  }, [selectedCategory]);
 
   const notifyUserSelect = (message) => {
     toast.error(`${message}`, {
@@ -141,8 +179,29 @@ const QuizComponent = () => {
     config: configBasicAnimation,
   });
 
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    setCurrentIndex(0)
+    fetchQuestionsByCategory(category);
+  };
+
   return (
     <div className="quiz-container">
+      <aside className="sidebar">
+        <h4>Pick a Category</h4>
+        <ul>
+          {categories.map((category) => (
+            <li
+              key={category}
+              className="category-item"
+              onClick={() => handleCategoryClick(category)}
+            >
+              {category}
+            </li>
+          ))}
+        </ul>
+      </aside>
+
       <ToastContainer theme="light" />
 
       <main className="quiz-content">
