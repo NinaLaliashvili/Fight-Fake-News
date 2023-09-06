@@ -28,7 +28,7 @@ const QuizComponent = () => {
     "Science",
     "History",
     "Entertainment",
-    "Georgaphy",
+    "Geography",
     "Politics",
     "Conspiracy",
     "Culture",
@@ -64,6 +64,9 @@ const QuizComponent = () => {
       .get(apiUrl)
       .then((response) => {
         const allQuestions = response.data;
+        if (!allQuestions) {
+          return;
+        }
         const shuffled = allQuestions.sort(() => 0.5 - Math.random());
         setQuestions(shuffled.slice(0, 10));
       })
@@ -181,7 +184,7 @@ const QuizComponent = () => {
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
-    setCurrentIndex(0)
+    setCurrentIndex(0);
     fetchQuestionsByCategory(category);
   };
 

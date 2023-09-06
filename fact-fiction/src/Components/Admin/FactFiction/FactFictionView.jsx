@@ -23,14 +23,14 @@ export const FactFictionView = () => {
   const [toggle, setToggle] = useState(true);
   const [togglePic, setTogglePic] = useState(true);
   const [img, setImg] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const categories = [
     "Random",
     "Science",
     "History",
     "Entertainment",
-    "Georgaphy",
+    "Geography",
     "Politics",
     "Conspiracy",
     "Culture",
@@ -126,6 +126,7 @@ export const FactFictionView = () => {
             sourceLink: factToEdit.sourceLink,
             imgLink: factToEdit.imgLink,
           });
+          setSelectedCategory(factToEdit.category);
         } else {
           console.error("Fact not found.");
         }
@@ -147,6 +148,7 @@ export const FactFictionView = () => {
       })
       .then((resp) => {
         clearInputs();
+        setSelectedCategory("");
         notifyUserSuccess("Fact updated successfully!");
         loadFacts();
       })
@@ -157,6 +159,9 @@ export const FactFictionView = () => {
 
   const handleSearch = () => {
     console.log(type.label);
+    if (!type) {
+      return;
+    }
     try {
       const filteredFacts = approvedFacts.filter(
         (fact) => fact.type === type.label
@@ -263,7 +268,9 @@ export const FactFictionView = () => {
         {searchResults.map((fact) => (
           <div key={fact._id} className="fact-item">
             <h2>{fact.title}</h2>
+
             <p>{fact.description}</p>
+            <p>Category: {fact.category}</p>
             <a href={fact.sourceLink} target="_blank" rel="noopener noreferrer">
               Source
             </a>
@@ -274,7 +281,9 @@ export const FactFictionView = () => {
             <button onClick={() => handleEdit(fact._id)}>Edit</button>
           </div>
         ))}
-        <button onClick={handleSearch}>Search</button>
+        <button onClick={!isSearching ? handleSearch : clearSearch}>
+          {!isSearching ? `Search` : `Clear Search`}
+        </button>
       </div>
 
       <div className="approved-unapproved-title">
@@ -367,6 +376,7 @@ export const FactFictionView = () => {
               <div key={fact._id} className="fact-item">
                 <h2>{fact.title}</h2>
                 <p>{fact.description}</p>
+                <p>Category: {fact.category}</p>
                 <a
                   href={fact.sourceLink}
                   target="_blank"
@@ -388,6 +398,7 @@ export const FactFictionView = () => {
               <div key={fact._id} className="fact-item">
                 <h2>{fact.title}</h2>
                 <p>{fact.description}</p>
+                <p>Category: {fact.category}</p>
                 <a
                   href={fact.sourceLink}
                   target="_blank"
