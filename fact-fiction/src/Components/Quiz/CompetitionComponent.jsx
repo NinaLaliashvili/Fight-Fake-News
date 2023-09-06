@@ -1,22 +1,56 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import "./QuizComponent.css";
+import { userScoreContext } from "../../Context/UserScoreContext";
 import socketIOClient from "socket.io-client";
 import { ToastContainer, toast } from "react-toastify";
 import { LoginContext } from "../../Context/AuthContext";
+import { useSpring, animated } from "@react-spring/web";
 
-const ENDPOINT = "http://localhost:3082"; // Socket.io server endpoint
+const ENDPOINT = "http://localhost:3082";
+let socket;
 
 const CompetitionComponent = () => {
+  const {
+    numOfCorrectAnswers,
+    setNumOfCorrectAnswers,
+    numOfWrongAnswers,
+    setNumOfWrongAnswers,
+    runningAverageScore,
+    setRunningAverageScore,
+    setUserResults,
+    recordAnswer,
+  } = useContext(userScoreContext);
+
   const [isLoading, setIsLoading] = useState(true);
   const [opponentName, setOpponentName] = useState("");
   const [yourScore, setYourScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
   const [winner, setWinner] = useState("");
   const { userId, token } = useContext(LoginContext);
-  let socket;
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [roomId, setRoomId] = useState("room1"); // hardcoded for simplicity
+  const [opponentCurrentIndex, setOpponentCurrentIndex] = useState(0);
+  const [opponentSelectedOption, setOpponentSelectedOption] = useState(null);
+  const [matchFound, setMatchFound] = useState(false);
+  const [quizEnded, setQuizEnded] = useState(false);
 
   useEffect(() => {
+    axios
+      .get("http://localhost:3082/approved-facts")
+      .then((response) => {
+        const allQuestions = response.data;
+        const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+        setQuestions(shuffled.slice(0, 10));
+      })
+      .catch((error) => {
+        console.error("Error fetching approved facts:", error);
+      });
+
+    socket = socketIOClient(ENDPOINT);
+
     console.log("Client side userId:", userId);
     console.log("Client side token:", token);
     // Initialize Socket.IO Connection
@@ -40,6 +74,7 @@ const CompetitionComponent = () => {
     });
 
     socket.on("scoreUpdate", (data) => {
+      console.log("Received Scores:", data);
       setYourScore(data.yourScore);
       setOpponentScore(data.opponentScore);
     });
@@ -65,21 +100,162 @@ const CompetitionComponent = () => {
     socket.emit("endGame" /* Your User ID */);
   };
 
+  const handleOptionChange = (option) => {
+    setSelectedOption(option);
+  };
+
+  const handleNext = () => {
+    if (!selectedOption) {
+      toast.error("You must select an answer to continue!");
+      return;
+    }
+
+    const { type } = questions[currentIndex];
+    let newNumOfCorrectAnswers = numOfCorrectAnswers;
+    let newNumOfWrongAnswers = numOfWrongAnswers;
+
+    if (type === selectedOption) {
+      newNumOfCorrectAnswers += 1;
+      recordAnswer(
+        `${currentFact.title} - ${currentFact.description}`,
+        selectedOption,
+        type
+      );
+    } else {
+      newNumOfWrongAnswers += 1;
+      recordAnswer(
+        `${currentFact.title} - ${currentFact.description}`,
+        selectedOption,
+        type
+      );
+    }
+
+    const totalQuestionsAnswered =
+      newNumOfCorrectAnswers + newNumOfWrongAnswers;
+    const averageScore =
+      (newNumOfCorrectAnswers / totalQuestionsAnswered) * 100;
+
+    setNumOfCorrectAnswers(newNumOfCorrectAnswers);
+    setNumOfWrongAnswers(newNumOfWrongAnswers);
+    setRunningAverageScore(averageScore);
+
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setSelectedOption(null);
+    } else {
+      handleSubmit();
+    }
+
+    // Send the averageScore to the server to update the multiplayer score
+    axios
+      .post("http://localhost:3082/updateScore", {
+        roomId: roomId,
+        score: averageScore,
+      })
+      .then((response) => {
+        // Handle response (if needed)
+      })
+      .catch((error) => {
+        console.error("Error updating score:", error);
+      });
+
+    // Emit score to other players in the room
+    socket.emit("sendScore", { roomId, score: averageScore });
+  };
+
+  const handleSubmit = () => {
+    setUserResults(runningAverageScore);
+    // navigate("/results");
+
+    if (token) {
+      axios
+        .post(
+          "http://localhost:3082/save-score",
+          {
+            userId: userId,
+            score: runningAverageScore,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error("Error saving score:", error);
+        });
+    } else {
+      console.error("No token available.");
+    }
+  };
+
+  const configBasicAnimation = { tension: 280, friction: 120 };
+
+  const currentFact = questions[currentIndex];
+  const currentQuestion = currentFact?.title || "Loading...";
+  const currentQuestionDescription =
+    currentFact?.description || "Fetching description...";
+  const currentImg = currentFact?.imgLink || "fetching image";
+
+  const springsUpDown = useSpring({
+    from: { y: 0, x: 0 },
+    to: async (next, cancel) => {
+      await next({ y: 5 });
+      await next({ x: 5 });
+      await next({ y: 0 });
+      await next({ x: 10 });
+      await next({ y: 5 });
+      await next({ x: 15 });
+      await next({ x: 0 });
+    },
+    loop: true,
+    config: configBasicAnimation,
+  });
+
   return (
-    <div className="quiz-container">
+    <div className="quiz-containerr">
       <ToastContainer />
       <h1>Quiz Game</h1>
       {isLoading ? (
         <p>Waiting for other user to join...</p>
       ) : (
         <>
-          {opponentName && <p>You are playing with {opponentName}</p>}
-          <p>Your score: {yourScore}</p>
-          <p>Opponent's score: {opponentScore}</p>
-          <button onClick={() => handleAnswer(true)}>Correct</button>
-          <button onClick={() => handleAnswer(false)}>Wrong</button>
-          <button onClick={handleEndGame}>End Game</button>
-          {winner && <p>Winner is {winner}</p>}
+          <div>
+            {opponentName && <p>You are playing with {opponentName}</p>}
+          </div>
+          <div>
+            <main className="quiz-content">
+              <span>Your Score: {yourScore.toFixed(1)}%</span>
+              <span>Opponent's Score: {opponentScore.toFixed(1)}%</span>
+              <p>{currentQuestion}</p>
+              <p>{currentQuestionDescription}</p>
+              <div className="options">
+                <label>
+                  <input
+                    type="radio"
+                    value="fact"
+                    checked={selectedOption === "fact"}
+                    onChange={() => handleOptionChange("fact")}
+                  />
+                  Fact
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    value="fiction"
+                    checked={selectedOption === "fiction"}
+                    onChange={() => handleOptionChange("fiction")}
+                  />
+                  Fiction
+                </label>
+              </div>
+              <button onClick={handleNext}>Next</button>
+              <button onClick={handleSubmit}>End Game and See Results</button>
+            </main>
+          </div>
         </>
       )}
     </div>

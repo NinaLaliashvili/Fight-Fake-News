@@ -206,7 +206,8 @@ io.on("connection", (socket) => {
         { gameId: roomId, playerId: userId },
         { $set: { score: newScore, updatedAt: new Date() } }
       );
-
+      console.log("New Score:", newScore);
+      console.log("Emitting to room:", roomId);
       socket.to(roomId).emit("scoreUpdate", { opponentScore: newScore });
       socket.emit("scoreUpdate", { yourScore: newScore });
     });
