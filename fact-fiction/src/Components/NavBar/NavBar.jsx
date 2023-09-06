@@ -68,7 +68,7 @@ const Navbar = () => {
             </>
           )}
           <button onClick={() => navigate("/admin")}>Admin</button>
-          <button onClick={() => navigate("/gamemodel")}>Quiz Page</button>
+          <button onClick={() => navigate("/gamemodel")}>Quiz</button>
 
           <button onClick={() => setShowDropdown(!showDropdown)}>
             <Icon i="menu" />

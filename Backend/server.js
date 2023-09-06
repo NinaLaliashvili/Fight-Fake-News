@@ -17,9 +17,9 @@ const cloudinary = require("./cloudinary/cloudinary");
 const fs = require("fs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-const dirname = path.resolve();
-app.use(express.static(__dirname + "/public"));
-app.use("/uploads", express.static("uploads"));
+// const dirname = path.resolve();
+// app.use(express.static(__dirname + "/public"));
+// app.use("/uploads", express.static("uploads"));
 
 app.use(
   cors({
@@ -30,11 +30,9 @@ app.use(
 //configure multer
 //pretty sure error is here w upload pic
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
+  destination: "./public/uploads",
   filename: function (req, file, cb) {
-    cb(null, file.originalname + Date.now());
+    cb(null, file.originalname);
   },
 });
 const upload = multer({ storage });
@@ -438,10 +436,11 @@ app.post("/submit-fact", async (req, res) => {
       email,
       mobileNumber,
       type,
+      category,
     } = req.body;
 
     // Validate that the required fields are present. Adjust validation as needed.
-    if (!title || !description || !fullName || !email) {
+    if (!title || !description || !fullName || !email || !category) {
       return res.status(400).send("Please fill in all the required fields.");
     }
 
@@ -453,6 +452,7 @@ app.post("/submit-fact", async (req, res) => {
       email,
       mobileNumber,
       type,
+      category,
       isApproved: false,
     };
 
@@ -502,9 +502,13 @@ app.get("/unapproved-facts", async (req, res) => {
 // get only approved facts
 app.get("/approved-facts", async (req, res) => {
   try {
-    const approvedFacts = await factsCollection
-      .find({ isApproved: true })
-      .toArray();
+    const category = req.query.category;
+    let query = { isApproved: true };
+    if (category) {
+      query.category = category;
+    }
+
+    const approvedFacts = await factsCollection.find(query).toArray();
     res.json(approvedFacts);
   } catch (error) {
     console.error("Error fetching approved facts:", error);
@@ -515,7 +519,7 @@ app.get("/approved-facts", async (req, res) => {
 app.put("/approved-facts/:factId", async (req, res) => {
   try {
     const factId = req.params.factId;
-    const { title, description, sourceLink, imgLink } = req.body;
+    const { title, description, sourceLink, imgLink, category } = req.body;
 
     // Validate that the required fields are present. Adjust validation as needed.
     if (!title || !description || !sourceLink) {
@@ -526,7 +530,7 @@ app.put("/approved-facts/:factId", async (req, res) => {
 
     await factsCollection.updateOne(
       { _id: new ObjectId(factId), isApproved: true }, // Only update approved facts
-      { $set: { title, description, sourceLink, imgLink } }
+      { $set: { title, description, sourceLink, imgLink, category } }
     );
 
     res.json({ message: "Approved fact updated successfully." });

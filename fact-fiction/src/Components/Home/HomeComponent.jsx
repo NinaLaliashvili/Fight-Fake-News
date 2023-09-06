@@ -10,7 +10,7 @@ import {
   configFlyAnimation,
 } from "../../helpers/animations";
 import { ToastContainer, toast } from "react-toastify";
-const alienImage = require("./alien.png")
+const alienImage = require("./alien.png");
 
 const chart = require("./graph.png");
 const cuteCow = require("./cow.png");
@@ -65,7 +65,6 @@ const HomeComponent = () => {
       await next({ y: 30, x: 20 });
     },
     loop: true,
-    config: configDanceAnimation,
   });
 
   const springsSmallSquare = useSpring({
@@ -77,7 +76,6 @@ const HomeComponent = () => {
       await next({ y: 0 });
     },
     loop: true,
-    config: configBasicAnimation,
   });
 
   const notifyUserPlay = (message) => {
@@ -113,11 +111,7 @@ const HomeComponent = () => {
             Start Game
           </button>
 
-          <img
-            src={alienImage}
-            alt="Fact vs Myth"
-            className="hero-image"
-          />
+          <img src={alienImage} alt="Fact vs Myth" className="hero-image" />
         </section>
 
         <div className="fun-fact">
@@ -145,7 +139,7 @@ const HomeComponent = () => {
                 }}
                 onClick={() =>
                   notifyUserPlay(
-                    "heyyy yes that's bullsh*t! fake news sucks! Curious for the truth? Take a letter! h"
+                    "heyyy yes that's bullsh*t! fake news sucks! Curious for the truth? Step one is: Take a letter! h"
                   )
                 }
               />
@@ -158,7 +152,7 @@ const HomeComponent = () => {
             of the problem? The reward structure of social media itself is a big
             contributor to the spread of fake news- helping fictitious claims
             rise to the top! It's up to us to sharpen our skills since the
-            social media giants won't do anything to mitigate the issue.
+            social media giants won't do anything to solve the issue.
           </p>
           <a
             target="blank"
@@ -193,11 +187,10 @@ const HomeComponent = () => {
           <p>
             86% of global internet users have been exposed to fake news. Among
             those users- nearly 90% have thought fake news was real at first- at
-            least once. That's a lot going around! And the barrage of fake news
-            is only expected to increase as new technologies become mainstream,
-            like generative AI. Even worse- people overestimate their ability to
-            identify fake news. The worse they are at spotting it, the more
-            likely they are to share it!
+            least once! And the amount of fake news is only expected to increase
+            as new technologies become mainstream, like generative AI. Even
+            worse- people overestimate their ability to identify fake news. The
+            worse they are at spotting it, the more likely they are to share it!
           </p>
           <a
             target="blank"
@@ -227,7 +220,7 @@ const HomeComponent = () => {
                 target="blank"
                 href="https://www.ipsos.com/en-us/news-polls/cigi-fake-news-global-epidemic"
               >
-                Aaaand source..
+                Source..
               </a>
             </span>
           </h3>
