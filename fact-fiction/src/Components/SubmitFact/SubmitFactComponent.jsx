@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import "./SubmitFactComponent.css";
 
 const SubmitFactComponent = () => {
@@ -13,6 +14,12 @@ const SubmitFactComponent = () => {
   const [email, setEmail] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [type, setType] = useState("fact");
+
+  const notifyUser = (message) => {
+    toast.error(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,6 +48,7 @@ const SubmitFactComponent = () => {
       })
       .catch((error) => {
         console.error("Error submitting fact:", error);
+        notifyUser(`issue submitting fact: ${error}`);
       });
   };
 
@@ -59,6 +67,7 @@ const SubmitFactComponent = () => {
 
   return (
     <div className="submission-container">
+      <ToastContainer theme="light" />
       {/* <header>
         <h1>Fact Submission</h1>
 
