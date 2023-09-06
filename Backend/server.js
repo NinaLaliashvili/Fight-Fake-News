@@ -17,9 +17,9 @@ const cloudinary = require("./cloudinary/cloudinary");
 const fs = require("fs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-const dirname = path.resolve();
-app.use(express.static(__dirname + "/public"));
-app.use("/uploads", express.static("uploads"));
+// const dirname = path.resolve();
+// app.use(express.static(__dirname + "/public"));
+// app.use("/uploads", express.static("uploads"));
 
 app.use(
   cors({
@@ -30,11 +30,9 @@ app.use(
 //configure multer
 //pretty sure error is here w upload pic
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
+  destination: "./public/uploads",
   filename: function (req, file, cb) {
-    cb(null, file.originalname + Date.now());
+    cb(null, file.originalname);
   },
 });
 const upload = multer({ storage });
@@ -438,7 +436,7 @@ app.post("/submit-fact", async (req, res) => {
       email,
       mobileNumber,
       type,
-      category
+      category,
     } = req.body;
 
     // Validate that the required fields are present. Adjust validation as needed.
@@ -506,13 +504,11 @@ app.get("/approved-facts", async (req, res) => {
   try {
     const category = req.query.category;
     let query = { isApproved: true };
-   if (category) {
-      query.category = category; 
+    if (category) {
+      query.category = category;
     }
 
-    const approvedFacts = await factsCollection
-      .find(query)
-      .toArray();
+    const approvedFacts = await factsCollection.find(query).toArray();
     res.json(approvedFacts);
   } catch (error) {
     console.error("Error fetching approved facts:", error);
