@@ -17,9 +17,9 @@ const cloudinary = require("./cloudinary/cloudinary");
 const fs = require("fs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// const dirname = path.resolve();
-// app.use(express.static(__dirname + "/public"));
-// app.use("/uploads", express.static("uploads"));
+const dirname = path.resolve();
+app.use(express.static(__dirname + "/public"));
+app.use("/uploads", express.static("uploads"));
 
 app.use(
   cors({
@@ -30,9 +30,11 @@ app.use(
 //configure multer
 //pretty sure error is here w upload pic
 const storage = multer.diskStorage({
-  destination: "./public/uploads",
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    cb(null, file.originalname + Date.now());
   },
 });
 const upload = multer({ storage });
@@ -206,8 +208,7 @@ io.on("connection", (socket) => {
         { gameId: roomId, playerId: userId },
         { $set: { score: newScore, updatedAt: new Date() } }
       );
-      console.log("New Score:", newScore);
-      console.log("Emitting to room:", roomId);
+
       socket.to(roomId).emit("scoreUpdate", { opponentScore: newScore });
       socket.emit("scoreUpdate", { yourScore: newScore });
     });
@@ -282,7 +283,7 @@ app.get("/user/:id", async (req, res) => {
 app.put("/user/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
-    const { email, firstName, lastName, phone } = req.body;
+    const { email, firstName, lastName, phone, avatar } = req.body;
 
     if (!email || !firstName || !lastName || !phone) {
       return res
@@ -292,7 +293,7 @@ app.put("/user/:userId", async (req, res) => {
 
     await usersCollection.updateOne(
       { _id: new ObjectId(userId) }, // Only update approved facts
-      { $set: { email, firstName, lastName, phone } }
+      { $set: { email, firstName, lastName, phone, avatar } }
     );
 
     res.json({ message: "User updated successfully." });
@@ -312,6 +313,7 @@ app.post("/signup", async (req, res) => {
     firstName,
     lastName,
     phone,
+    avatar,
     bio = "Hello there <3",
   } = req.body;
 
@@ -372,6 +374,7 @@ app.post("/signup", async (req, res) => {
       lastName,
       phone,
       bio,
+      avatar,
     };
 
     const result = await usersCollection.insertOne(user);

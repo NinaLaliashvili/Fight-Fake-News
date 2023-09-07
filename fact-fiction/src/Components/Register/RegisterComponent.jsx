@@ -3,6 +3,31 @@ import "./RegisterComponent.css";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import UserAvatar from "../UserAvatar/UserAvatar";
+import Pig from "../UserAvatar/avatars/pig.png";
+import Rhino from "../UserAvatar/avatars/rhino.png";
+import Bat from "../UserAvatar/avatars/bat.png";
+import Elephant from "../UserAvatar/avatars/elephant.png";
+import Elephant2 from "../UserAvatar/avatars/elephant2.png";
+import Fox from "../UserAvatar/avatars/fox.png";
+import Monkey from "../UserAvatar/avatars/monkey.png";
+import Sun from "../UserAvatar/avatars/sun.png";
+import Thumper from "../UserAvatar/avatars/thumper.png";
+import Zebra from "../UserAvatar/avatars/zebra.png";
+import { UserOutlined } from "@ant-design/icons";
+
+const profileImages = [
+  { src: Pig },
+  { src: Rhino },
+  { src: Bat },
+  { src: Elephant },
+  { src: Elephant2 },
+  { src: Fox },
+  { src: Monkey },
+  { src: Sun },
+  { src: Thumper },
+  { src: Zebra },
+];
 
 const RegisterComponent = () => {
   const [error, setError] = useState(false);
@@ -17,7 +42,9 @@ const RegisterComponent = () => {
     firstName: "",
     lastName: "",
     phone: "",
+    avatar: "",
   });
+  const defaultUserIcon = <UserOutlined />;
 
   const notifyError = (message) => {
     toast.error(`${message}, sorry!`, {
@@ -41,10 +68,21 @@ const RegisterComponent = () => {
     });
   };
 
+  const handleAvatarSelected = (avatarUrl) => {
+    setFormState({
+      ...formState,
+      avatar: avatarUrl,
+    });
+  };
+
   const handleRegister = async (event) => {
     event.preventDefault();
 
     for (let key in formState) {
+      if (key === "avatar") {
+        continue; // Skip the "avatar" field
+      }
+
       if (formState[key] === "") {
         notifyError(
           `Please fill in the ${key
@@ -96,6 +134,14 @@ const RegisterComponent = () => {
         return;
       }
 
+      if (!formState.avatar) {
+        const randomAvatarIndex = Math.floor(
+          Math.random() * profileImages.length
+        );
+        const randomAvatar = profileImages[randomAvatarIndex];
+        handleAvatarSelected(randomAvatar.src);
+      }
+
       const response = await axios.post(
         "http://localhost:3082/signup",
         formState
@@ -109,6 +155,7 @@ const RegisterComponent = () => {
       setErrorMessage("Failed to sign up");
     }
   };
+
   return (
     <div>
       <ToastContainer theme="light" />
@@ -117,6 +164,11 @@ const RegisterComponent = () => {
       <div className="registerContainer">
         <div className="register">
           <h1>Register </h1>
+          <UserAvatar
+            avatarSelected={handleAvatarSelected}
+            profileImages={profileImages}
+            defaultAvatar={defaultUserIcon}
+          />
           <form onSubmit={handleRegister}>
             <input
               className="input"
