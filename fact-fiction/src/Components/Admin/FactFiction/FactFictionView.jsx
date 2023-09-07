@@ -207,7 +207,7 @@ export const FactFictionView = () => {
   const sendImgToServerGetLink = () => {
     const formData = new FormData();
 
-    formData.append("file", img);
+    formData.append("image", img);
 
     for (const value of formData.values()) {
       console.log(value);
@@ -227,18 +227,22 @@ export const FactFictionView = () => {
           }
         )
         .then((resp) => {
-          notifyUserSuccess(
-            "your img saved in our server! we sent back a link, you'll see it in the image link box- now you can submit your full edit!"
-          );
+          if (!resp.url) {
+            notifyUserError("sorry, that didn't quite work! Try again");
+          } else if (resp.url) {
+            notifyUserSuccess(
+              "your img saved in our server! we sent back a link, you'll see it in the image link box- now you can submit your full edit!"
+            );
+
+            setValues({
+              ...values,
+              imgLink: resp.url,
+            });
+            setTogglePic(!togglePic);
+            //toggle back to the url view
+          }
 
           // set value of imglink input to resp from cloudinary, then allow user to send
-
-          setValues({
-            ...values,
-            imgLink: resp.data,
-          });
-          setTogglePic(!togglePic);
-          //toggle back to the url view
         })
         .catch((err) => {
           console.log(err);
@@ -356,7 +360,9 @@ export const FactFictionView = () => {
                       type="file"
                       placeholder="upload image.."
                       onChange={handleUserUploadImg}
+                      name="image"
                     />
+
                     <button onClick={sendImgToServerGetLink}> Set Image</button>
                   </div>
                 )}
