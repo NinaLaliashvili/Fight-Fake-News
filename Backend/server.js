@@ -196,7 +196,7 @@ io.on("connection", (socket) => {
         userId === currentSession.player1 ? "player1Score" : "player2Score";
       const newScore = isCorrect
         ? currentSession[fieldToUpdate] + 1
-        : currentSession[fieldToUpdate];
+        : currentSession[fieldToUpdate] - 1;
 
       await gameSessionsCollection.updateOne(
         { roomId },
@@ -209,7 +209,10 @@ io.on("connection", (socket) => {
         { $set: { score: newScore, updatedAt: new Date() } }
       );
 
+      console.log("Emitting scoreUpdate", { opponentScore: newScore });
       socket.to(roomId).emit("scoreUpdate", { opponentScore: newScore });
+
+      console.log("Emitting scoreUpdate", { yourScore: newScore });
       socket.emit("scoreUpdate", { yourScore: newScore });
     });
 

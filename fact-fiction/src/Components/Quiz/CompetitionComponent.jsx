@@ -36,6 +36,7 @@ const CompetitionComponent = () => {
   const [opponentSelectedOption, setOpponentSelectedOption] = useState(null);
   const [matchFound, setMatchFound] = useState(false);
   const [quizEnded, setQuizEnded] = useState(false);
+  const [quizComplete, setQuizComplete] = useState(false);
 
   useEffect(() => {
     axios
@@ -90,14 +91,14 @@ const CompetitionComponent = () => {
 
   const handleAnswer = (isCorrect) => {
     // Update score based on the answer and notify the backend
-    if (isCorrect) {
-      setYourScore((prevScore) => prevScore + 1);
-    }
-    socket.emit("answer", { isCorrect /* Your User ID */ });
+    // if (isCorrect) {
+    //   setYourScore((prevScore) => prevScore + 1);
+    // }
+    socket.emit("answer", { isCorrect, userId });
   };
 
   const handleEndGame = () => {
-    socket.emit("endGame" /* Your User ID */);
+    socket.emit("endGame", userId);
   };
 
   const handleOptionChange = (option) => {
@@ -129,7 +130,13 @@ const CompetitionComponent = () => {
         type
       );
     }
-
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setSelectedOption(null);
+    } else {
+      setQuizComplete(true);
+      handleSubmit();
+    }
     const totalQuestionsAnswered =
       newNumOfCorrectAnswers + newNumOfWrongAnswers;
     const averageScore =
@@ -192,28 +199,11 @@ const CompetitionComponent = () => {
     }
   };
 
-  const configBasicAnimation = { tension: 280, friction: 120 };
-
   const currentFact = questions[currentIndex];
   const currentQuestion = currentFact?.title || "Loading...";
   const currentQuestionDescription =
     currentFact?.description || "Fetching description...";
   const currentImg = currentFact?.imgLink || "fetching image";
-
-  const springsUpDown = useSpring({
-    from: { y: 0, x: 0 },
-    to: async (next, cancel) => {
-      await next({ y: 5 });
-      await next({ x: 5 });
-      await next({ y: 0 });
-      await next({ x: 10 });
-      await next({ y: 5 });
-      await next({ x: 15 });
-      await next({ x: 0 });
-    },
-    loop: true,
-    config: configBasicAnimation,
-  });
 
   return (
     <div className="quiz-containerr">
@@ -228,8 +218,8 @@ const CompetitionComponent = () => {
           </div>
           <div>
             <main className="quiz-content">
-              <span>Your Score: {yourScore.toFixed(1)}%</span>
-              <span>Opponent's Score: {opponentScore.toFixed(1)}%</span>
+              <span>Your Score: {runningAverageScore.toFixed(1)}%</span>
+              <span>Opponent's Score: {"opponents score".toFixed(1)}%</span>
               <p>{currentQuestion}</p>
               <p>{currentQuestionDescription}</p>
               <div className="options">
@@ -252,8 +242,11 @@ const CompetitionComponent = () => {
                   Fiction
                 </label>
               </div>
-              <button onClick={handleNext}>Next</button>
-              <button onClick={handleSubmit}>End Game and See Results</button>
+              {quizComplete ? (
+                <p>You are done</p>
+              ) : (
+                <button onClick={handleNext}>Next</button>
+              )}
             </main>
           </div>
         </>
