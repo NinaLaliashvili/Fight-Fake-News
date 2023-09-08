@@ -98,7 +98,7 @@ const SubmitFactComponent = () => {
       </header> */}
       {!submitted ? (
         <main>
-          <h3>
+          <h3 className="center, bla">
             Got a cool fact or conspiracy theory to share? We're all ears! Dive
             in and let us know your interesting truths or theories. But before
             you do, remember:

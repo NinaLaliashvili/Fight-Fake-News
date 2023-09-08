@@ -1,16 +1,25 @@
 import React, { useState, useEffect, useContext } from "react";
+// import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./QuizComponent.css";
 import { userScoreContext } from "../../Context/UserScoreContext";
 import socketIOClient from "socket.io-client";
-import { ToastContainer, toast } from "react-toastify";
 import { LoginContext } from "../../Context/AuthContext";
 import { useSpring, animated } from "@react-spring/web";
+import { ToastContainer, toast } from "react-toastify";
+import { configBasicAnimation } from "../../helpers/animations";
+import { useNavigate } from "react-router-dom";
+
+const cow = require("../Home/cow.png");
 
 const ENDPOINT = "http://localhost:3082";
 let socket;
+let roomId;
 
 const CompetitionComponent = () => {
+  const navigate = useNavigate();
+  const { userId, token, username } = useContext(LoginContext);
+  // const navigate = useNavigate();
   const {
     numOfCorrectAnswers,
     setNumOfCorrectAnswers,
@@ -22,12 +31,24 @@ const CompetitionComponent = () => {
     recordAnswer,
   } = useContext(userScoreContext);
 
+  const categories = [
+    "Random",
+    "Science",
+    "History",
+    "Entertainment",
+    "Geography",
+    "Politics",
+    "Conspiracy",
+    "Culture",
+    "Religion",
+  ];
+
+  const [selectedCategory, setSelectedCategory] = useState("Random");
   const [isLoading, setIsLoading] = useState(true);
   const [opponentName, setOpponentName] = useState("");
   const [yourScore, setYourScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
-  const [winner, setWinner] = useState("");
-  const { userId, token } = useContext(LoginContext);
+  const [winner, setWinner] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -36,9 +57,15 @@ const CompetitionComponent = () => {
   const [opponentSelectedOption, setOpponentSelectedOption] = useState(null);
   const [matchFound, setMatchFound] = useState(false);
   const [quizEnded, setQuizEnded] = useState(false);
-  const [quizComplete, setQuizComplete] = useState(false);
+  const [userResults, setUserResult] = useState({
+    winner: null,
+    yourScore: null,
+    opponentScore: null,
+  });
+  const [navigateToQuiz, setNavigateToQuiz] = useState(false);
 
   useEffect(() => {
+    console.log("Initial useEffect triggered");
     axios
       .get("http://localhost:3082/approved-facts")
       .then((response) => {
@@ -48,40 +75,47 @@ const CompetitionComponent = () => {
       })
       .catch((error) => {
         console.error("Error fetching approved facts:", error);
+        setIsLoading(false);
+        // maybe set some error state here to indicate the failure in your UI
       });
-
-    socket = socketIOClient(ENDPOINT);
-
-    console.log("Client side userId:", userId);
-    console.log("Client side token:", token);
-    // Initialize Socket.IO Connection
-    socket = socketIOClient(ENDPOINT, {
-      query: { userId, token },
-    });
-
+    socket = socketIOClient(ENDPOINT, { query: { userId, token } });
     socket.on("connect", () => {
       socket.emit("enterMatch", userId);
     });
 
-    socket.on("waiting", () => {
+    socket.on("waiting", (data) => {
+      setRoomId(data.roomId);
       setIsLoading(true);
     });
 
     socket.on("matched", (data) => {
-      console.log("Matched event data: ", data);
+      setRoomId(data.roomId);
       setIsLoading(false);
       setOpponentName(data.opponentName);
       toast.success(`You are matched with ${data.opponentName}`);
     });
 
     socket.on("scoreUpdate", (data) => {
-      console.log("Received Scores:", data);
-      setYourScore(data.yourScore);
-      setOpponentScore(data.opponentScore);
+      if (data.yourScore !== undefined) {
+        setYourScore(data.yourScore);
+      }
+
+      if (data.opponentScore !== undefined) {
+        setOpponentScore(data.opponentScore);
+      }
     });
 
-    socket.on("endGame", (data) => {
-      setWinner(data.winner);
+    socket.on("endGame", ({ winner, player1Score, player2Score }) => {
+      console.log("Game ended");
+      console.log("Winner: ", winner);
+      console.log("Player 1 Score: ", player1Score);
+      console.log("Player 2 Score: ", player2Score);
+      setQuizEnded(true);
+      setUserResult({
+        winner,
+        yourScore: player1Score, // Adjust this according to who the player is
+        opponentScore: player2Score, // Adjust this according to who the player is
+      });
     });
 
     return () => {
@@ -89,16 +123,36 @@ const CompetitionComponent = () => {
     };
   }, []);
 
-  const handleAnswer = (isCorrect) => {
-    // Update score based on the answer and notify the backend
-    // if (isCorrect) {
-    //   setYourScore((prevScore) => prevScore + 1);
-    // }
-    socket.emit("answer", { isCorrect, userId });
+  const fetchQuestionsByCategory = (category) => {
+    let apiUrl = "http://localhost:3082/approved-facts";
+
+    if (category !== "Random") {
+      apiUrl += `?category=${category}`;
+    }
+
+    axios
+      .get(apiUrl)
+      .then((response) => {
+        const allQuestions = response.data;
+        if (!allQuestions) {
+          return;
+        }
+        const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+        setQuestions(shuffled.slice(0, 10));
+      })
+      .catch((error) => {
+        console.error("Error fetching approved facts:", error);
+      });
   };
 
-  const handleEndGame = () => {
-    socket.emit("endGame", userId);
+  useEffect(() => {
+    fetchQuestionsByCategory(selectedCategory);
+  }, [selectedCategory]);
+
+  const notifyUserSelect = (message) => {
+    toast.error(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
   };
 
   const handleOptionChange = (option) => {
@@ -106,14 +160,24 @@ const CompetitionComponent = () => {
   };
 
   const handleNext = () => {
-    if (!selectedOption) {
-      toast.error("You must select an answer to continue!");
+    console.log("handleNext triggered");
+    const currentFact = questions[currentIndex];
+
+    if (!currentFact) {
+      console.error("currentFact is undefined");
       return;
     }
-
-    const { type } = questions[currentIndex];
+    if (!selectedOption) {
+      notifyUserSelect("must select an answer to continue the quest!");
+      return;
+    }
     let newNumOfCorrectAnswers = numOfCorrectAnswers;
     let newNumOfWrongAnswers = numOfWrongAnswers;
+
+    const { type } = questions[currentIndex];
+
+    let isCorrect = selectedOption === type;
+    socket.emit("answer", { isCorrect, roomId });
 
     if (type === selectedOption) {
       newNumOfCorrectAnswers += 1;
@@ -130,13 +194,7 @@ const CompetitionComponent = () => {
         type
       );
     }
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      setSelectedOption(null);
-    } else {
-      setQuizComplete(true);
-      handleSubmit();
-    }
+
     const totalQuestionsAnswered =
       newNumOfCorrectAnswers + newNumOfWrongAnswers;
     const averageScore =
@@ -146,57 +204,34 @@ const CompetitionComponent = () => {
     setNumOfWrongAnswers(newNumOfWrongAnswers);
     setRunningAverageScore(averageScore);
 
+    if (type === selectedOption) {
+      newNumOfCorrectAnswers += 1;
+      recordAnswer(
+        `${currentFact.title} - ${currentFact.description}`,
+        selectedOption,
+        type
+      );
+      socket.emit("answer", { isCorrect: true, roomId });
+    } else {
+      newNumOfWrongAnswers += 1;
+      recordAnswer(
+        `${currentFact.title} - ${currentFact.description}`,
+        selectedOption,
+        type
+      );
+      socket.emit("answer", { isCorrect: false, roomId });
+    }
+
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setSelectedOption(null);
     } else {
       handleSubmit();
     }
-
-    // Send the averageScore to the server to update the multiplayer score
-    axios
-      .post("http://localhost:3082/updateScore", {
-        roomId: roomId,
-        score: averageScore,
-      })
-      .then((response) => {
-        // Handle response (if needed)
-      })
-      .catch((error) => {
-        console.error("Error updating score:", error);
-      });
-
-    // Emit score to other players in the room
-    socket.emit("sendScore", { roomId, score: averageScore });
   };
 
   const handleSubmit = () => {
-    setUserResults(runningAverageScore);
-    // navigate("/results");
-
-    if (token) {
-      axios
-        .post(
-          "http://localhost:3082/save-score",
-          {
-            userId: userId,
-            score: runningAverageScore,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error("Error saving score:", error);
-        });
-    } else {
-      console.error("No token available.");
-    }
+    socket.emit("endGame");
   };
 
   const currentFact = questions[currentIndex];
@@ -205,52 +240,160 @@ const CompetitionComponent = () => {
     currentFact?.description || "Fetching description...";
   const currentImg = currentFact?.imgLink || "fetching image";
 
+  const springsUpDown = useSpring({
+    from: { y: 0, x: 0 },
+    to: async (next, cancel) => {
+      await next({ y: 5 });
+      await next({ x: 5 });
+      await next({ y: 0 });
+      await next({ x: 10 });
+      await next({ y: 5 });
+      await next({ x: 15 });
+      await next({ x: 0 });
+    },
+    loop: true,
+    config: configBasicAnimation,
+  });
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    setCurrentIndex(0);
+    fetchQuestionsByCategory(category);
+  };
+
+  if (quizEnded) {
+    return (
+      <div className="winner-section">
+        <h2>Game Ended</h2>
+        <p className="winner-announcement">
+          <span className="trophy-icon">🏆</span>
+          Winner: <span className="winner-name">{userResults.winner}</span>
+        </p>
+        <div className="score-board">
+          <p>
+            Your Score: <span className="score">{yourScore.toFixed(1)}%</span>
+          </p>
+          <p>
+            Opponent's Score:{" "}
+            <span className="score">{opponentScore.toFixed(1)}%</span>
+          </p>
+        </div>
+        <button className="play-again-button" onClick={() => navigate("/quiz")}>
+          Play again
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="quiz-containerr">
-      <ToastContainer />
-      <h1>Quiz Game</h1>
-      {isLoading ? (
-        <p>Waiting for other user to join...</p>
-      ) : (
-        <>
-          <div>
-            {opponentName && <p>You are playing with {opponentName}</p>}
+    <div className="quiz-container">
+      <aside className="sidebar">
+        <h4 className="sidebar-header">Pick a Category</h4>
+        <ul className="category-list">
+          {categories.map((category) => (
+            <li
+              key={category}
+              className={`category-item ${
+                selectedCategory === category ? "active-category" : ""
+              }`}
+              onClick={() => handleCategoryClick(category)}
+            >
+              {category}
+            </li>
+          ))}
+        </ul>
+      </aside>
+      <ToastContainer theme="light" />
+      <div className="main-content">
+        <h1 className="quiz-header">Quiz Game</h1>
+        {opponentName && !isLoading && (
+          <div className="opponent-banner">
+            <h2>
+              {opponentName
+                ? `You are playing with ${opponentName.split(" ")[0]} now`
+                : ""}
+            </h2>
+            <p className="think">
+              Think fast! If your opponent finishes before you, the game ends
+              for both players. Don't let them beat you to it! 💨
+            </p>
           </div>
-          <div>
-            <main className="quiz-content">
-              <span>Your Score: {runningAverageScore.toFixed(1)}%</span>
-              <span>Opponent's Score: {"opponents score".toFixed(1)}%</span>
-              <p>{currentQuestion}</p>
-              <p>{currentQuestionDescription}</p>
-              <div className="options">
-                <label>
-                  <input
-                    type="radio"
-                    value="fact"
-                    checked={selectedOption === "fact"}
-                    onChange={() => handleOptionChange("fact")}
-                  />
-                  Fact
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    value="fiction"
-                    checked={selectedOption === "fiction"}
-                    onChange={() => handleOptionChange("fiction")}
-                  />
-                  Fiction
-                </label>
-              </div>
-              {quizComplete ? (
-                <p>You are done</p>
-              ) : (
-                <button onClick={handleNext}>Next</button>
-              )}
-            </main>
-          </div>
-        </>
-      )}
+        )}
+        <div>
+          {isLoading ? (
+            <div className="loading-container">
+              <p>Waiting for other user to join...</p>
+            </div>
+          ) : (
+            <>
+              <main className="quiz-content">
+                {/* <span>Score: {runningAverageScore.toFixed(1)}%</span> */}
+                <div className="scoreboard">
+                  <p className="score-your">
+                    Your Score: <span>{yourScore.toFixed(1)}%</span>
+                  </p>
+                  <p className="score-opponent">
+                    Opponent's Score: <span>{opponentScore.toFixed(1)}%</span>
+                  </p>
+                </div>
+                <p className="current-question">{currentQuestion}</p>
+                <p className="current-question">{currentQuestionDescription}</p>
+                <div className="options">
+                  <div className="center">
+                    <div>
+                      <img
+                        className="immmg"
+                        src={currentImg}
+                        alt={`well ur img didn't load but it is of ${currentQuestion}`}
+                      />
+                    </div>
+                    <label>
+                      <input
+                        type="radio"
+                        value="fact"
+                        checked={selectedOption === "fact"}
+                        onChange={() => handleOptionChange("fact")}
+                      />
+                      Fact
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        value="fiction"
+                        checked={selectedOption === "fiction"}
+                        onChange={() => handleOptionChange("fiction")}
+                      />
+                      Fiction
+                    </label>
+                    <span>
+                      <animated.img
+                        src={cow}
+                        alt="cow"
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 4,
+                          ...springsUpDown,
+                        }}
+                        onClick={() =>
+                          notifyUserSelect(
+                            "no bullshit plz u can't touch this; knowledge comes in three's so where are you going 'to'? think literally"
+                          )
+                        }
+                      />
+                    </span>
+                  </div>
+                  <button onClick={handleNext}>Next</button>
+
+                  <button onClick={handleSubmit}>
+                    End Game and See Results
+                  </button>
+                </div>
+              </main>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

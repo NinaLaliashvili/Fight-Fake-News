@@ -136,6 +136,22 @@ function authenticateToken(req, res, next) {
 }
 
 //===============================Socket Io===============================================
+const determineWinner = (
+  player1Score,
+  player2Score,
+  player1Details,
+  player2Details
+) => {
+  let winner;
+  if (player1Score > player2Score) {
+    winner = player1Details.firstName;
+  } else if (player1Score < player2Score) {
+    winner = player2Details.firstName;
+  } else {
+    winner = "It's a tie!";
+  }
+  return winner;
+};
 
 io.on("connection", (socket) => {
   const token = socket.handshake.query.token;
@@ -157,37 +173,109 @@ io.on("connection", (socket) => {
       return socket.disconnect(true);
     }
 
-    socket.on("enterMatch", () => {
+    socket.on("enterMatch", async () => {
+      console.log("enterMatch event triggered by user:", userId);
       if (waitingPlayer) {
+        console.log("Joining existing room:", waitingPlayer.room);
         socket.join(waitingPlayer.room);
-        socket.to(waitingPlayer.room).emit("matched", { opponentName: userId });
-        socket.emit("matched", { opponentName: waitingPlayer.userId });
+
+        try {
+          // Create a new game session in the database with the correct roomId and initial scores
+          await gameSessionsCollection.insertOne({
+            roomId: waitingPlayer.room,
+            player1: waitingPlayer.userId,
+            player2: userId,
+            player1Score: 0,
+            player2Score: 0,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+          console.log("New game session created");
+        } catch (error) {
+          console.error("Failed to create new game session:", error);
+          // Handle error (you might emit an error event to the clients)
+        }
+
+        try {
+          // Get the names of both the users to send in the 'matched' event
+          const currentUser = await usersCollection.findOne({
+            _id: new ObjectId(userId),
+          });
+          const waitingUser = await usersCollection.findOne({
+            _id: new ObjectId(waitingPlayer.userId),
+          });
+
+          if (!currentUser || !waitingUser) {
+            console.error("User not found.");
+            return socket.disconnect(true);
+          }
+
+          console.log("Emitting 'matched' event to room with details:", {
+            opponentName: currentUser.firstName, // Fixed here
+            roomId: waitingPlayer.room,
+          });
+          socket.to(waitingPlayer.room).emit("matched", {
+            opponentName: currentUser.firstName, // Fixed here
+            roomId: waitingPlayer.room,
+          });
+
+          console.log("Emitting 'matched' event to self with details:", {
+            opponentName: waitingUser.firstName, // Fixed here
+            roomId: waitingPlayer.room,
+          });
+
+          socket.emit("matched", {
+            opponentName: waitingUser.firstName, // Fixed here
+            roomId: waitingPlayer.room,
+          });
+        } catch (error) {
+          console.error("Failed to get usernames:", error);
+          // Handle the error appropriately
+        }
+
         waitingPlayer = null;
       } else {
         const room = `room-${userId}`;
         socket.join(room);
         waitingPlayer = { userId, room, socketId: socket.id };
+
+        console.log("Emitting 'waiting' event with details:", {
+          message: "Waiting for other user to join the room",
+          roomId: room,
+        });
+
         socket.emit("waiting", {
           message: "Waiting for other user to join the room",
+          roomId: room,
         });
       }
     });
 
     socket.on("disconnect", () => {
+      console.log("disconnect event triggered by user:", userId);
       if (waitingPlayer && waitingPlayer.socketId === socket.id) {
+        console.log("Waiting player cleared as they have disconnected");
         waitingPlayer = null;
       }
     });
 
     socket.on("answer", async (data) => {
+      console.log(
+        "answer event triggered by user:",
+        userId,
+        "with data:",
+        data
+      );
       // Assuming that data contains { isCorrect, roomId }
       const roomId = data.roomId;
       const isCorrect = data.isCorrect;
 
       // Fetch current game session based on roomId
       const currentSession = await gameSessionsCollection.findOne({ roomId });
+      console.log("Current game session fetched:", currentSession);
 
       if (!currentSession) {
+        console.log("Game session not found, emitting error event");
         return socket.emit("error", { message: "Game session not found" });
       }
 
@@ -202,12 +290,36 @@ io.on("connection", (socket) => {
         { roomId },
         { $set: { [fieldToUpdate]: newScore, updatedAt: new Date() } }
       );
+      console.log("Game session updated with new score");
 
       // Update multiplayerScoresCollection
       await multiplayerScoresCollection.updateOne(
         { gameId: roomId, playerId: userId },
         { $set: { score: newScore, updatedAt: new Date() } }
       );
+
+      const totalQuestions = 10;
+      if (currentSession[fieldToUpdate] >= totalQuestions - 1) {
+        const player1Details = await usersCollection.findOne({
+          _id: new ObjectId(currentSession.player1),
+        });
+        const player2Details = await usersCollection.findOne({
+          _id: new ObjectId(currentSession.player2),
+        });
+
+        const winner = determineWinner(
+          currentSession.player1Score,
+          currentSession.player2Score,
+          player1Details,
+          player2Details
+        );
+        io.to(roomId).emit("endGame", {
+          winner,
+          player1Score: currentSession.player1Score,
+          player2Score: currentSession.player2Score,
+        });
+      }
+      console.log("Multiplayer scores collection updated with new score");
 
       console.log("Emitting scoreUpdate", { opponentScore: newScore });
       socket.to(roomId).emit("scoreUpdate", { opponentScore: newScore });
@@ -217,32 +329,69 @@ io.on("connection", (socket) => {
     });
 
     socket.on("endGame", async () => {
+      console.log("endGame event triggered by user:", userId);
       const roomId = `room-${userId}`;
 
-      // Update the game session status to 'ended'
-      await gameSessionsCollection.updateOne(
-        { roomId },
-        {
-          $set: { status: "ended", endedAt: new Date(), updatedAt: new Date() },
-        }
-      );
-
       const currentSession = await gameSessionsCollection.findOne({ roomId });
+      console.log("Current game session fetched:", currentSession);
+
+      if (!currentSession) {
+        console.log("Game session not found for endGame event");
+        return; // Add appropriate handling for non-existent session
+      }
+
+      const player1Score = currentSession.player1Score;
+      const player2Score = currentSession.player2Score;
+
+      // Fetch user details
+      const player1Details = await usersCollection.findOne({
+        _id: new ObjectId(currentSession.player1),
+      });
+      const player2Details = await usersCollection.findOne({
+        _id: new ObjectId(currentSession.player2),
+      });
+
+      if (!player1Details || !player2Details) {
+        console.log("Could not fetch user details.");
+        return;
+      }
 
       let winner;
-      if (currentSession.player1Score > currentSession.player2Score) {
-        winner = currentSession.player1;
-      } else if (currentSession.player1Score < currentSession.player2Score) {
-        winner = currentSession.player2;
+      if (player1Score > player2Score) {
+        winner = player1Details.firstName;
+      } else if (player1Score < player2Score) {
+        winner = player2Details.firstName;
       } else {
         winner = "It's a tie!";
       }
 
-      socket.to(roomId).emit("endGame", { winner });
-      socket.emit("endGame", { winner });
+      const winner1 = determineWinner(
+        player1Score,
+        player2Score,
+        player1Details,
+        player2Details
+      );
+      io.to(roomId).emit("endGame", { winner1, player1Score, player2Score });
+
+      console.log("Determining the winner:", winner);
+
+      console.log("Emitting endGame to room with data:", {
+        winner,
+        player1Score,
+        player2Score,
+      });
+
+      socket.to(roomId).emit("endGame", { winner, player1Score, player2Score });
+      console.log("Emitting endGame to self with data:", {
+        winner,
+        player1Score,
+        player2Score,
+      });
+      socket.emit("endGame", { winner, player1Score, player2Score });
     });
   });
 });
+
 // -------------------------- Start Server Side----------------------------
 
 //General api route
@@ -718,6 +867,24 @@ app.post("/updateScore", async (req, res) => {
   } catch (error) {
     console.error("Error updating score:", error);
     res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+app.get("/getScores/:roomId", async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const session = await gameSessionsCollection.findOne({ roomId });
+
+    if (!session) {
+      return res.status(404).send("Game session not found");
+    }
+
+    const { player1Score, player2Score } = session;
+
+    res.json({ player1Score, player2Score });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
   }
 });
 

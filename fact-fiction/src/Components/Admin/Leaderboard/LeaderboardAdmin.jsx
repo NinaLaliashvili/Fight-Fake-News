@@ -40,7 +40,6 @@ export const LeaderboardAdmin = () => {
 
   return (
     <div>
-      <h1>Admin View</h1>
       <h2>Users</h2>
       {users.map((user) => (
         <div className="userrs" key={user._id}>

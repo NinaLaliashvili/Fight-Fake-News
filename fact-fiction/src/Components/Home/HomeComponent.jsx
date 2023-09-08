@@ -85,7 +85,7 @@ const HomeComponent = () => {
   };
 
   useEffect(() => {
-    console.log('Avatar URL updated:', avatar);
+    console.log("Avatar URL updated:", avatar);
   }, [avatar]);
 
   return (
@@ -96,12 +96,33 @@ const HomeComponent = () => {
           <h2 className="hero-text">
             {isLoggedIn ? (
               <>
-                {`Hey there, ${firstName} ${lastName}! `}
-                <span className="user-avatar">
-                  <img src={avatar} alt="User Avatar" />
-                </span>
-                🌟 Ready to embark on an information journey? Quest time! Grab
-                your detective hat and let's uncover some truths together! 🕵️‍♂️
+                <div
+                  className="user-avatar"
+                  style={{
+                    position: "relative",
+                    width: "100px",
+                    height: "100px",
+                  }}
+                >
+                  <img
+                    className="avatar"
+                    src={avatar}
+                    alt="User Avatar"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "50%",
+                      border: "2px solid #fff",
+                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+                <div className="heyyy">
+                  {`Hey there, ${firstName} ${lastName}! `}
+                  🌟 Ready to embark on an information journey? Quest time! Grab
+                  your detective hat and let's uncover some truths together! 🕵️‍♂️
+                </div>
               </>
             ) : (
               `Welcome to Fact or Fiction Fun Quiz. Dive into a world where myths unravel and truths shine. Are you ready?`
@@ -125,7 +146,7 @@ const HomeComponent = () => {
 
           <img src={alienImage} alt="Fact vs Myth" className="hero-image" />
         </section>
-
+        <SlideShow />
         <div className="fun-fact">
           <h3>Did you know? 🧐</h3>
           <p>
@@ -267,8 +288,6 @@ const HomeComponent = () => {
             />
           </div>
         </div>
-
-        <SlideShow />
       </main>
     </div>
   );

@@ -334,13 +334,13 @@ export const FactFictionView = () => {
       </div>
 
       <div className="approved-unapproved-title">
-        <h2>Unapproved Facts</h2>{" "}
+        <h2 className="white">Unapproved Facts</h2>{" "}
         <Icon
           i={toggle ? "toggle_on" : "toggle_off"}
           onClick={handleToggleClick}
           className="toggle-icon"
         />
-        <h2>Approved Facts</h2>
+        <h2 className="white">Approved Facts</h2>
       </div>
 
       <div className="displaying-facts">

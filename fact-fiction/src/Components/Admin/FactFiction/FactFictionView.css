@@ -98,12 +98,12 @@ button {
 
 select {
   background-color: transparent;
-  color: black;
-  border: 1px solid #cb81d0;
+  color: white;
+  border: 1px solid black;
   padding: 0.5rem;
   cursor: pointer;
   transition: all 0.3s;
-  border: 2px solid #cb81d0;
+  border: 2px solid white;
   border-radius: 25px;
   margin-top: 8px;
 }
@@ -120,13 +120,13 @@ select {
   flex-direction: column;
   align-items: center;
   justify-content: baseline;
-  border: 1px solid #cb81d0;
+  border: 1px solid white;
   border-radius: 2px;
   padding: 6px;
 }
 
 .column {
-  border: 1px solid #cb81d0;
+  border: 1px solid white;
   padding: 40px;
   background-color: #f7f7f7;
   border-radius: 2px;
@@ -149,4 +149,20 @@ select {
     max-width: 80px;
     height: auto;
   }
+}
+
+.approved-inputs input,
+.approved-inputs select {
+  border: 2px solid white;
+}
+
+.fact-item input,
+.fact-item select {
+  border: 2px solid white;
+}
+input::placeholder {
+  color: white;
+}
+textarea::placeholder {
+  color: white;
 }

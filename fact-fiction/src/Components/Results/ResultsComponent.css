@@ -2,64 +2,80 @@
   padding: 1em;
   display: flex;
   justify-content: center;
-  background-color: #f6f6f6;
+  background-color: #efefef;
 }
 
 .results-content {
   padding: 2rem;
   width: 80%;
   max-width: 800px;
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
   background-color: #fff;
   margin: 3rem auto;
-  transition: transform 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .results-content:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .correct,
 .wrong {
   font-weight: bold;
-  padding: 0.2rem 0.5rem;
-  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
   margin: 0.5rem 0;
   display: inline-block;
 }
 
 .correct {
-  background-color: #e6ffe6;
-  color: #4caf50;
+  background-color: #ccffcc;
+  color: #2c7a2c;
 }
 
 .wrong {
-  background-color: #ffe6e6;
-  color: #ff5252;
+  background-color: #ffcccc;
+  color: #7a2c2c;
+}
+
+a {
+  transition: color 0.3s;
 }
 
 a:hover {
+  color: #660066;
   text-decoration: underline;
 }
 
 button {
-  background-color: #cb81d0;
+  background-color: #990099;
   border: none;
   padding: 0.7rem 1.5rem;
   color: white;
-  border-radius: 25px;
+  border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: bold;
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   margin-right: 0.5rem;
+}
+
+button:hover {
+  background-color: #cc00cc;
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.3);
 }
 
 .userFact {
   font-weight: bold;
   margin-top: 1rem;
-  display: block; 
+  display: block;
   text-align: center;
+  font-size: 1rem;
+  color: #333;
+}
+.button-group {
+  margin-bottom: 30px;
 }

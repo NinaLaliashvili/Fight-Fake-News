@@ -40,9 +40,8 @@
   color: #cb81d0;
 }
 
-
 .header {
-  background: linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
+  background: linear-gradient(270deg, #ff6ec4, #7873f5, #d262e6);
   background-size: 600% 600%;
   animation: gradientBackground 15s ease infinite;
   color: white;
@@ -76,14 +75,13 @@
   transform: scale(1.1);
 }
 
-
 .dropdown-menu {
-  background: linear-gradient(270deg, #cb81d0, #fecfef, #ee8fb5);
+  background: linear-gradient(270deg, #ff6ec4, #7873f5, #44d9e8);
   background-size: 600% 600%;
   animation: gradientBackground 15s ease infinite;
   position: absolute;
   top: 120%;
-  right: -33px; 
+  right: -33px;
   display: flex;
   flex-direction: column;
   border: 1px solid #ddd;

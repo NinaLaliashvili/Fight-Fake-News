@@ -191,12 +191,14 @@ const QuizComponent = () => {
   return (
     <div className="quiz-container">
       <aside className="sidebar">
-        <h4>Pick a Category</h4>
-        <ul>
+        <h4 className="sidebar-header">Pick a Category</h4>
+        <ul className="category-list">
           {categories.map((category) => (
             <li
               key={category}
-              className="category-item"
+              className={`category-item ${
+                selectedCategory === category ? "active-category" : ""
+              }`}
               onClick={() => handleCategoryClick(category)}
             >
               {category}
@@ -208,53 +210,65 @@ const QuizComponent = () => {
       <ToastContainer theme="light" />
 
       <main className="quiz-content">
-        <span>Score: {runningAverageScore.toFixed(1)}%</span>
-        <p>{currentQuestion}</p>
-        <p>{currentQuestionDescription}</p>
-        <div className="options">
-          <label>
-            <input
-              type="radio"
-              value="fact"
-              checked={selectedOption === "fact"}
-              onChange={() => handleOptionChange("fact")}
-            />
-            Fact
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="fiction"
-              checked={selectedOption === "fiction"}
-              onChange={() => handleOptionChange("fiction")}
-            />
-            Fiction
-          </label>
-          <span>
-            <animated.img
-              src={cow}
-              alt="cow"
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 4,
-                ...springsUpDown,
-              }}
-              onClick={() =>
-                notifyUserSelect(
-                  "no bullshit plz u can't touch this; knowledge comes in three's so where are you going 'to'? think literally"
-                )
-              }
-            />
+        <h1 className="quiz-header">
+          The Quiz Arena is Open: Go ahead if You Dare!
+        </h1>
+        <div className="scoreboard">
+          <span className="score-yourr">
+            Score: {runningAverageScore.toFixed(1)}%
+          </span>
+        </div>
+        <p className="current-question">{currentQuestion}</p>
+        <p className="current-question">{currentQuestionDescription}</p>
+        <div className="center">
+          <div>
             <img
+              className="immmg"
               src={currentImg}
               alt={`well ur img didn't load but it is of ${currentQuestion}`}
             />
-          </span>
-        </div>
-        <button onClick={handleNext}>Next</button>
+          </div>
+          <div className="options">
+            <label>
+              <input
+                type="radio"
+                value="fact"
+                checked={selectedOption === "fact"}
+                onChange={() => handleOptionChange("fact")}
+              />
+              Fact
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="fiction"
+                checked={selectedOption === "fiction"}
+                onChange={() => handleOptionChange("fiction")}
+              />
+              Fiction
+            </label>
+            <span>
+              <animated.img
+                src={cow}
+                alt="cow"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 4,
+                  ...springsUpDown,
+                }}
+                onClick={() =>
+                  notifyUserSelect(
+                    "no bullshit plz u can't touch this; knowledge comes in three's so where are you going 'to'? think literally"
+                  )
+                }
+              />
+            </span>
+          </div>
+          <button onClick={handleNext}>Next</button>
 
-        <button onClick={handleSubmit}>End Game and See Results</button>
+          <button onClick={handleSubmit}>End Game and See Results</button>
+        </div>
       </main>
     </div>
   );

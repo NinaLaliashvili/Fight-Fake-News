@@ -1,3 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Bangers&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap");
+
 @keyframes gradientBackground {
   0% {
     background-position: 0% 50%;
@@ -121,4 +127,266 @@ button:hover {
 .category-item:hover {
   background-color: #cb81d0;
   color: #fff;
+}
+
+.quiz-container {
+  display: flex;
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+  margin-bottom: 20px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  font-family: "Bangers", cursive;
+  font-size: 1.4rem;
+}
+
+.category-list {
+  list-style-type: none;
+  padding: 0;
+  font-weight: 600;
+}
+
+.category-item {
+  padding: 10px;
+  margin: 10px 0;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.category-item:hover {
+  background-color: #db73fd;
+}
+
+.active-category {
+  background-color: #db73fd;
+  color: #fff;
+}
+
+.winner-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.winner-section h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  color: #343a40;
+}
+
+.winner-announcement {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #28a745;
+  display: flex;
+  align-items: center;
+}
+
+.winner-announcement .trophy-icon {
+  font-size: 2em;
+  margin-right: 10px;
+}
+
+.winner-name {
+  font-weight: bold;
+}
+
+.score-board {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  color: #343a40;
+}
+
+.score-board .score {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.play-again-button {
+  font-size: 1em;
+  padding: 10px 20px;
+  background-color: #cb81d0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.play-again-button:hover {
+  background-color: #e7b5ea;
+  color: #333;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 2em;
+  color: pink;
+  background-color: #f9f9f9;
+}
+
+.loading-container p {
+  margin-top: 20px;
+  font-weight: bold;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.loading-container::before {
+  content: "";
+  width: 50px;
+  height: 50px;
+  border: 6px solid #f0f0f0;
+  border-top: 6px solid pink;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.scoreboard {
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(to right, #8533f9, #bb86fc);
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-top: 10px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  margin-bottom: 40px;
+}
+
+.score-your,
+.score-opponent {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.score-your {
+  color: #000000;
+}
+
+.score-your span {
+  background: #ffe600;
+  padding: 5px 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.score-opponent {
+  color: #00e5ff;
+}
+
+.score-opponent span {
+  background: #e0f7fa;
+  padding: 5px 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.think {
+  background-color: #bd6dfa;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: large;
+  font-weight: 600;
+  font-style: italic;
+  color: #ffffff;
+}
+.quiz-header {
+  font-family: "Luckiest Guy", cursive;
+}
+.current-question {
+  margin-top: 20px;
+  font-size: larger;
+  font-family: "Roboto", sans-serif;
+}
+.score-yourr {
+  font-size: 1.5rem;
+  color: #e0f7fa;
+  padding: 10px;
+}
+.immmg {
+  width: 250px;
+  height: 250px;
+  margin-bottom: 10px;
+}
+/* game mode */
+
+.game-mode-selection-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(45deg, #ff6ec4, #7873f5, #44d9e8);
+  color: #ffffff;
+}
+
+.game-mode-selection-title {
+  font-size: 3em;
+  margin-bottom: 50px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  animation: fadeIn 2s;
+  color: white;
+}
+
+.game-mode-selection-button {
+  font-size: 1.5em;
+  margin: 20px;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  background-color: #ffffff;
+  color: #ff6ec4;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.game-mode-selection-button:hover {
+  background-color: #ff88d3;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

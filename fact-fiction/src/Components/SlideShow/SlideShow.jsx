@@ -89,7 +89,7 @@ export const SlideShow = () => {
 
   return (
     <div className="slideshow-container">
-      <h2> Random Fun Facts</h2>
+      <h2 className="random"> Random Fun Facts</h2>
       {facts.map((fact, index) => (
         <div
           className={`slide ${index === currentSlide ? "active" : ""}`}

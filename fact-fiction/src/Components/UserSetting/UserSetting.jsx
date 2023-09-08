@@ -37,6 +37,7 @@ const UserSetting = () => {
   const { avatar, setAvatar } = useContext(LoginContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   const loadFacts = () => {
     axios
@@ -69,6 +70,7 @@ const UserSetting = () => {
   };
 
   const handleSave = () => {
+    setIsEditing(false);
     axios
       .put(`http://localhost:3082/user/${userId}`, {
         avatar: selectedAvatar,
@@ -91,6 +93,7 @@ const UserSetting = () => {
   };
 
   const handleCancle = () => {
+    setIsEditing(false);
     setLoggedInUser(originalUserData);
     setSelectedAvatar(originalUserData.avatar || "");
   };
@@ -112,6 +115,10 @@ const UserSetting = () => {
     setIsModalOpen(false);
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
   const imageMap = profileImages.map((image, index) => (
     <img
       key={index}
@@ -125,8 +132,6 @@ const UserSetting = () => {
   return (
     <div>
       <ToastContainer theme="light" />
-
-      <h1>User Setting</h1>
       <div className="userInfo">
         <Avatar
           size={64}
@@ -139,48 +144,62 @@ const UserSetting = () => {
 
         <Modal
           title="Choose Your Avatar"
-          open={isModalOpen}
+          visible={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}
         >
           {imageMap}
         </Modal>
-        <input
-          type="email"
-          value={loggedInUser.email || ""}
-          onChange={(e) =>
-            setLoggedInUser({ ...loggedInUser, email: e.target.value })
-          }
-          placeholder="email..."
-        />
-        <input
-          type="text"
-          value={loggedInUser.firstName || ""}
-          onChange={(e) =>
-            setLoggedInUser({ ...loggedInUser, firstName: e.target.value })
-          }
-          placeholder="first name..."
-        />
-        <input
-          type="text"
-          value={loggedInUser.lastName || ""}
-          onChange={(e) =>
-            setLoggedInUser({ ...loggedInUser, lastName: e.target.value })
-          }
-          placeholder="last name..."
-        />
-        <input
-          type="tel"
-          value={loggedInUser.phone || ""}
-          onChange={(e) =>
-            setLoggedInUser({ ...loggedInUser, phone: e.target.value })
-          }
-          placeholder="phone..."
-        />
-        <button onClick={handleSave}>Save</button>
-        <button onClick={handleCancle}>Cancel</button>
+
+        {isEditing ? (
+          <>
+            <input
+              type="email"
+              value={loggedInUser.email || ""}
+              onChange={(e) =>
+                setLoggedInUser({ ...loggedInUser, email: e.target.value })
+              }
+              placeholder="email..."
+            />
+            <input
+              type="text"
+              value={loggedInUser.firstName || ""}
+              onChange={(e) =>
+                setLoggedInUser({ ...loggedInUser, firstName: e.target.value })
+              }
+              placeholder="first name..."
+            />
+            <input
+              type="text"
+              value={loggedInUser.lastName || ""}
+              onChange={(e) =>
+                setLoggedInUser({ ...loggedInUser, lastName: e.target.value })
+              }
+              placeholder="last name..."
+            />
+            <input
+              type="tel"
+              value={loggedInUser.phone || ""}
+              onChange={(e) =>
+                setLoggedInUser({ ...loggedInUser, phone: e.target.value })
+              }
+              placeholder="phone..."
+            />
+            <button onClick={handleSave}>Save</button>
+            <button onClick={handleCancel}>Cancel</button>
+          </>
+        ) : (
+          <>
+            <p>Email: {loggedInUser.email}</p>
+            <p>First Name: {loggedInUser.firstName}</p>
+            <p>Last Name: {loggedInUser.lastName}</p>
+            <p>Phone: {loggedInUser.phone}</p>
+            <button onClick={handleEdit}>Update</button>
+          </>
+        )}
       </div>
     </div>
   );
 };
+
 export default UserSetting;

@@ -23,38 +23,55 @@ const ResultComponent = () => {
   return (
     <div className="result-container">
       <main className="results-content">
-        <h3>{`Your Score: ${runningAverageScore.toFixed(1)}%`}</h3>
-        <p>{`Correct Answers: ${numOfCorrectAnswers}`}</p>
-        <p>{`Wrong Answers: ${numOfWrongAnswers}`}</p>
-        {highScoring ? (
-          <p>
-            Great work! You are well on your way to identifying conspiracy
-            theories you encounter in everyday life.
-          </p>
-        ) : (
-          <p>You need work! Get off TikTok! Read!</p>
-        )}
+        <h3 className="score-heading">{`Your Score: ${runningAverageScore.toFixed(
+          1
+        )}%`}</h3>
+        <div className="score-details">
+          <p>{`Correct Answers: ${numOfCorrectAnswers}`}</p>
+          <p>{`Wrong Answers: ${numOfWrongAnswers}`}</p>
+        </div>
+        <p className={highScoring ? "feedback-positive" : "feedback-negative"}>
+          {highScoring
+            ? "Great work! You are well on your way to identifying conspiracy theories you encounter in everyday life."
+            : "You need work! Get off TikTok! Read!"}
+        </p>
 
-        <h4>Lets Review Your Answers</h4>
-        <ul>
+        <h4 className="review-heading">Let's Review Your Answers</h4>
+        <ul className="answers-review-list">
           {userAnswers.map((answer, index) => (
-            <li key={index}>
-            <strong>Question:</strong> {answer.question} <br />
-            <strong>You answered:</strong> {answer.userAnswer === 'fact' ? 'Fact' : 'Fiction'} <br />
-            {answer.userAnswer === answer.correctAnswer ? 
-              <span className="correct" style={{color: 'green'}}>Correct!</span> :
-              <span className="wrong" style={{color: 'red'}}>
-                Incorrect! Correct answer was: {answer.correctAnswer === 'fact' ? 'Fact' : 'Fiction'}
-              </span>}
-          </li>
+            <li key={index} className="answer-item">
+              <strong>Question:</strong> {answer.question} <br />
+              <strong>You answered:</strong>{" "}
+              {answer.userAnswer === "fact" ? "Fact" : "Fiction"} <br />
+              <span
+                className={
+                  answer.userAnswer === answer.correctAnswer
+                    ? "correct"
+                    : "wrong"
+                }
+              >
+                {answer.userAnswer === answer.correctAnswer
+                  ? "Correct!"
+                  : `Incorrect! Correct answer was: ${
+                      answer.correctAnswer === "fact" ? "Fact" : "Fiction"
+                    }`}
+              </span>
+            </li>
           ))}
         </ul>
 
-        <button onClick={handlePlayAgain}>Play Again</button>
-        <button onClick={() => navigate("/leaderboard")}>
-          See the Leaderboard
-        </button>
-        <a href="/submit-fact" className="userFact">
+        <div className="button-group">
+          <button onClick={handlePlayAgain} className="play-again-button">
+            Play Again
+          </button>
+          <button
+            onClick={() => navigate("/leaderboard")}
+            className="leaderboard-button"
+          >
+            See the Leaderboard
+          </button>
+        </div>
+        <a href="/submit-fact" className="submit-fact-link">
           Submit your own fact or fiction here!
         </a>
       </main>
