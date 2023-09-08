@@ -204,6 +204,49 @@ export const FactFictionView = () => {
     console.log(img);
   };
 
+  const sendToCloudFromFrontEnd = () => {
+    const cloudName = "dh7zkorjm";
+    const preset = "unsigned";
+    const formData = new FormData();
+    formData.append("upload_preset", "unsigned");
+    formData.append("file", img);
+
+    for (const value of formData.values()) {
+      console.log(value);
+    }
+
+    try {
+      axios
+        .post(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          { formData },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((resp) => {
+          console.log(resp);
+          const url = resp.result.url;
+          console.log(url);
+
+          // setValues({
+          //   ...values,
+          //   imgLink: url
+          // });
+          // setTogglePic(!togglePic);
+          //toggle back to the url view
+        })
+        .catch((err) => {
+          notifyUserError(err);
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const sendImgToServerGetLink = () => {
     const formData = new FormData();
 
@@ -360,10 +403,13 @@ export const FactFictionView = () => {
                       type="file"
                       placeholder="upload image.."
                       onChange={handleUserUploadImg}
-                      name="image"
+                      name="file"
                     />
 
-                    <button onClick={sendImgToServerGetLink}> Set Image</button>
+                    <button onClick={sendToCloudFromFrontEnd}>
+                      {" "}
+                      Set Image
+                    </button>
                   </div>
                 )}
                 <p>{togglePic ? `add file:` : "url:"}</p>

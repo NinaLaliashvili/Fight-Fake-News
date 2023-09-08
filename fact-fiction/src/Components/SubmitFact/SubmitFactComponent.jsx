@@ -14,9 +14,28 @@ const SubmitFactComponent = () => {
   const [email, setEmail] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [type, setType] = useState("fact");
+  const [category, setCategory] = useState("");
+
+  const categories = [
+    "Random",
+    "Science",
+    "History",
+    "Entertainment",
+    "Geography",
+    "Politics",
+    "Conspiracy",
+    "Culture",
+    "Religion",
+  ];
 
   const notifyUser = (message) => {
     toast.error(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
+  const notifySuccess = (message) => {
+    toast.success(`${message}`, {
       position: toast.POSITION.TOP_RIGHT,
     });
   };
@@ -32,6 +51,7 @@ const SubmitFactComponent = () => {
       email,
       mobileNumber,
       type,
+      category,
     };
 
     fetch("http://localhost:3082/submit-fact", {
@@ -45,6 +65,7 @@ const SubmitFactComponent = () => {
       .then((data) => {
         console.log("Fact submission successful:", data);
         setSubmitted(true);
+        notifySuccess("fact submitted! yay!");
       })
       .catch((error) => {
         console.error("Error submitting fact:", error);
@@ -107,6 +128,18 @@ const SubmitFactComponent = () => {
               onChange={(e) => setSourceLink(e.target.value)}
               placeholder="Source link (Recommended)"
             />
+            <select
+              id="categorySelect"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="">--Select a Category</option>
+              {categories.map((category, index) => (
+                <option key={index} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
 
             <input
               type="text"
