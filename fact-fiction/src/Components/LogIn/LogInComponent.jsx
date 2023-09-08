@@ -32,8 +32,9 @@ const LogInComponent = () => {
         const { user, token } = response.data;
         const userId = user._id;
         const fullName = `${user.firstName} ${user.lastName}`;
+        const userAvatar = user.avatar
 
-        setLoginStatus(true, userId, fullName, token);
+        setLoginStatus(true, userId, fullName, token, userAvatar);
         localStorage.setItem("firstName", user.firstName);
         localStorage.setItem("lastName", user.lastName);
         localStorage.setItem("fullName", fullName);

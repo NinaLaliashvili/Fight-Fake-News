@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../Context/AuthContext";
 import "./HomeComponent.css";
@@ -17,7 +17,7 @@ const cuteCow = require("./cow.png");
 const fox = "https://clipart-library.com/img/2100422.jpg";
 
 const HomeComponent = () => {
-  const { isLoggedIn } = useContext(LoginContext);
+  const { isLoggedIn, avatar } = useContext(LoginContext);
 
   const navigate = useNavigate();
 
@@ -84,16 +84,28 @@ const HomeComponent = () => {
     });
   };
 
+  useEffect(() => {
+    console.log('Avatar URL updated:', avatar);
+  }, [avatar]);
+
   return (
     <div className="home-container">
       <ToastContainer theme="light" />
       <main>
         <section className="hero">
           <h2 className="hero-text">
-            {isLoggedIn
-              ? `Hey there, ${firstName} ${lastName}! 🌟
-             Ready to embark on an information journey? Quest time! Grab your detective hat and let's uncover some truths together! 🕵️‍♂️`
-              : `Welcome to Fact or Fiction Fun Quiz. Dive into a world where myths unravel and truths shine. Are you ready?`}{" "}
+            {isLoggedIn ? (
+              <>
+                {`Hey there, ${firstName} ${lastName}! `}
+                <span className="user-avatar">
+                  <img src={avatar} alt="User Avatar" />
+                </span>
+                🌟 Ready to embark on an information journey? Quest time! Grab
+                your detective hat and let's uncover some truths together! 🕵️‍♂️
+              </>
+            ) : (
+              `Welcome to Fact or Fiction Fun Quiz. Dive into a world where myths unravel and truths shine. Are you ready?`
+            )}
             <span>
               <animated.img
                 src={fox}

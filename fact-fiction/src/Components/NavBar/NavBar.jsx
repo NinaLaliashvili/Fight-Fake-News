@@ -43,19 +43,19 @@ const Navbar = () => {
   return (
     <>
       <header className="header">
-        <img
-          className="brand-logo"
-          src="https://cdn.factcheck.org/UploadedFiles/rwjf-icon-conspiracy-01-.png"
-          height="50"
-          alt="logo"
-        />
+        <div className="brand-logo-container" onClick={() => navigate("/")}>
+          <img
+            className="brand-logo"
+            src="https://cdn.factcheck.org/UploadedFiles/rwjf-icon-conspiracy-01-.png"
+            height="50"
+            alt="logo"
+          />
+        </div>
         <div className="page-name">{currentPageName}</div>
         <nav className="nav">
-          
-        <button onClick={() => navigate("/")}>Home</button>
+          <button onClick={() => navigate("/")}>Home</button>
           {isLoggedIn ? (
             <>
-              
               <button onClick={() => navigate("/usersetting")}>
                 {username}
               </button>

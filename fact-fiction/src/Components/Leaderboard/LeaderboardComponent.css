@@ -1,6 +1,6 @@
 .leaderboard-container {
   padding: 1em;
-  background: linear-gradient(120deg, #f093fb 0%, #f1d9dc 100%);
+  background: linear-gradient(120deg, #f193fb7c 0%, #f1d9dc 100%);
   animation: Gradient 15s ease infinite;
 }
 
@@ -118,3 +118,10 @@ blockquote {
 .bla {
   font-weight: 600;
 }
+
+.avatar {
+  width: 30px;
+  height: auto;
+  border-radius: 50%; 
+}
+

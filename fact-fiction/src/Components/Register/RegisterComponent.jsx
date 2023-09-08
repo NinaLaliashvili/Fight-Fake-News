@@ -135,12 +135,10 @@ const RegisterComponent = () => {
       }
 
       if (!formState.avatar) {
-        const randomAvatarIndex = Math.floor(
-          Math.random() * profileImages.length
-        );
+        const randomAvatarIndex = Math.floor(Math.random() * profileImages.length);
         const randomAvatar = profileImages[randomAvatarIndex];
-        handleAvatarSelected(randomAvatar.src);
-      }
+        formState.avatar = randomAvatar.src; 
+    }
 
       const response = await axios.post(
         "http://localhost:3082/signup",

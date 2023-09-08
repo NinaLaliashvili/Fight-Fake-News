@@ -253,10 +253,7 @@ const QuizComponent = () => {
           </span>
         </div>
         <button onClick={handleNext}>Next</button>
-        <div className="lifelines">
-          <span>50/50</span>
-          <span>Poll Audience</span>
-        </div>
+
         <button onClick={handleSubmit}>End Game and See Results</button>
       </main>
     </div>

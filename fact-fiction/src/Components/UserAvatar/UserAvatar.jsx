@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Avatar, Modal } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import "./UserAvatar.css";
+import { LoginContext } from "../../Context/AuthContext";
+
 
 const UserAvatar = ({ avatarSelected, profileImages, defaultAvatar }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userImage, setUserImage] = useState(defaultAvatar);
+  const { avatar, setAvatar } = useContext(LoginContext);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -19,7 +22,7 @@ const UserAvatar = ({ avatarSelected, profileImages, defaultAvatar }) => {
   };
 
   const handleImageChange = (imageSrc) => {
-    setUserImage(imageSrc.src);
+    setAvatar(imageSrc.src)
     avatarSelected(imageSrc.src);
     setIsModalOpen(false);
   };
@@ -41,7 +44,7 @@ const UserAvatar = ({ avatarSelected, profileImages, defaultAvatar }) => {
         title="Choose Your Avatar"
         style={{ backgroundColor: "#cb81d0", cursor: "pointer" }}
         icon={<UserOutlined />}
-        src={userImage}
+        src={avatar}
         onClick={showModal}
       />
 
@@ -51,7 +54,7 @@ const UserAvatar = ({ avatarSelected, profileImages, defaultAvatar }) => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        {imageMap}
+        <div className="modal-content">{imageMap}</div>
       </Modal>
     </div>
   );

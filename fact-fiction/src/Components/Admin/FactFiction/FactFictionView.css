@@ -10,10 +10,10 @@ img {
   width: 80px;
   border-radius: 8px;
   margin-top: 4px;
-  margin-left: 0px
+  margin-left: 0px;
 }
 h2:hover {
-  color: #cb81d0
+  color: #cb81d0;
 }
 
 .fact-item {
@@ -27,7 +27,6 @@ h2:hover {
   border-radius: 5px;
   background-color: #f7f7f7;
   width: 500px;
-  
 }
 
 .fact-item h2 {
@@ -56,9 +55,7 @@ h2:hover {
 
 .fact-item button:last-child {
   background-color: #dc3545;
-  
 }
-
 
 .approved-unapproved-title {
   display: flex;
@@ -66,8 +63,8 @@ h2:hover {
   justify-content: center;
   text-align: center;
   gap: 10px;
-  font-size: larger ;
-  margin-top: 40px
+  font-size: larger;
+  margin-top: 40px;
 }
 
 .facts-approving-container {
@@ -128,12 +125,28 @@ select {
   padding: 6px;
 }
 
-
-
 .column {
   border: 1px solid #cb81d0;
   padding: 40px;
   background-color: #f7f7f7;
   border-radius: 2px;
-  margin-top: 20px
+  margin-top: 20px;
+}
+
+@media only screen and (max-width: 768px) {
+  .fact-item {
+    width: 80%;
+    padding: 15px;
+    margin: 15px 0;
+  }
+
+  .approved-inputs {
+    flex-direction: column;
+  }
+
+  img {
+    width: 100%;
+    max-width: 80px;
+    height: auto;
+  }
 }

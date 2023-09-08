@@ -10,15 +10,14 @@
   }
 }
 
-
 .hero {
-  display: flex;    
-  flex-wrap: wrap;   
-  align-items: center;  
-  justify-content: space-between; 
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   width: 100vw;
   padding: 2% 5%;
-  position: relative; 
+  position: relative;
 }
 
 .hero-image {
@@ -37,7 +36,6 @@
   margin-top: -3%;
   z-index: 2;
 }
-
 
 .brand-logo {
   font-size: 1.5rem;
@@ -93,11 +91,10 @@
   float: right;
 }
 
-
 .in-line {
   display: flex;
   flex-direction: row;
-  justify-content: center ;
+  justify-content: center;
 }
 
 .chart {
@@ -106,3 +103,84 @@
   border-radius: 8px;
 }
 
+.user-avatar {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.user-avatar img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+@media only screen and (max-width: 769px) {
+  /* .hero {
+    display: flex;
+  } */
+  .hero-text {
+    width: 100%;
+    margin-right: 0;
+    margin-top: 20px;
+  }
+
+  .hero-image {
+    display: none;
+  }
+
+  .start-btn {
+    margin-top: 50px;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1120px) {
+  .hero {
+    flex-direction: column-reverse;
+  }
+
+  .hero-text,
+  .hero-image {
+    width: 100%;
+  }
+
+  .hero-text {
+    margin-right: 0;
+    margin-top: 20px;
+  }
+
+  .start-btn {
+    position: relative;
+    bottom: unset;
+    margin: 20px 0;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .hero {
+    flex-direction: column-reverse;
+  }
+
+  .hero-text,
+  .hero-image {
+    width: 100%;
+  }
+
+  .hero-text {
+    margin-right: 0;
+    margin-top: 20px;
+  }
+
+  .fun-fact {
+    width: 100%;
+    float: none;
+  }
+
+  .start-btn {
+    position: relative;
+    bottom: unset;
+    margin: 20px 0;
+  }
+}

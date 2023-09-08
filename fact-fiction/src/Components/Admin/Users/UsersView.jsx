@@ -67,7 +67,7 @@ export const UsersView = () => {
         <button onClick={handleSearch}>Search</button>
       </div>
 
-      <div className="users-list-contrainer ">
+      <div className="users-list-container ">
         {listUsers.map((user) =>
           user._id && user.firstName && user.lastName && user.email ? (
             <div className="box" key={user._id}>

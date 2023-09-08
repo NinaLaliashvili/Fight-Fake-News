@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "./UserSetting.css";
 import { Avatar, Modal } from "antd";
@@ -15,6 +15,7 @@ import Monkey from "../UserAvatar/avatars/monkey.png";
 import Sun from "../UserAvatar/avatars/sun.png";
 import Thumper from "../UserAvatar/avatars/thumper.png";
 import Zebra from "../UserAvatar/avatars/zebra.png";
+import { LoginContext } from "../../Context/AuthContext";
 
 const profileImages = [
   { src: Pig },
@@ -33,7 +34,7 @@ const UserSetting = () => {
   const [loggedInUser, setLoggedInUser] = useState([]);
   const [originalUserData, setOriginalUserData] = useState({});
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
-
+  const { avatar, setAvatar } = useContext(LoginContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState("");
 
@@ -80,7 +81,9 @@ const UserSetting = () => {
         loadFacts();
         localStorage.setItem("firstName", loggedInUser.firstName);
         localStorage.setItem("lastName", loggedInUser.lastName);
+        localStorage.setItem("avatar", selectedAvatar);
         notifyUserSuccess("User updated successfully!");
+        setAvatar(selectedAvatar);
       })
       .catch((err) => {
         notifyUserError("Error user update.");

@@ -192,7 +192,12 @@ const LeaderboardComponent = () => {
                 }
                 onClick={revealLizard}
               >
-                <td>{`${entry.firstName} ${entry.lastName}`}</td>
+                <td>
+                  {entry.avatar && (
+                    <img src={entry.avatar} alt="User Avatar" className="avatar" />
+                  )}
+                  {`${entry.firstName} ${entry.lastName}`}
+                </td>
                 <td>{entry.score.toFixed(1)}</td>
               </tr>
             ))}
