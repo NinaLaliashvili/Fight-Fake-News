@@ -54,36 +54,38 @@ const Navbar = () => {
         <div className="page-name">{currentPageName}</div>
         <nav className="nav">
           <button onClick={() => navigate("/")}>Home</button>
+
           {isLoggedIn ? (
             <>
               <button onClick={() => navigate("/usersetting")}>
                 {username}
               </button>
               <button onClick={handleLogout}>Logout</button>
+              <button onClick={() => navigate("/admin")}>Admin</button>
+              <button onClick={() => navigate("/gamemodel")}>Quiz</button>
+              <button onClick={() => setShowDropdown(!showDropdown)}>
+                <Icon i="menu" />
+              </button>
+              {showDropdown && (
+                <div className="dropdown-menu">
+                  <button onClick={() => navigate("/results")}>Results</button>
+                  <button onClick={() => navigate("/leaderboard")}>
+                    Leaderboard
+                  </button>
+                  <button onClick={() => navigate("/submit-fact")}>
+                    Fact Submission
+                  </button>
+                </div>
+              )}
             </>
           ) : (
             <>
               <button onClick={() => navigate("/login")}>Log In</button>
               <button onClick={() => navigate("/register")}>Register</button>
-            </>
-          )}
-          <button onClick={() => navigate("/admin")}>Admin</button>
-          <button onClick={() => navigate("/gamemodel")}>Quiz</button>
-
-          <button onClick={() => setShowDropdown(!showDropdown)}>
-            <Icon i="menu" />
-          </button>
-          {showDropdown && (
-            <div className="dropdown-menu">
-              <button onClick={() => navigate("/results")}>Results</button>
-
               <button onClick={() => navigate("/leaderboard")}>
                 Leaderboard
               </button>
-              <button onClick={() => navigate("/submit-fact")}>
-                Fact Submission
-              </button>
-            </div>
+            </>
           )}
         </nav>
       </header>

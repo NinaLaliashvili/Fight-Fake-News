@@ -21,7 +21,6 @@ const SubmitFactComponent = () => {
     "Science",
     "History",
     "Entertainment",
-    "Geography",
     "Politics",
     "Conspiracy",
     "Culture",

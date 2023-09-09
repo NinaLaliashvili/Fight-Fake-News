@@ -30,7 +30,6 @@ export const FactFictionView = () => {
     "Science",
     "History",
     "Entertainment",
-    "Geography",
     "Politics",
     "Conspiracy",
     "Culture",
@@ -334,7 +333,7 @@ export const FactFictionView = () => {
       </div>
 
       <div className="approved-unapproved-title">
-        <h2 className="white">Unapproved Facts</h2>{" "}
+        <h2 className="white">Unapproved Facts</h2>
         <Icon
           i={toggle ? "toggle_on" : "toggle_off"}
           onClick={handleToggleClick}
@@ -423,29 +422,30 @@ export const FactFictionView = () => {
                 {itemId && <button onClick={clearInputs}>Cancel</button>}
               </div>
             )}
-
-            {approvedFacts.map((fact) => (
-              <div key={fact._id} className="fact-item">
-                <h2>{fact.title}</h2>
-                <p>{fact.description}</p>
-                <p>Category: {fact.category}</p>
-                <a
-                  href={fact.sourceLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Source
-                </a>
-                <img
-                  src={fact.imgLink}
-                  alt={`image about this fact, ${fact.title}`}
-                />
-                <button onClick={() => handleEdit(fact._id)}>Edit</button>
-              </div>
-            ))}
+            <div className="fact-items-container">
+              {approvedFacts.map((fact) => (
+                <div key={fact._id} className="fact-item">
+                  <h2>{fact.title}</h2>
+                  <p>{fact.description}</p>
+                  <p>Category: {fact.category}</p>
+                  <a
+                    href={fact.sourceLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Source
+                  </a>
+                  <img
+                    src={fact.imgLink}
+                    alt={`image about this fact, ${fact.title}`}
+                  />
+                  <button onClick={() => handleEdit(fact._id)}>Edit</button>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
-          <div>
+          <div className="fact-items-container">
             {unapprovedFacts.map((fact) => (
               <div key={fact._id} className="fact-item">
                 <h2>{fact.title}</h2>

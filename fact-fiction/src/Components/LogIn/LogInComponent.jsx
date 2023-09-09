@@ -55,7 +55,6 @@ const LogInComponent = () => {
   return (
     <div>
       <ToastContainer theme="light" />
-      <button onClick={() => navigate("/")}>Back to Home</button>
 
       <div className="loginContainer">
         <div className="login">

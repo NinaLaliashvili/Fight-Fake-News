@@ -157,7 +157,6 @@ const RegisterComponent = () => {
   return (
     <div>
       <ToastContainer theme="light" />
-      <button onClick={() => navigate("/")}>Back to Home</button>
 
       <div className="registerContainer">
         <div className="register">

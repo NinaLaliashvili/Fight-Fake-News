@@ -36,7 +36,6 @@ const CompetitionComponent = () => {
     "Science",
     "History",
     "Entertainment",
-    "Geography",
     "Politics",
     "Conspiracy",
     "Culture",
