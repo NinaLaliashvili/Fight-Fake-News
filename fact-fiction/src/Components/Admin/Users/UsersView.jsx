@@ -104,7 +104,7 @@ export const UsersView = () => {
               <h3>{user.lastName}</h3>
               <h4>{user.email}</h4>
               <button onClick={() => makeUserAdmin(user._id, user.isAdmin)}>
-                {user.isAdmin ? "User" : "Admin"}
+                {user.isAdmin ? "Make this admin user" : "Make this user admin"}
               </button>
             </div>
           ) : null
