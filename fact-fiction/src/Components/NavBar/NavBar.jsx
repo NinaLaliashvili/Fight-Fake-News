@@ -8,10 +8,12 @@ import { Icon } from "../Icon/Icon";
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoggedIn, setLoginStatus, username } = useContext(LoginContext);
+  const { isLoggedIn, setLoginStatus, username, isUserAdmin, avatar } =
+    useContext(LoginContext);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem("isAdmin"));
+  const [addAvatar, setAddAvatar] = useState(false);
 
   const pageName = {
     "/login": "Log In",
@@ -56,6 +58,16 @@ const Navbar = () => {
             height="50"
             alt="logo"
           />
+          <img
+            className="brand-logo"
+            src={avatar}
+            height="50"
+            alt="avatar"
+            onClick={() => setAddAvatar(!addAvatar)}
+          />
+          {addAvatar && (
+            <img className="brand-logo" src={avatar} height="50" alt="avatar" />
+          )}
         </div>
         <div className="page-name">{currentPageName}</div>
         <nav className="nav">
@@ -67,9 +79,10 @@ const Navbar = () => {
                 {username}
               </button>
               <button onClick={handleLogout}>Logout</button>
-              {isAdmin && (
-                <button onClick={() => navigate("/admin")}>Admin</button>
-              )}
+              {isAdmin ||
+                (isUserAdmin && (
+                  <button onClick={() => navigate("/admin")}>Admin</button>
+                ))}
               <button onClick={() => navigate("/gamemodel")}>Quiz</button>
               <button onClick={() => setShowDropdown(!showDropdown)}>
                 <Icon i="menu" />

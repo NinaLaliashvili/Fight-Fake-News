@@ -1,6 +1,9 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "./UsersView.css";
+import { LoginContext } from "../../../Context/AuthContext";
+
+import { useNavigate } from "react-router-dom";
 
 export const UsersView = () => {
   const [listUsers, setListUsers] = useState([]);
@@ -8,8 +11,13 @@ export const UsersView = () => {
   const [searchByFirstName, setSearchByFirstName] = useState("");
   const [searchByLastName, setSearchByLastName] = useState("");
   const [searchByEmail, setSearchByEmail] = useState("");
+  const { isUserAdmin } = useContext(LoginContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!isUserAdmin) {
+      navigate("/");
+    }
     loadUsers();
   }, []);
 

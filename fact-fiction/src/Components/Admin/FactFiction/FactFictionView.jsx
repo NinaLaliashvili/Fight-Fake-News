@@ -1,9 +1,10 @@
 import "./FactFictionView.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
-
+import { LoginContext } from "../../../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { Icon } from "../../Icon/Icon";
 
@@ -24,6 +25,8 @@ export const FactFictionView = () => {
   const [togglePic, setTogglePic] = useState(true);
   const [img, setImg] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const { isUserAdmin } = useContext(LoginContext);
+  const navigate = useNavigate();
 
   const categories = [
     "Random",
@@ -64,6 +67,9 @@ export const FactFictionView = () => {
   };
 
   useEffect(() => {
+    if (!isUserAdmin) {
+      navigate("/");
+    }
     loadFacts();
   }, []);
 

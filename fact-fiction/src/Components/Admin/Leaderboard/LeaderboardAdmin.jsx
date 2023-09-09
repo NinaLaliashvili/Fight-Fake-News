@@ -1,12 +1,19 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { LoginContext } from "../../../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "./leaderboardadmin.css";
 
 export const LeaderboardAdmin = () => {
   const [users, setUsers] = useState([]);
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const { isUserAdmin } = useContext(LoginContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!isUserAdmin) {
+      navigate("/");
+    }
     axios.get("http://localhost:3082/top-scores").then((response) => {
       setUsers(response.data);
     });

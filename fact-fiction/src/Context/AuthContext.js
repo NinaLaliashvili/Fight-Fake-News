@@ -13,6 +13,7 @@ export const LoginProvider = ({ children }) => {
   const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || "");
   const [userId, setUserId] = useState(localStorage.getItem("userId") || null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [isUserAdmin, setIsUserAdmin] = useState(true);
 
   const setLoginStatus = (
     loginStatus,
@@ -54,21 +55,23 @@ export const LoginProvider = ({ children }) => {
     setToken(localStorage.getItem("token"));
     setAvatar(localStorage.getItem("avatar"));
     if (fetchedUserId) {
-      
       fetch(`http://localhost:3082/user/${fetchedUserId}`)
-        .then(response => response.json())
-        .then(data => {
-          
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.isAdmin === true) {
+            setIsUserAdmin(true);
+            console.log("user is admin?", isUserAdmin);
+          }
+
           if (data && data.avatar) {
             setAvatar(data.avatar);
             localStorage.setItem("avatar", data.avatar);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("There was an error fetching the user details:", error);
         });
-      }
-
+    }
   }, []);
 
   return (
@@ -82,6 +85,8 @@ export const LoginProvider = ({ children }) => {
         token,
         avatar,
         setAvatar,
+        isUserAdmin,
+        setIsUserAdmin,
       }}
     >
       {children}
