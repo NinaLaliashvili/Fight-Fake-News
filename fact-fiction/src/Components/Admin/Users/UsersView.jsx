@@ -41,6 +41,35 @@ export const UsersView = () => {
     setListUsers(filteredUsers);
   };
 
+  const makeUserAdmin = async (userId, currentIsAdmin) => {
+    try {
+      const userToUpdate = listUsers.find((user) => user._id === userId);
+
+      if (!userToUpdate) {
+        console.error("User not found");
+        return;
+      }
+
+      const userDataToUpdate = {
+        email: userToUpdate.email,
+        firstName: userToUpdate.firstName,
+        lastName: userToUpdate.lastName,
+        phone: userToUpdate.phone,
+        isAdmin: !currentIsAdmin,
+      };
+
+      await axios.put(`http://localhost:3082/user/${userId}`, userDataToUpdate);
+
+      setListUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === userId ? { ...user, isAdmin: !currentIsAdmin } : user
+        )
+      );
+    } catch (error) {
+      console.error("Error details:", error.response);
+    }
+  };
+
   return (
     <div>
       <h1 className="column">Search User</h1>
@@ -74,6 +103,9 @@ export const UsersView = () => {
               <h3>{user.firstName}</h3>
               <h3>{user.lastName}</h3>
               <h4>{user.email}</h4>
+              <button onClick={() => makeUserAdmin(user._id, user.isAdmin)}>
+                {user.isAdmin ? "User" : "Admin"}
+              </button>
             </div>
           ) : null
         )}

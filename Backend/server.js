@@ -435,7 +435,7 @@ app.get("/user/:id", async (req, res) => {
 app.put("/user/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
-    const { email, firstName, lastName, phone, avatar } = req.body;
+    const { email, firstName, lastName, phone, avatar, isAdmin } = req.body;
 
     if (!email || !firstName || !lastName || !phone) {
       return res
@@ -445,7 +445,7 @@ app.put("/user/:userId", async (req, res) => {
 
     await usersCollection.updateOne(
       { _id: new ObjectId(userId) }, // Only update approved facts
-      { $set: { email, firstName, lastName, phone, avatar } }
+      { $set: { email, firstName, lastName, phone, isAdmin, avatar } }
     );
 
     res.json({ message: "User updated successfully." });
@@ -527,6 +527,7 @@ app.post("/signup", async (req, res) => {
       phone,
       bio,
       avatar,
+      isAdmin: false,
     };
 
     const result = await usersCollection.insertOne(user);

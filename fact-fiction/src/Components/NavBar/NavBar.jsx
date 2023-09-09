@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LoginContext } from "../../Context/AuthContext";
 import Modal from "./Modal";
@@ -11,6 +11,7 @@ const Navbar = () => {
   const { isLoggedIn, setLoginStatus, username } = useContext(LoginContext);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem("isAdmin"));
 
   const pageName = {
     "/login": "Log In",
@@ -22,6 +23,10 @@ const Navbar = () => {
     "/submit-fact": "Fact Submission",
     "/usersetting": "User Setting",
   };
+
+  useEffect(() => {
+    setIsAdmin(localStorage.getItem("isAdmin"));
+  }, []);
 
   const currentPageName = pageName[location.pathname] || "";
 
@@ -35,6 +40,7 @@ const Navbar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("firstName");
     localStorage.removeItem("lastName");
+    localStorage.removeItem("isAdmin");
     setLoginStatus(false, null, null);
     navigate("/");
     setShowLogoutModal(false);
@@ -61,7 +67,9 @@ const Navbar = () => {
                 {username}
               </button>
               <button onClick={handleLogout}>Logout</button>
-              <button onClick={() => navigate("/admin")}>Admin</button>
+              {isAdmin && (
+                <button onClick={() => navigate("/admin")}>Admin</button>
+              )}
               <button onClick={() => navigate("/gamemodel")}>Quiz</button>
               <button onClick={() => setShowDropdown(!showDropdown)}>
                 <Icon i="menu" />
