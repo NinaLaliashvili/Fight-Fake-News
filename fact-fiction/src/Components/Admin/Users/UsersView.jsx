@@ -4,6 +4,7 @@ import "./UsersView.css";
 import { LoginContext } from "../../../Context/AuthContext";
 
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 export const UsersView = () => {
   const [listUsers, setListUsers] = useState([]);
@@ -49,6 +50,18 @@ export const UsersView = () => {
     setListUsers(filteredUsers);
   };
 
+  const notifyUserError = (message) => {
+    toast.error(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
+  const notifyUserSuccess = (message) => {
+    toast.success(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
   const makeUserAdmin = async (userId, currentIsAdmin) => {
     try {
       const userToUpdate = listUsers.find((user) => user._id === userId);
@@ -66,7 +79,14 @@ export const UsersView = () => {
         isAdmin: !currentIsAdmin,
       };
 
-      await axios.put(`http://localhost:3082/user/${userId}`, userDataToUpdate);
+      await axios
+        .put(`http://localhost:3082/user/${userId}`, userDataToUpdate)
+        .then((resp) => {
+          notifyUserSuccess("yay! this user is an admin now!");
+        })
+        .catch((err) => {
+          notifyUserError(err);
+        });
 
       setListUsers((prevUsers) =>
         prevUsers.map((user) =>
@@ -80,6 +100,7 @@ export const UsersView = () => {
 
   return (
     <div>
+      <ToastContainer theme="light" />
       <h1 className="column">Search User</h1>
       <div className="column">
         <input

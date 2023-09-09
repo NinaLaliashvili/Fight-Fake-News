@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "./UserSetting.css";
 import { Avatar, Modal } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-
+import { LoginContext } from "../../Context/AuthContext";
 import Pig from "../UserAvatar/avatars/pig.png";
 import Rhino from "../UserAvatar/avatars/rhino.png";
 import Bat from "../UserAvatar/avatars/bat.png";
@@ -15,7 +15,6 @@ import Monkey from "../UserAvatar/avatars/monkey.png";
 import Sun from "../UserAvatar/avatars/sun.png";
 import Thumper from "../UserAvatar/avatars/thumper.png";
 import Zebra from "../UserAvatar/avatars/zebra.png";
-import { LoginContext } from "../../Context/AuthContext";
 
 const profileImages = [
   { src: Pig },
@@ -34,7 +33,7 @@ const UserSetting = () => {
   const [loggedInUser, setLoggedInUser] = useState([]);
   const [originalUserData, setOriginalUserData] = useState({});
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
-  const { avatar, setAvatar } = useContext(LoginContext);
+  const { avatar, setAvatar, isUserAdmin } = useContext(LoginContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -150,6 +149,7 @@ const UserSetting = () => {
         >
           {imageMap}
         </Modal>
+        {isUserAdmin && <p>Yay! You are an admin! </p>}
 
         {isEditing ? (
           <>

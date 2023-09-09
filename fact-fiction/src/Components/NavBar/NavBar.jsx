@@ -58,13 +58,15 @@ const Navbar = () => {
             height="50"
             alt="logo"
           />
-          <img
-            className="brand-logo"
-            src={avatar}
-            height="50"
-            alt="avatar"
-            onClick={() => setAddAvatar(!addAvatar)}
-          />
+          {avatar && (
+            <img
+              className="brand-logo"
+              src={avatar}
+              height="50"
+              alt="avatar"
+              onClick={() => setAddAvatar(!addAvatar)}
+            />
+          )}
           {addAvatar && (
             <img className="brand-logo" src={avatar} height="50" alt="avatar" />
           )}
@@ -79,10 +81,9 @@ const Navbar = () => {
                 {username}
               </button>
               <button onClick={handleLogout}>Logout</button>
-              {isAdmin ||
-                (isUserAdmin && (
-                  <button onClick={() => navigate("/admin")}>Admin</button>
-                ))}
+              {isUserAdmin && (
+                <button onClick={() => navigate("/admin")}>Admin</button>
+              )}
               <button onClick={() => navigate("/gamemodel")}>Quiz</button>
               <button onClick={() => setShowDropdown(!showDropdown)}>
                 <Icon i="menu" />

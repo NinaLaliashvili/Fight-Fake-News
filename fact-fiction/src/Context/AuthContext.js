@@ -13,7 +13,7 @@ export const LoginProvider = ({ children }) => {
   const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || "");
   const [userId, setUserId] = useState(localStorage.getItem("userId") || null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const [isUserAdmin, setIsUserAdmin] = useState(true);
+  const [isUserAdmin, setIsUserAdmin] = useState(false);
 
   const setLoginStatus = (
     loginStatus,
