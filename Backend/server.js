@@ -12,58 +12,24 @@ const http = require("http");
 const socketIo = require("socket.io");
 
 //img upload requirements below
-const multer = require("multer");
-const storage = multer.memoryStorage();
-const fileUpload = multer({ storage: storage });
-const streamifier = require("streamifier");
-const cloudinary = require("./cloudinary/cloudinary");
+const fileUpload = require("express-fileupload");
+const { upload } = require("./cloudinary/cloudinary");
 const fs = require("fs");
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+  })
+);
+app.use(express.urlencoded({ extended: true }));
 const dirname = path.resolve();
 app.use(
   cors({
     origin: "*",
   })
 );
-
-//configure multer
-//pretty sure error is here w upload pic
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "uploads/");
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, file.originalname + Date.now());
-//   },
-// });
-// const upload = multer({ storage });
-
-//function to upload to cloudinary and receive link; call this in route for upload
-async function uploadImgToCloudinary(localFilePath) {
-  console.log("in cloudinary function");
-  const mainFolder = "main";
-  console.log("in main folder");
-  const filePathOnCloud = mainFolder + "/" + localFilePath;
-  console.log("in specific path on cloudinary");
-
-  return cloudinary.uploader
-    .upload(localFilePath, { public_id: filePathOnCloud })
-    .then((result) => {
-      "made it to cloudinary uploader";
-      fs.unlinkSync(localFilePath);
-
-      return {
-        message: "success",
-        url: result.url,
-      };
-    })
-    .catch((error) => {
-      console.log(error);
-      fs.unlinkSync(localFilePath);
-      return { message: "whoops" };
-    });
-}
 
 //server for game
 
@@ -623,53 +589,26 @@ app.post("/submit-fact", async (req, res) => {
 });
 //add photo upload to fact; receive link from cloudinary on client, add that link to the edit fact form. users cant add images to protect us from unwanted images. just for admins.
 
-app.post("/img", fileUpload.single("image"), function (req, res) {
+app.post("/img", async (req, res) => {
   console.log(req.body);
-  let streamUpload = (req) => {
-    return new Promise((resolve, reject) => {
-      let stream = cloudinary.uploader.upload_stream((error, result) => {
-        if (result) {
-          resolve(result);
-        } else {
-          reject(error);
-          res.status(500).send("issue with processing the picture");
-        }
-      });
-      if (!req.image) {
-        res.send("Please upload a file..");
-      }
-      streamifier.createReadStream(req.image.buffer).pipe(stream);
-    });
-  };
-  async function upload(req) {
-    let result = await streamUpload(req);
-    console.log("in upload function");
-    console.log(result);
-    if (result) {
-      res.status(201).send(JSON.stringify({ url: result.url }));
-    } else {
-      res.status(500).send("sorry... try uploading again?");
-    }
+  const { formData } = req.body;
+
+  if (!req.files)
+    return res.send(JSON.stringify({ message: "please upload an image!" }));
+
+  try {
+    console.log("called upload");
+    const { file } = req.files;
+    const cloudFile = await upload(file.tempFilePath);
+    console.log(cloudFile);
+
+    res.status(201).send(JSON.stringify({ url: cloudFile.url }));
+  } catch (err) {
+    console.error("something went wrong uploading image to cloud server:", err);
+    res
+      .status(500)
+      .send("something went wrong with the cloud storage. Please try again.");
   }
-  upload(req);
-
-  //   try {
-  //     console.log("called upload");
-
-  //     const result = await uploadImgToCloudinary(req.file.path);
-  //     console.log("got to result");
-  //     console.log(result);
-  //     if (result) {
-  //       res.status(201).send(JSON.stringify({ url: result.url }));
-  //     } else {
-  //       res.status(500).send("sorry... try uploading again?");
-  //     }
-  //   } catch (err) {
-  //     console.error("something went wrong uploading image to cloud server:", err);
-  //     res
-  //       .status(500)
-  //       .send("something went wrong with the cloud storage. Please try again.");
-  //   }
 });
 
 // get unapproved facts

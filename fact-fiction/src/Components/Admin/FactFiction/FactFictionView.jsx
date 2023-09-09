@@ -209,53 +209,10 @@ export const FactFictionView = () => {
     console.log(img);
   };
 
-  const sendToCloudFromFrontEnd = () => {
-    const cloudName = "dh7zkorjm";
-    const preset = "unsigned";
-    const formData = new FormData();
-    formData.append("upload_preset", "unsigned");
-    formData.append("file", img);
-
-    for (const value of formData.values()) {
-      console.log(value);
-    }
-
-    try {
-      axios
-        .post(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          { formData },
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then((resp) => {
-          console.log(resp);
-          const url = resp.result.url;
-          console.log(url);
-
-          // setValues({
-          //   ...values,
-          //   imgLink: url
-          // });
-          // setTogglePic(!togglePic);
-          //toggle back to the url view
-        })
-        .catch((err) => {
-          notifyUserError(err);
-          console.log(err);
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const sendImgToServerGetLink = () => {
     const formData = new FormData();
 
-    formData.append("image", img);
+    formData.append("file", img);
 
     for (const value of formData.values()) {
       console.log(value);
@@ -276,7 +233,10 @@ export const FactFictionView = () => {
         )
         .then((resp) => {
           if (!resp.url) {
-            notifyUserError("sorry, that didn't quite work! Try again");
+            notifyUserError(
+              "sorry, that didn't quite work! Try again,",
+              resp.message
+            );
           } else if (resp.url) {
             notifyUserSuccess(
               "your img saved in our server! we sent back a link, you'll see it in the image link box- now you can submit your full edit!"
@@ -404,17 +364,16 @@ export const FactFictionView = () => {
                   />
                 ) : (
                   <div className="img-upload">
-                    <input
-                      type="file"
-                      placeholder="upload image.."
-                      onChange={handleUserUploadImg}
-                      name="file"
-                    />
+                    <form encType="multipart/form-data">
+                      <input
+                        type="file"
+                        placeholder="upload image.."
+                        onChange={handleUserUploadImg}
+                        name="file"
+                      />
+                    </form>
 
-                    <button onClick={sendToCloudFromFrontEnd}>
-                      {" "}
-                      Set Image
-                    </button>
+                    <button onClick={sendImgToServerGetLink}> Set Image</button>
                   </div>
                 )}
                 <p>{togglePic ? `add file:` : "url:"}</p>
