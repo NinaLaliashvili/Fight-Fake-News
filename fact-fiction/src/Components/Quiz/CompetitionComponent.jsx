@@ -176,32 +176,8 @@ const CompetitionComponent = () => {
     const { type } = questions[currentIndex];
 
     let isCorrect = selectedOption === type;
+
     socket.emit("answer", { isCorrect, roomId });
-
-    if (type === selectedOption) {
-      newNumOfCorrectAnswers += 1;
-      recordAnswer(
-        `${currentFact.title} - ${currentFact.description}`,
-        selectedOption,
-        type
-      );
-    } else {
-      newNumOfWrongAnswers += 1;
-      recordAnswer(
-        `${currentFact.title} - ${currentFact.description}`,
-        selectedOption,
-        type
-      );
-    }
-
-    const totalQuestionsAnswered =
-      newNumOfCorrectAnswers + newNumOfWrongAnswers;
-    const averageScore =
-      (newNumOfCorrectAnswers / totalQuestionsAnswered) * 100;
-
-    setNumOfCorrectAnswers(newNumOfCorrectAnswers);
-    setNumOfWrongAnswers(newNumOfWrongAnswers);
-    setRunningAverageScore(averageScore);
 
     if (type === selectedOption) {
       newNumOfCorrectAnswers += 1;
@@ -220,6 +196,16 @@ const CompetitionComponent = () => {
       );
       socket.emit("answer", { isCorrect: false, roomId });
     }
+
+    const totalQuestionsAnswered =
+      newNumOfCorrectAnswers + newNumOfWrongAnswers;
+    const averageScore = parseFloat(
+      ((newNumOfCorrectAnswers / totalQuestionsAnswered) * 100).toFixed(1)
+    );
+
+    setNumOfCorrectAnswers(newNumOfCorrectAnswers);
+    setNumOfWrongAnswers(newNumOfWrongAnswers);
+    setRunningAverageScore(averageScore);
 
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);

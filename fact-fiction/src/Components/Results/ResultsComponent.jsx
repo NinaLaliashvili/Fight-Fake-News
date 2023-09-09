@@ -55,6 +55,14 @@ const ResultComponent = () => {
           {userAnswers.map((answer, index) => (
             <li key={index} className="answer-item">
               <strong>Question:</strong> {answer.question} <br />
+              {answer.imgLink && (
+                <img
+                  src={answer.imgLink}
+                  alt="uploaded"
+                  style={{ width: "100px", height: "100px" }}
+                />
+              )}
+              {answer.imgLink && <p>Image URL: {answer.imgLink}</p>}
               <strong>You answered:</strong>{" "}
               {answer.userAnswer === "fact" ? "Fact" : "Fiction"} <br />
               <span

@@ -5,7 +5,6 @@ import { LoginContext } from "../../Context/AuthContext";
 import { useSpring, animated } from "@react-spring/web";
 import { ToastContainer, toast } from "react-toastify";
 import Confetti from "react-confetti";
-
 import axios from "axios";
 import {
   configFlyAnimation,
@@ -17,7 +16,7 @@ const bat = require("../Home/bat.png");
 const lizard = require("../Home/lizard.png");
 
 const LeaderboardComponent = () => {
-  const { username } = useContext(LoginContext);
+  const { username, token } = useContext(LoginContext);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [showCow, setShowCow] = useState(false);
   const [showLizard, setShowLizard] = useState(false);
@@ -102,20 +101,23 @@ const LeaderboardComponent = () => {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3082/top-scores")
-      .then((response) => {
-        if (Array.isArray(response.data)) {
-          setLeaderboardData(response.data);
-          setUserResults(response.data);
-        } else {
-          console.error("Unexpected response data format:", response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching top scores:", error);
-      });
-  }, []);
+    if (token) {
+      axios
+        .get("http://localhost:3082/top-scores", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setLeaderboardData(response.data); // assuming response.data contains your leaderboard data
+        })
+        .catch((error) => {
+          console.error("Error fetching top scores:", error);
+        });
+    } else {
+      // Handle the case where token is null or undefined
+    }
+  }, [token]);
 
   const showUserFinalClue = (message) => {
     toast.success(`${message}`, {
@@ -133,7 +135,7 @@ const LeaderboardComponent = () => {
 
   useEffect(() => {
     fetchTopScores();
-  }, [fetchTopScores]);
+  }, []);
 
   useEffect(() => {
     const isUserOnLeaderboard = userResults.some(
@@ -203,7 +205,7 @@ const LeaderboardComponent = () => {
             </tr>
           </thead>
           <tbody>
-            {userResults.map((entry, index) => (
+            {leaderboardData.map((entry, index) => (
               <tr
                 key={index}
                 className={
@@ -263,7 +265,7 @@ const LeaderboardComponent = () => {
         </div>
       )}
       <div className="motivational-section">
-        <h3 className="bla">Thoughts that Propel: Your Daily Lift-off!</h3>
+        <h3 className="blal">Thoughts that Propel: Your Daily Lift-off!</h3>
         <div className="motivational-item">
           <blockquote>
             "Success is not final, failure is not fatal: It is the courage to

@@ -10,26 +10,27 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 const { ObjectId } = require("mongodb");
 const http = require("http");
 const socketIo = require("socket.io");
+const multer = require("multer");
 
-//img upload requirements below
-const fileUpload = require("express-fileupload");
-const { upload } = require("./cloudinary/cloudinary");
-const fs = require("fs");
-app.use(bodyParser.json());
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  fileUpload({
-    useTempFiles: true,
-  })
-);
-app.use(express.urlencoded({ extended: true }));
-const dirname = path.resolve();
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+// //img upload requirements below
+// const fileUpload = require("express-fileupload");
+// const { upload } = require("./cloudinary/cloudinary");
+// const fs = require("fs");
+// app.use(bodyParser.json());
+// app.use(express.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(
+//   fileUpload({
+//     useTempFiles: true,
+//   })
+// );
+// app.use(express.urlencoded({ extended: true }));
+// const dirname = path.resolve();
+// app.use(
+//   cors({
+//     origin: "*",
+//   })
+// );
 
 //server for game
 
@@ -81,6 +82,7 @@ run().catch(console.dir);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname)));
+app.use("/uploads", express.static("uploads"));
 // middleware to authenticate token
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -248,9 +250,13 @@ io.on("connection", (socket) => {
       // Update the player's score
       const fieldToUpdate =
         userId === currentSession.player1 ? "player1Score" : "player2Score";
-      const newScore = isCorrect
-        ? currentSession[fieldToUpdate] + 1
-        : currentSession[fieldToUpdate] - 1;
+      let newScore = currentSession[fieldToUpdate];
+      if (isCorrect) {
+        newScore += 2;
+      } else {
+        // Prevent the score from going below 0
+        newScore = Math.max(0, newScore - 1);
+      }
 
       await gameSessionsCollection.updateOne(
         { roomId },
@@ -265,12 +271,21 @@ io.on("connection", (socket) => {
       );
 
       const totalQuestions = 10;
-      if (currentSession[fieldToUpdate] >= totalQuestions - 1) {
+      if (
+        currentSession.player1QuestionsAnswered >= totalQuestions ||
+        currentSession.player2QuestionsAnswered >= totalQuestions
+      ) {
         const player1Details = await usersCollection.findOne({
           _id: new ObjectId(currentSession.player1),
         });
         const player2Details = await usersCollection.findOne({
           _id: new ObjectId(currentSession.player2),
+        });
+
+        io.to(roomId).emit("endGame", {
+          winner,
+          player1Score: currentSession.player1Score,
+          player2Score: currentSession.player2Score,
         });
 
         const winner = determineWinner(
@@ -360,6 +375,26 @@ io.on("connection", (socket) => {
 
 // -------------------------- Start Server Side----------------------------
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post("/img", upload.single("image"), (req, res) => {
+  if (req.file) {
+    res.json({
+      url: `http://localhost:${port}/uploads/${req.file.filename}`,
+    });
+  } else {
+    res.status(400).send("File not uploaded.");
+  }
+});
 //General api route
 app.get("/", (req, res) => {
   res.send("This is the best project server");

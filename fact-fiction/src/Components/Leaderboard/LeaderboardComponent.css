@@ -247,3 +247,12 @@ animated-img:hover {
 .ToastContainer__toast {
   border-radius: 10px !important;
 }
+
+.motivational-section h3 {
+  color: rgb(68, 68, 68);
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+.motivational-section {
+  background-color: #ecfafc;
+}
