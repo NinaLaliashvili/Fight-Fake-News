@@ -45,3 +45,18 @@
     grid-template-columns: 1fr;
   }
 }
+
+.adminno {
+  margin-bottom: 20px;
+}
+.box {
+  background-color: white;
+}
+.columnn {
+  border-radius: 10px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 2rem;
+}
+.column {
+  font-family: "Courier New", Courier, monospace;
+}

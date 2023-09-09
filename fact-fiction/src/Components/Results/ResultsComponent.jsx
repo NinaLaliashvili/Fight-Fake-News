@@ -1,9 +1,14 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ResultsComponent.css";
+import { LoginContext } from "../../Context/AuthContext";
 import { userScoreContext } from "../../Context/UserScoreContext";
 
 const ResultComponent = () => {
+  const { userId } = useContext(LoginContext);
+
+  const { saveScoreToBackend } = useContext(userScoreContext);
+
   const {
     numOfCorrectAnswers,
     numOfWrongAnswers,
@@ -18,6 +23,15 @@ const ResultComponent = () => {
   const handlePlayAgain = () => {
     resetScore();
     navigate("/quiz");
+  };
+
+  const handleSaveScore = async () => {
+    if (userId) {
+      await saveScoreToBackend(userId);
+      navigate("/leaderboard");
+    } else {
+      console.error("No user ID available");
+    }
   };
 
   return (
@@ -64,11 +78,8 @@ const ResultComponent = () => {
           <button onClick={handlePlayAgain} className="play-again-button">
             Play Again
           </button>
-          <button
-            onClick={() => navigate("/leaderboard")}
-            className="leaderboard-button"
-          >
-            See the Leaderboard
+          <button onClick={handleSaveScore} className="leaderboard-button">
+            Save your score && check the leaderboard
           </button>
         </div>
         <a href="/submit-fact" className="submit-fact-link">

@@ -11,6 +11,7 @@ import {
   configFlyAnimation,
   configBasicAnimation,
 } from "../../helpers/animations";
+import { userScoreContext } from "../../Context/UserScoreContext";
 const cuteCow = require("../Home/cow.png");
 const bat = require("../Home/bat.png");
 const lizard = require("../Home/lizard.png");
@@ -25,6 +26,8 @@ const LeaderboardComponent = () => {
     transform: "rotate(0deg)",
   }));
   const [runConfetti, setRunConfetti] = useState(false);
+  const { fetchTopScores } = useContext(userScoreContext);
+  const [userResults, setUserResults] = useState([]);
 
   useEffect(() => {
     const rotateBoard = () => {
@@ -102,7 +105,12 @@ const LeaderboardComponent = () => {
     axios
       .get("http://localhost:3082/top-scores")
       .then((response) => {
-        setLeaderboardData(response.data);
+        if (Array.isArray(response.data)) {
+          setLeaderboardData(response.data);
+          setUserResults(response.data);
+        } else {
+          console.error("Unexpected response data format:", response.data);
+        }
       })
       .catch((error) => {
         console.error("Error fetching top scores:", error);
@@ -122,6 +130,20 @@ const LeaderboardComponent = () => {
       navigate("/knowledge");
     }, 2000);
   };
+
+  useEffect(() => {
+    fetchTopScores();
+  }, [fetchTopScores]);
+
+  useEffect(() => {
+    const isUserOnLeaderboard = userResults.some(
+      (entry) =>
+        `${entry.firstName} ${entry.lastName}`.trim() ===
+        (username ? username.trim() : "")
+    );
+
+    setRunConfetti(isUserOnLeaderboard);
+  }, [userResults, username]);
 
   return (
     <div className="leaderboard-container">
@@ -181,7 +203,7 @@ const LeaderboardComponent = () => {
             </tr>
           </thead>
           <tbody>
-            {leaderboardData.map((entry, index) => (
+            {userResults.map((entry, index) => (
               <tr
                 key={index}
                 className={
@@ -194,7 +216,11 @@ const LeaderboardComponent = () => {
               >
                 <td>
                   {entry.avatar && (
-                    <img src={entry.avatar} alt="User Avatar" className="avatar" />
+                    <img
+                      src={entry.avatar}
+                      alt="User Avatar"
+                      className="avatar"
+                    />
                   )}
                   {`${entry.firstName} ${entry.lastName}`}
                 </td>

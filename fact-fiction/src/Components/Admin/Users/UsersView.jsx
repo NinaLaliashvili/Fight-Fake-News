@@ -101,7 +101,7 @@ export const UsersView = () => {
   return (
     <div>
       <ToastContainer theme="light" />
-      <h1 className="column">Search User</h1>
+      <h1 className="column center columnn">Search User</h1>
       <div className="column">
         <input
           placeholder="search by first name"
@@ -132,8 +132,11 @@ export const UsersView = () => {
               <h3>{user.firstName}</h3>
               <h3>{user.lastName}</h3>
               <h4>{user.email}</h4>
-              <button onClick={() => makeUserAdmin(user._id, user.isAdmin)}>
-                {user.isAdmin ? "Make this admin user" : "Make this user admin"}
+              <button
+                className="adminno"
+                onClick={() => makeUserAdmin(user._id, user.isAdmin)}
+              >
+                {user.isAdmin ? "Remove from admin" : "Make admin"}
               </button>
             </div>
           ) : null

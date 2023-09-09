@@ -137,7 +137,7 @@ select {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  justify-items: center;  
+  justify-items: center;
 }
 
 @media only screen and (max-width: 768px) {
@@ -174,3 +174,13 @@ textarea::placeholder {
   color: white;
 }
 
+.colbox {
+  border-radius: 15px;
+}
+.nofacts {
+  margin: 50px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: azure;
+  font-size: 1.8rem;
+  margin-bottom: 100px;
+}

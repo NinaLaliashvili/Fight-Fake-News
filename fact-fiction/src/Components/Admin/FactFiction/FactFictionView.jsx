@@ -266,8 +266,8 @@ export const FactFictionView = () => {
     <div className="facts-approving-container">
       <ToastContainer theme="light" />
 
-      <div className="column">
-        <h1>Search By Fact or Fiction...</h1>
+      <div className="column colbox">
+        <h1 className="column">Search By Fact or Fiction...</h1>
         <Select
           value={type}
           options={types}
@@ -411,30 +411,34 @@ export const FactFictionView = () => {
           </div>
         ) : (
           <div className="fact-items-container">
-            {unapprovedFacts.map((fact) => (
-              <div key={fact._id} className="fact-item">
-                <h2>{fact.title}</h2>
-                <p>{fact.description}</p>
-                <p>Category: {fact.category}</p>
-                <a
-                  href={fact.sourceLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Source
-                </a>
-                <img
-                  src={fact.imgLink}
-                  alt={`image about this fact, ${fact.title}`}
-                />
-                <button onClick={() => handleApproval(fact._id, true)}>
-                  Approve
-                </button>
-                <button onClick={() => handleRejection(fact._id)}>
-                  Reject
-                </button>
-              </div>
-            ))}
+            {unapprovedFacts.length === 0 ? (
+              <h3 className="nofacts">There are no unapproved facts yet!</h3>
+            ) : (
+              unapprovedFacts.map((fact) => (
+                <div key={fact._id} className="fact-item">
+                  <h2>{fact.title}</h2>
+                  <p>{fact.description}</p>
+                  <p>Category: {fact.category}</p>
+                  <a
+                    href={fact.sourceLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Source
+                  </a>
+                  <img
+                    src={fact.imgLink}
+                    alt={`image about this fact, ${fact.title}`}
+                  />
+                  <button onClick={() => handleApproval(fact._id, true)}>
+                    Approve
+                  </button>
+                  <button onClick={() => handleRejection(fact._id)}>
+                    Reject
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>

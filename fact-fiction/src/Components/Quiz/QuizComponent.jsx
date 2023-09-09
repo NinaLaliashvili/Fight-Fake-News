@@ -117,8 +117,9 @@ const QuizComponent = () => {
 
     const totalQuestionsAnswered =
       newNumOfCorrectAnswers + newNumOfWrongAnswers;
-    const averageScore =
-      (newNumOfCorrectAnswers / totalQuestionsAnswered) * 100;
+    const averageScore = parseFloat(
+      ((newNumOfCorrectAnswers / totalQuestionsAnswered) * 100).toFixed(1)
+    );
 
     setNumOfCorrectAnswers(newNumOfCorrectAnswers);
     setNumOfWrongAnswers(newNumOfWrongAnswers);
@@ -137,12 +138,13 @@ const QuizComponent = () => {
     navigate("/results");
 
     if (token) {
+      console.log("Token: ", token);
       axios
         .post(
           "http://localhost:3082/save-score",
           {
             userId: userId,
-            score: runningAverageScore,
+            score: parseFloat(runningAverageScore.toFixed(1)),
           },
           {
             headers: {
