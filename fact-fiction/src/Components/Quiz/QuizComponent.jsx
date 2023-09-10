@@ -39,6 +39,8 @@ const QuizComponent = () => {
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("Random");
+  const [feedbackText, setFeedbackText] = useState(null);
+  const [feedbackClass, setFeedbackClass] = useState("");
 
   useEffect(() => {
     axios
@@ -91,39 +93,38 @@ const QuizComponent = () => {
 
   const handleNext = () => {
     if (!selectedOption) {
-      notifyUserSelect("must select an answer to continue the quest!");
+      notifyUserSelect("You must select an answer to continue the quiz!");
       return;
     }
-    let newNumOfCorrectAnswers = numOfCorrectAnswers;
-    let newNumOfWrongAnswers = numOfWrongAnswers;
 
-    const { type } = questions[currentIndex];
+    if (!currentFact) {
+      console.error("Current fact is undefined");
+      return;
+    }
+
+    let newNumOfCorrectAnswers = numOfCorrectAnswers;
+
+    const { type } = currentFact;
 
     if (type === selectedOption) {
       newNumOfCorrectAnswers += 1;
-      recordAnswer(
-        `${currentFact.title} - ${currentFact.description}`,
-        selectedOption,
-        type
-      );
-    } else {
-      newNumOfWrongAnswers += 1;
-      recordAnswer(
-        `${currentFact.title} - ${currentFact.description}`,
-        selectedOption,
-        type
-      );
     }
 
-    const totalQuestionsAnswered =
-      newNumOfCorrectAnswers + newNumOfWrongAnswers;
-    const averageScore = parseFloat(
-      ((newNumOfCorrectAnswers / totalQuestionsAnswered) * 100).toFixed(1)
+    if (selectedOption === currentFact?.type) {
+      setFeedbackText("Correct! Well done.");
+      setFeedbackClass("feedback-text-correct");
+    } else {
+      setFeedbackText("Oops! That was incorrect.");
+      setFeedbackClass("feedback-text-incorrect");
+    }
+
+    recordAnswer(
+      `${currentFact.title} - ${currentFact.description}`,
+      selectedOption,
+      type
     );
 
     setNumOfCorrectAnswers(newNumOfCorrectAnswers);
-    setNumOfWrongAnswers(newNumOfWrongAnswers);
-    setRunningAverageScore(averageScore);
 
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -134,7 +135,7 @@ const QuizComponent = () => {
   };
 
   const handleSubmit = () => {
-    setUserResults(runningAverageScore);
+    setUserResults(numOfCorrectAnswers);
     navigate("/results");
 
     if (token) {
@@ -144,7 +145,7 @@ const QuizComponent = () => {
           "http://localhost:3082/save-score",
           {
             userId: userId,
-            score: parseFloat(runningAverageScore.toFixed(1)),
+            score: numOfCorrectAnswers,
           },
           {
             headers: {
@@ -216,9 +217,8 @@ const QuizComponent = () => {
           The Quiz Arena is Open: Go ahead if You Dare!
         </h1>
         <div className="scoreboard">
-          <span className="score-yourr">
-            Score: {runningAverageScore.toFixed(1)}%
-          </span>
+          <span className="score-yourr">Score: {numOfCorrectAnswers}</span>
+          <p className={feedbackClass}>{feedbackText}</p>
         </div>
         <p className="current-question">{currentQuestion}</p>
         <p className="current-question">{currentQuestionDescription}</p>

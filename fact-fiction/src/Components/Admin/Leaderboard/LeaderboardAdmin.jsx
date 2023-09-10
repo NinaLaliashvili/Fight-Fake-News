@@ -28,7 +28,7 @@ export const LeaderboardAdmin = () => {
     e.preventDefault();
     const firstName = e.target.firstName.value;
     const lastName = e.target.lastName.value;
-    const score = parseFloat(e.target.score.value);
+    const score = parseInt(e.target.score.value, 10); // Parse score as integer
 
     if (users.length >= 5) {
       setShowErrorModal(true);
@@ -51,7 +51,7 @@ export const LeaderboardAdmin = () => {
       {users.map((user) => (
         <div className="userrs" key={user._id}>
           <h4>
-            {user.firstName} {user.lastName} - {user.score.toFixed(1)}
+            {user.firstName} {user.lastName} - {user.score}
           </h4>
           <button className="bttn" onClick={() => removeUser(user._id)}>
             Remove

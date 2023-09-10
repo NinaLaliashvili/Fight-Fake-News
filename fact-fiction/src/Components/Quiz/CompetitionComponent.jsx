@@ -62,6 +62,23 @@ const CompetitionComponent = () => {
     opponentScore: null,
   });
   const [navigateToQuiz, setNavigateToQuiz] = useState(false);
+  const [feedbackText, setFeedbackText] = useState(null);
+  const [feedbackClass, setFeedbackClass] = useState("");
+
+  const resetGame = () => {
+    setNumOfCorrectAnswers(0);
+    setNumOfWrongAnswers(0);
+    setYourScore(0);
+    setOpponentScore(0);
+    setWinner(null);
+    setQuizEnded(false);
+    setCurrentIndex(0);
+    setOpponentCurrentIndex(0);
+    setFeedbackText(null);
+
+    // Notify the server to reset the scores
+    socket.emit("resetGame", { roomId });
+  };
 
   useEffect(() => {
     console.log("Initial useEffect triggered");
@@ -117,6 +134,10 @@ const CompetitionComponent = () => {
       });
     });
 
+    socket.on("startNewGame", () => {
+      resetGame();
+    });
+
     return () => {
       if (socket) socket.disconnect();
     };
@@ -170,23 +191,20 @@ const CompetitionComponent = () => {
       notifyUserSelect("must select an answer to continue the quest!");
       return;
     }
+
     let newNumOfCorrectAnswers = numOfCorrectAnswers;
     let newNumOfWrongAnswers = numOfWrongAnswers;
 
     const { type } = questions[currentIndex];
-
     let isCorrect = selectedOption === type;
 
-    socket.emit("answer", { isCorrect, roomId });
-
-    if (type === selectedOption) {
+    if (isCorrect) {
       newNumOfCorrectAnswers += 1;
       recordAnswer(
         `${currentFact.title} - ${currentFact.description}`,
         selectedOption,
         type
       );
-      socket.emit("answer", { isCorrect: true, roomId });
     } else {
       newNumOfWrongAnswers += 1;
       recordAnswer(
@@ -194,7 +212,14 @@ const CompetitionComponent = () => {
         selectedOption,
         type
       );
-      socket.emit("answer", { isCorrect: false, roomId });
+    }
+
+    if (isCorrect) {
+      setFeedbackText("Correct! Well done.");
+      setFeedbackClass("feedback-text-correct");
+    } else {
+      setFeedbackText("Oops! That was incorrect.");
+      setFeedbackClass("feedback-text-incorrect");
     }
 
     const totalQuestionsAnswered =
@@ -206,6 +231,8 @@ const CompetitionComponent = () => {
     setNumOfCorrectAnswers(newNumOfCorrectAnswers);
     setNumOfWrongAnswers(newNumOfWrongAnswers);
     setRunningAverageScore(averageScore);
+
+    socket.emit("answer", { isCorrect, roomId }); // Emitting the answer event only once here
 
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -256,11 +283,10 @@ const CompetitionComponent = () => {
         </p>
         <div className="score-board">
           <p>
-            Your Score: <span className="score">{yourScore.toFixed(1)}%</span>
+            Your Score: <span className="score">{yourScore}</span>
           </p>
           <p>
-            Opponent's Score:{" "}
-            <span className="score">{opponentScore.toFixed(1)}%</span>
+            Opponent's Score: <span className="score">{opponentScore}</span>
           </p>
         </div>
         <button className="play-again-button" onClick={() => navigate("/quiz")}>
@@ -312,14 +338,15 @@ const CompetitionComponent = () => {
           ) : (
             <>
               <main className="quiz-content">
-                {/* <span>Score: {runningAverageScore.toFixed(1)}%</span> */}
                 <div className="scoreboard">
                   <p className="score-your">
-                    Your Score: <span>{yourScore.toFixed(1)}%</span>
+                    Your Score: <span>{yourScore}</span>{" "}
                   </p>
                   <p className="score-opponent">
-                    Opponent's Score: <span>{opponentScore.toFixed(1)}%</span>
+                    Opponent's Score:
+                    <span>{opponentScore}</span>{" "}
                   </p>
+                  <p className={feedbackClass}>{feedbackText}</p>
                 </div>
                 <p className="current-question">{currentQuestion}</p>
                 <p className="current-question">{currentQuestionDescription}</p>
@@ -370,8 +397,8 @@ const CompetitionComponent = () => {
                   </div>
                   <button onClick={handleNext}>Next</button>
 
-                  <button onClick={handleSubmit}>
-                    End Game and See Results
+                  <button className="play-again-button" onClick={resetGame}>
+                    Play again
                   </button>
                 </div>
               </main>

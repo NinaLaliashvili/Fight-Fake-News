@@ -18,6 +18,17 @@ export const UserScoreProvider = ({ children }) => {
       ...prev,
       { question, userAnswer, correctAnswer },
     ]);
+
+    if (userAnswer === correctAnswer) {
+      setNumOfCorrectAnswers((prev) => prev + 1);
+    } else {
+      setNumOfWrongAnswers((prev) => prev + 1);
+    }
+
+    const totalQuestionsAnswered = numOfCorrectAnswers + numOfWrongAnswers;
+    setRunningAverageScore(
+      (numOfCorrectAnswers / totalQuestionsAnswered) * 100
+    );
   };
 
   const saveScoreToBackend = async (userId, token) => {

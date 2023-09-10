@@ -252,15 +252,15 @@ io.on("connection", (socket) => {
         userId === currentSession.player1 ? "player1Score" : "player2Score";
       let newScore = currentSession[fieldToUpdate];
       if (isCorrect) {
-        newScore += 2;
+        newScore += 1; // Changed from += 2 to += 1
       } else {
         // Prevent the score from going below 0
-        newScore = Math.max(0, newScore - 1);
+        newScore = Math.max(0, newScore); // Changed from newScore - 1 to newScore
       }
 
       await gameSessionsCollection.updateOne(
         { roomId },
-        { $set: { [fieldToUpdate]: newScore, updatedAt: new Date() } }
+        { $set: { [fieldToUpdate]: newScore } }
       );
       console.log("Game session updated with new score");
 
@@ -370,6 +370,22 @@ io.on("connection", (socket) => {
       });
       socket.emit("endGame", { winner, player1Score, player2Score });
     });
+
+    // socket.on("resetGame", ({ roomId }) => {
+    //   // Reset the scores in your database
+    //   gameSessionsCollection.updateOne(
+    //     { roomId },
+    //     {
+    //       $set: {
+    //         player1Score: 0,
+    //         player2Score: 0,
+    //       },
+    //     }
+    //   );
+
+    //   // Notify both players to start a new game
+    //   io.in(roomId).emit("startNewGame");
+    // });
   });
 });
 

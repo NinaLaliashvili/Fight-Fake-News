@@ -82,7 +82,11 @@ export const UsersView = () => {
       await axios
         .put(`http://localhost:3082/user/${userId}`, userDataToUpdate)
         .then((resp) => {
-          notifyUserSuccess("yay! this user is an admin now!");
+          if (userDataToUpdate.isAdmin) {
+            notifyUserSuccess("Yay! This user is an admin now!");
+          } else {
+            notifyUserSuccess("You removed this user from admin.");
+          }
         })
         .catch((err) => {
           notifyUserError(err);

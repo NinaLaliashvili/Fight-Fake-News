@@ -37,9 +37,7 @@ const ResultComponent = () => {
   return (
     <div className="result-container">
       <main className="results-content">
-        <h3 className="score-heading">{`Your Score: ${runningAverageScore.toFixed(
-          1
-        )}%`}</h3>
+        <h3 className="score-heading">{`Your Score: ${numOfCorrectAnswers}`}</h3>
         <div className="score-details">
           <p>{`Correct Answers: ${numOfCorrectAnswers}`}</p>
           <p>{`Wrong Answers: ${numOfWrongAnswers}`}</p>

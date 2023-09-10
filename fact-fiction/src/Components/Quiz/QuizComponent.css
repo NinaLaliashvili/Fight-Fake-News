@@ -390,3 +390,25 @@ button:hover {
     opacity: 1;
   }
 }
+.feedback-text-correct {
+  font-weight: bold;
+  color: green;
+  font-weight: 600;
+  font-size: larger;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.feedback-text-incorrect {
+  font-weight: bold;
+  color: red;
+  font-weight: 600;
+  font-size: larger;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+.score-yourr {
+  margin-top: 15px;
+}

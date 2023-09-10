@@ -226,7 +226,7 @@ const LeaderboardComponent = () => {
                   )}
                   {`${entry.firstName} ${entry.lastName}`}
                 </td>
-                <td>{entry.score.toFixed(1)}</td>
+                <td>{isNaN(entry.score) ? 0 : Math.round(entry.score)}</td>
               </tr>
             ))}
           </tbody>
