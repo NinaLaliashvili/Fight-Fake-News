@@ -5,7 +5,7 @@ import { LoginContext } from "../../Context/AuthContext";
 import { userScoreContext } from "../../Context/UserScoreContext";
 
 const ResultComponent = () => {
-  const { userId } = useContext(LoginContext);
+  const { userId, isLoggedIn } = useContext(LoginContext);
 
   const { saveScoreToBackend } = useContext(userScoreContext);
 
@@ -82,11 +82,13 @@ const ResultComponent = () => {
 
         <div className="button-group">
           <button onClick={handlePlayAgain} className="play-again-button">
-            Play Again
+            Play Again!
           </button>
-          <button onClick={handleSaveScore} className="leaderboard-button">
-            Save your score && check the leaderboard
-          </button>
+          {isLoggedIn && (
+            <button onClick={handleSaveScore} className="leaderboard-button">
+              Save your score & check out the leaderboard!
+            </button>
+          )}
         </div>
         <a href="/submit-fact" className="submit-fact-link">
           Submit your own fact or fiction here!

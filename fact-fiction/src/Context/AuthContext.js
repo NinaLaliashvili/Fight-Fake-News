@@ -61,6 +61,8 @@ export const LoginProvider = ({ children }) => {
           if (data && data.isAdmin === true) {
             setIsUserAdmin(true);
             console.log("user is admin?", isUserAdmin);
+          } else {
+            setIsUserAdmin(false);
           }
 
           if (data && data.avatar) {

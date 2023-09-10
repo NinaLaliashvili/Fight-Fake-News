@@ -125,7 +125,7 @@ const HomeComponent = () => {
                 </div>
               </>
             ) : (
-              `Welcome to Fact or Fiction Fun Quiz. Dive into a world where myths unravel and truths shine. Are you ready?`
+              `Welcome to Fact or Fiction Fun Quiz. Dive into a world where myths unravel and truths shine. Are you ready? Play as a guest user, login, or register today!`
             )}
             <span>
               <animated.img

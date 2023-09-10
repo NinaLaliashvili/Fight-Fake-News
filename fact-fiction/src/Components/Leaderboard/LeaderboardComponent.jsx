@@ -16,7 +16,7 @@ const bat = require("../Home/bat.png");
 const lizard = require("../Home/lizard.png");
 
 const LeaderboardComponent = () => {
-  const { username, token } = useContext(LoginContext);
+  const { username, token, isLoggedIn } = useContext(LoginContext);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [showCow, setShowCow] = useState(false);
   const [showLizard, setShowLizard] = useState(false);
@@ -115,6 +115,19 @@ const LeaderboardComponent = () => {
           console.error("Error fetching top scores:", error);
         });
     } else {
+      axios
+        .get("http://localhost:3082/top-scores", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setLeaderboardData(response.data); // assuming response.data contains your leaderboard data
+        })
+        .catch((error) => {
+          console.error("Error fetching top scores:", error);
+        });
+      // essentially nina you can edit this out if you would like and combine to without the if else statement
       // Handle the case where token is null or undefined
     }
   }, [token]);
@@ -266,6 +279,8 @@ const LeaderboardComponent = () => {
       )}
       <div className="motivational-section">
         <h3 className="blal">Thoughts that Propel: Your Daily Lift-off!</h3>
+        {!isLoggedIn && <h3>And, register to get on the leaderboard! wooo!</h3>}
+
         <div className="motivational-item">
           <blockquote>
             "Success is not final, failure is not fatal: It is the courage to
