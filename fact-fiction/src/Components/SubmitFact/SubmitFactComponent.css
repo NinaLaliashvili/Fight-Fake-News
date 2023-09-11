@@ -92,3 +92,89 @@ textarea::placeholder {
   line-height: 1.6;
   font-size: 1.6rem;
 }
+
+.submission-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+}
+
+.thank-you-container,
+.thank-you-section {
+  text-align: center;
+  padding: 20px;
+}
+
+.thank-you-container h2,
+.thank-you-section h2 {
+  color: #2c3e50;
+}
+
+.bla {
+  text-align: center;
+  color: #34495e;
+}
+
+.center {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+form input,
+form textarea,
+form select {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+form button {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #d553bb;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #c565c4;
+  color: white;
+}
+
+.submission-radio-group {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.submission-radio-group label {
+  font-size: 16px;
+}
+
+.toast-container {
+  font-size: 16px;
+}
+
+/* Styling for toast notifications */
+.toast-success {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.toast-error {
+  background-color: #dc3545;
+  color: #fff;
+}

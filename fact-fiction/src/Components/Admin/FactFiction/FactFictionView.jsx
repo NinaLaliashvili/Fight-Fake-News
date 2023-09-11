@@ -209,59 +209,6 @@ export const FactFictionView = () => {
     console.log(img);
   };
 
-  // const sendImgToServerGetLink = () => {
-  //   const formData = new FormData();
-
-  //   formData.append("file", img);
-
-  //   for (const value of formData.values()) {
-  //     console.log(value);
-  //   }
-  //   //check that pic is appending- it is
-  //   try {
-  //     axios
-  //       .post(
-  //         `http://localhost:3082/img`,
-  //         {
-  //           formData,
-  //         },
-  //         {
-  //           headers: {
-  //             "Content-Type": "multipart/form-data",
-  //           },
-  //         }
-  //       )
-  //       .then((resp) => {
-  //         if (!resp.url) {
-  //           notifyUserError(
-  //             "sorry, that didn't quite work! Try again,",
-  //             resp.message
-  //           );
-  //         } else if (resp.url) {
-  //           notifyUserSuccess(
-  //             "your img saved in our server! we sent back a link, you'll see it in the image link box- now you can submit your full edit!"
-  //           );
-
-  //           setValues({
-  //             ...values,
-  //             imgLink: resp.url,
-  //           });
-  //           setTogglePic(!togglePic);
-  //           //toggle back to the url view
-  //         }
-
-  //         // set value of imglink input to resp from cloudinary, then allow user to send
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //         notifyUserError(err);
-  //       });
-  //   } catch (err) {
-  //     console.log(err);
-  //     notifyUserError("whoops! something went wrong with the upload process");
-  //   }
-  // };
-
   const sendImgToServerGetLink = () => {
     const formData = new FormData();
     formData.append("image", img);
@@ -276,9 +223,7 @@ export const FactFictionView = () => {
         if (!resp.data.url) {
           notifyUserError("sorry, that didn't quite work! Try again.");
         } else {
-          notifyUserSuccess(
-            "your img saved in our server! we sent back a link, you'll see it in the image link box- now you can submit your full edit!"
-          );
+          notifyUserSuccess("your img saved in our server!");
           setValues({
             ...values,
             imgLink: resp.data.url,

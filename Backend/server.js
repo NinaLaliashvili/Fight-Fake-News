@@ -12,28 +12,6 @@ const http = require("http");
 const socketIo = require("socket.io");
 const multer = require("multer");
 
-// //img upload requirements below
-// const fileUpload = require("express-fileupload");
-// const { upload } = require("./cloudinary/cloudinary");
-// const fs = require("fs");
-// app.use(bodyParser.json());
-// app.use(express.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(
-//   fileUpload({
-//     useTempFiles: true,
-//   })
-// );
-// app.use(express.urlencoded({ extended: true }));
-// const dirname = path.resolve();
-// app.use(
-//   cors({
-//     origin: "*",
-//   })
-// );
-
-//server for game
-
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
@@ -82,7 +60,7 @@ run().catch(console.dir);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname)));
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static("uploads")); //Setting Up a Static Folder
 // middleware to authenticate token
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -370,27 +348,11 @@ io.on("connection", (socket) => {
       });
       socket.emit("endGame", { winner, player1Score, player2Score });
     });
-
-    // socket.on("resetGame", ({ roomId }) => {
-    //   // Reset the scores in your database
-    //   gameSessionsCollection.updateOne(
-    //     { roomId },
-    //     {
-    //       $set: {
-    //         player1Score: 0,
-    //         player2Score: 0,
-    //       },
-    //     }
-    //   );
-
-    //   // Notify both players to start a new game
-    //   io.in(roomId).emit("startNewGame");
-    // });
   });
 });
 
 // -------------------------- Start Server Side----------------------------
-
+//Configuring Multer’s Storage Settings
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./uploads/");
@@ -400,7 +362,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }); //Initializing multer:
 
 app.post("/img", upload.single("image"), (req, res) => {
   if (req.file) {
@@ -411,6 +373,7 @@ app.post("/img", upload.single("image"), (req, res) => {
     res.status(400).send("File not uploaded.");
   }
 });
+
 //General api route
 app.get("/", (req, res) => {
   res.send("This is the best project server");
@@ -812,6 +775,22 @@ app.post("/add-user", async (req, res) => {
     res.json({ message: "User added successfully.", id: result.insertedId });
   } catch (error) {
     console.error("Error adding user:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+app.put("/update-score/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const { score } = req.body;
+
+  try {
+    await usersCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { score: score } }
+    );
+    res.json({ message: "Score updated successfully." });
+  } catch (error) {
+    console.error("Error updating score:", error);
     res.status(500).send("Something went wrong. Please try again later.");
   }
 });

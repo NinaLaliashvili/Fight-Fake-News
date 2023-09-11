@@ -87,14 +87,20 @@ const SubmitFactComponent = () => {
 
   return (
     <div className="submission-container">
-      <ToastContainer theme="light" />
-      {/* <header>
-        <h1>Fact Submission</h1>
-
-        <nav>
-          <button onClick={() => navigate("/")}>Home</button>
-        </nav>
-      </header> */}
+      <ToastContainer
+        className="toast-container"
+        theme="light"
+        toastClassName={({ type }) => {
+          switch (type) {
+            case toast.TYPE.SUCCESS:
+              return "toast-success";
+            case toast.TYPE.ERROR:
+              return "toast-error";
+            default:
+              return "toast-default";
+          }
+        }}
+      />
       {!submitted ? (
         <main>
           <h3 className="center, bla">

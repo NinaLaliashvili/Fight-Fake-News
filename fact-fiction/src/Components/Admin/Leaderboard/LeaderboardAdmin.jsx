@@ -8,6 +8,9 @@ export const LeaderboardAdmin = () => {
   const [users, setUsers] = useState([]);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const { isUserAdmin } = useContext(LoginContext);
+  const [editingUserId, setEditingUserId] = useState(null);
+  const [newScore, setNewScore] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +48,24 @@ export const LeaderboardAdmin = () => {
     e.target.reset();
   };
 
+  const updateScore = async () => {
+    try {
+      await axios.put(`http://localhost:3082/update-score/${editingUserId}`, {
+        score: parseInt(newScore, 10),
+      });
+      setUsers(
+        users.map((user) =>
+          user._id === editingUserId
+            ? { ...user, score: parseInt(newScore, 10) }
+            : user
+        )
+      );
+      setEditingUserId(null);
+      setNewScore("");
+    } catch (error) {
+      console.error("Error updating score:", error);
+    }
+  };
   return (
     <div>
       <h2>Users</h2>
@@ -53,9 +74,23 @@ export const LeaderboardAdmin = () => {
           <h4>
             {user.firstName} {user.lastName} - {user.score}
           </h4>
-          <button className="bttn" onClick={() => removeUser(user._id)}>
-            Remove
-          </button>
+          {editingUserId === user._id ? (
+            <div>
+              <input
+                type="number"
+                value={newScore}
+                onChange={(e) => setNewScore(e.target.value)}
+                placeholder="New score"
+              />
+              <button className="bttn" onClick={updateScore}>
+                Update Score
+              </button>
+            </div>
+          ) : (
+            <button className="bttn" onClick={() => setEditingUserId(user._id)}>
+              Edit Score
+            </button>
+          )}
         </div>
       ))}
 

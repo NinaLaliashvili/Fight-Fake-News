@@ -90,9 +90,6 @@ const ResultComponent = () => {
             </button>
           )}
         </div>
-        <a href="/submit-fact" className="submit-fact-link">
-          Submit your own fact or fiction here!
-        </a>
       </main>
     </div>
   );
