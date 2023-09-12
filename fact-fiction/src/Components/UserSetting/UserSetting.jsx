@@ -77,6 +77,7 @@ const UserSetting = () => {
         firstName: loggedInUser.firstName,
         lastName: loggedInUser.lastName,
         phone: loggedInUser.phone,
+        isAdmin: loggedInUser.isAdmin,
       })
       .then((resp) => {
         loadFacts();

@@ -93,7 +93,7 @@ export const LeaderboardAdmin = () => {
           )}
         </div>
       ))}
-
+      {/* 
       <h2>Add User</h2>
       <form className="forrm" onSubmit={addUser}>
         <input name="firstName" placeholder="First Name" required />
@@ -101,13 +101,13 @@ export const LeaderboardAdmin = () => {
         <input name="score" placeholder="Score" required />
         <button type="submit">Add User</button>
       </form>
-
-      {showErrorModal && (
+{/*  */}
+      {/* {showErrorModal && (
         <div className="error-modal">
           <p>Max number of users is 5.</p>
           <button onClick={() => setShowErrorModal(false)}>Close</button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

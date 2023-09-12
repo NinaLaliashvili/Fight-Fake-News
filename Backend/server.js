@@ -509,7 +509,7 @@ app.post("/signup", async (req, res) => {
       avatar,
       isAdmin: false,
     };
-
+    console.log(user);
     const result = await usersCollection.insertOne(user);
 
     res.status(201).json({ userId: result.insertedId });
