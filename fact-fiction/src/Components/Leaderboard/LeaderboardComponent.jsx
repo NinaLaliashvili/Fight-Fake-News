@@ -109,7 +109,7 @@ const LeaderboardComponent = () => {
           },
         })
         .then((response) => {
-          setLeaderboardData(response.data); // assuming response.data contains your leaderboard data
+          setLeaderboardData(response.data);
         })
         .catch((error) => {
           console.error("Error fetching top scores:", error);
@@ -122,7 +122,7 @@ const LeaderboardComponent = () => {
           },
         })
         .then((response) => {
-          setLeaderboardData(response.data); // assuming response.data contains your leaderboard data
+          setLeaderboardData(response.data);
         })
         .catch((error) => {
           console.error("Error fetching top scores:", error);

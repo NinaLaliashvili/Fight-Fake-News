@@ -157,21 +157,21 @@ io.on("connection", (socket) => {
           }
 
           console.log("Emitting 'matched' event to room with details:", {
-            opponentName: currentUser.firstName, // Fixed here
+            opponentName: currentUser.firstName,
             roomId: waitingPlayer.room,
           });
           socket.to(waitingPlayer.room).emit("matched", {
-            opponentName: currentUser.firstName, // Fixed here
+            opponentName: currentUser.firstName,
             roomId: waitingPlayer.room,
           });
 
           console.log("Emitting 'matched' event to self with details:", {
-            opponentName: waitingUser.firstName, // Fixed here
+            opponentName: waitingUser.firstName,
             roomId: waitingPlayer.room,
           });
 
           socket.emit("matched", {
-            opponentName: waitingUser.firstName, // Fixed here
+            opponentName: waitingUser.firstName,
             roomId: waitingPlayer.room,
           });
         } catch (error) {
@@ -212,7 +212,6 @@ io.on("connection", (socket) => {
         "with data:",
         data
       );
-      // Assuming that data contains { isCorrect, roomId }
       const roomId = data.roomId;
       const isCorrect = data.isCorrect;
 
@@ -230,10 +229,10 @@ io.on("connection", (socket) => {
         userId === currentSession.player1 ? "player1Score" : "player2Score";
       let newScore = currentSession[fieldToUpdate];
       if (isCorrect) {
-        newScore += 1; // Changed from += 2 to += 1
+        newScore += 1;
       } else {
         // Prevent the score from going below 0
-        newScore = Math.max(0, newScore); // Changed from newScore - 1 to newScore
+        newScore = Math.max(0, newScore);
       }
 
       await gameSessionsCollection.updateOne(
@@ -260,24 +259,22 @@ io.on("connection", (socket) => {
           _id: new ObjectId(currentSession.player2),
         });
 
-        io.to(roomId).emit("endGame", {
-          winner,
-          player1Score: currentSession.player1Score,
-          player2Score: currentSession.player2Score,
-        });
-
+        // Define winner using the determineWinner function
         const winner = determineWinner(
           currentSession.player1Score,
           currentSession.player2Score,
           player1Details,
           player2Details
         );
+
+        // Emit the endGame event after winner is defined
         io.to(roomId).emit("endGame", {
           winner,
           player1Score: currentSession.player1Score,
           player2Score: currentSession.player2Score,
         });
       }
+
       console.log("Multiplayer scores collection updated with new score");
 
       console.log("Emitting scoreUpdate", { opponentScore: newScore });
@@ -296,7 +293,7 @@ io.on("connection", (socket) => {
 
       if (!currentSession) {
         console.log("Game session not found for endGame event");
-        return; // Add appropriate handling for non-existent session
+        return;
       }
 
       const player1Score = currentSession.player1Score;

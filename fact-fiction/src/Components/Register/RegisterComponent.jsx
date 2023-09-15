@@ -80,7 +80,7 @@ const RegisterComponent = () => {
 
     for (let key in formState) {
       if (key === "avatar") {
-        continue; // Skip the "avatar" field
+        continue;
       }
 
       if (formState[key] === "") {
@@ -135,10 +135,12 @@ const RegisterComponent = () => {
       }
 
       if (!formState.avatar) {
-        const randomAvatarIndex = Math.floor(Math.random() * profileImages.length);
+        const randomAvatarIndex = Math.floor(
+          Math.random() * profileImages.length
+        );
         const randomAvatar = profileImages[randomAvatarIndex];
-        formState.avatar = randomAvatar.src; 
-    }
+        formState.avatar = randomAvatar.src;
+      }
 
       const response = await axios.post(
         "http://localhost:3082/signup",
